@@ -8,4 +8,7 @@
   "csharpFormatUsings.removeUnnecessaryUsings": true,
   "csharpextensions.useFileScopedNamespace": true,
   "csharpextensions.privateMemberPrefix": "_",
+  "[csharp]": {
+    "editor.defaultFormatter": "ms-dotnettools.csharp"
+  }
 }
