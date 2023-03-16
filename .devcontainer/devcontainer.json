@@ -1,0 +1,24 @@
+{
+  "name": "C# (.NET Core)",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "dev",
+  "workspaceFolder": "/examples-dotnet-cryptography",
+  "customizations":
+  {
+    "vscode": {
+      // Set *default* container specific settings.json values on container create.
+      "settings": {},
+      // Add the IDs of extensions you want installed when the container is created.
+      "extensions": [
+        "ms-ceintl.vscode-language-pack-ja",
+        "ms-dotnettools.csharp",
+        "editorconfig.editorconfig",
+        "kreativ-software.csharpextensions",
+        "k--kato.docomment",
+        "gaoshan0621.csharp-format-usings",
+        "fudge.auto-using"
+      ]
+    }
+  },
+  "remoteUser": "vscode"
+}

@@ -1,0 +1,13 @@
+version: "3"
+services:
+  dev:
+    build:
+      context: ./
+      args:
+        # For Linux, Change the permission by specifying UID / GID.
+        "USER_UID": ${VSCODE_UID:-1000}
+        "USER_GID": ${VSCODE_GID:-1000}
+    tty: true
+    volumes:
+      - ..:/examples-dotnet-cryptography
+    working_dir: /examples-dotnet-cryptography

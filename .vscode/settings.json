@@ -1,0 +1,11 @@
+{
+  "omnisharp.enableEditorConfigSupport": true,
+  "omnisharp.enableAsyncCompletion": true,
+  "omnisharp.enableMsBuildLoadProjectsOnDemand": true,
+  "omnisharp.enableRoslynAnalyzers": true,
+  "csharpFormatUsings.splitGroups": false,
+  "csharpFormatUsings.sortOrder": "System",
+  "csharpFormatUsings.removeUnnecessaryUsings": true,
+  "csharpextensions.useFileScopedNamespace": true,
+  "csharpextensions.privateMemberPrefix": "_",
+}
