@@ -1,0 +1,105 @@
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
+
+namespace Examples.Cryptography.X509Certificates;
+
+public class X509StoreTests
+{
+    private readonly ITestOutputHelper _output;
+
+    public X509StoreTests(ITestOutputHelper output)
+    {
+        _output = output;
+    }
+
+    /// <seealso href="https://learn.microsoft.com/ja-jp/dotnet/api/system.security.cryptography.x509certificates?view=net-7.0"/>
+    [Fact]
+    public void WhenEnumerateStoreStatus()
+    {
+        foreach (var message in EnumerateStoreStatus())
+        {
+            _output.WriteLine(message);
+        }
+
+        return;
+    }
+
+    private static IEnumerable<string> EnumerateStoreStatus()
+    {
+        yield return "";
+        yield return "Exists Certs Name and Location";
+        yield return "------ ----- -------------------------";
+
+        foreach (var storeLocation in Enum.GetValues<StoreLocation>())
+        {
+            foreach (var storeName in Enum.GetValues<StoreName>())
+            {
+                using var store = new X509Store(storeName, storeLocation);
+
+                string message;
+                try
+                {
+                    store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
+
+                    message = $"Yes    {store.Certificates.Count,4}  {store.Name}, {store.Location}";
+
+                    store.Close();
+                }
+                catch (CryptographicException e)
+                {
+                    message = $"No           {store.Name}, {store.Location} -> {e.Message}";
+                }
+
+                yield return message;
+
+            }
+
+            yield return "";
+        }
+    }
+
+
+    /// <seealso href="https://learn.microsoft.com/ja-jp/dotnet/api/system.security.cryptography.x509certificates.x509certificate2collection.find?view=net-7.0"/>
+    [Fact]
+    public void WhenFindFromStore()
+    {
+        using var store = new X509Store(StoreName.Root, StoreLocation.LocalMachine);
+        store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
+
+        var collection = store.Certificates;
+        var fcollection = collection.Find(X509FindType.FindByTimeValid, DateTime.Now, false);
+        var scollection = fcollection.Find(X509FindType.FindByIssuerDistinguishedName,
+            findValue: "CN=Microsoft RSA Root Certificate Authority 2017, O=Microsoft Corporation, C=US",
+            validOnly: true);
+
+        _output.WriteLine("");
+        _output.WriteLine("Number of certificates: {0}", scollection.Count);
+        _output.WriteLine("");
+
+        foreach (var x509 in scollection)
+        {
+            try
+            {
+                byte[] rawdata = x509.RawData;
+                _output.WriteLine("Content Type: {0}{1}", X509Certificate2.GetCertContentType(rawdata), Environment.NewLine);
+                _output.WriteLine("Friendly Name: {0}{1}", x509.FriendlyName, Environment.NewLine);
+                _output.WriteLine("Certificate Verified?: {0}{1}", x509.Verify(), Environment.NewLine);
+                _output.WriteLine("Simple Name: {0}{1}", x509.GetNameInfo(X509NameType.SimpleName, true), Environment.NewLine);
+                _output.WriteLine("Signature Algorithm: {0}{1}", x509.SignatureAlgorithm.FriendlyName, Environment.NewLine);
+                _output.WriteLine("Public Key: {0}{1}", x509.PublicKey.GetRSAPublicKey()?.ToXmlString(false), Environment.NewLine);
+                _output.WriteLine("Certificate Archived?: {0}{1}", x509.Archived, Environment.NewLine);
+                _output.WriteLine("Length of Raw Data: {0}{1}", x509.RawData.Length, Environment.NewLine);
+
+            }
+            catch (CryptographicException)
+            {
+                _output.WriteLine("Information could not be written out for this certificate.");
+            }
+        }
+
+        store.Close();
+
+        return;
+    }
+
+}
