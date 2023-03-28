@@ -4,7 +4,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Examples.Cryptography.X509Certificates;
 
-public static class VetificationX509Certificate2Extentions
+public static class X509Certificate2VetificationExtentions
 {
     public static void VerifySignature(this X509Certificate2 cert,
         X509Certificate2 signedBy)
