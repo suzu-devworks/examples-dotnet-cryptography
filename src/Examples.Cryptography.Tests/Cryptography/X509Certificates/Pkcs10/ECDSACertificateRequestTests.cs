@@ -109,6 +109,8 @@ public class ECDSACertificateRequestTests
         cert.NotAfter.Is(notAfter.Truncate(TimeSpan.TicksPerSecond).LocalDateTime);
         cert.SignatureAlgorithm.FriendlyName.Is("sha256ECDSA");
 
+        cert.VerifySignature(cert);
+
         // Assert.
         pem.Is(x => x.StartsWith("-----BEGIN CERTIFICATE-----")
                     && x.EndsWith("-----END CERTIFICATE-----"));
@@ -164,7 +166,7 @@ public class ECDSACertificateRequestTests
              HashAlgorithmName.SHA256)
              .SetBasicConstraints()
              .CreateSelfSigned(notBefore, notAfter);
-        _output.WriteLine($"\n{caCert}");
+        //_output.WriteLine($"\n{caCert}");
 
         var loaded = CertificateRequest.LoadSigningRequest(requested,
             HashAlgorithmName.SHA256,
@@ -172,7 +174,7 @@ public class ECDSACertificateRequestTests
 
         var serial = new Random().CreateSerialNumber();
         var cert = loaded.Create(caCert, notBefore, notAfter, serial);
-        _output.WriteLine($"\n{cert}");
+        //_output.WriteLine($"\n{cert}");
 
         var pem = cert.ExportCertificatePem();
         //File.WriteAllText("server-ec.crt", pem);
@@ -185,6 +187,8 @@ public class ECDSACertificateRequestTests
         cert.NotBefore.Is(notBefore.Truncate(TimeSpan.TicksPerSecond).LocalDateTime);
         cert.NotAfter.Is(notAfter.Truncate(TimeSpan.TicksPerSecond).LocalDateTime);
         cert.SignatureAlgorithm.FriendlyName.Is("sha256ECDSA");
+
+        cert.VerifySignature(caCert);
 
         // Assert.
         pem.Is(x => x.StartsWith("-----BEGIN CERTIFICATE-----")
