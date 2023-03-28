@@ -123,8 +123,28 @@ public class ECDSACertificateRequestTests
     public void WhenCreate()
     {
         /* ```sh
+         $ cat > test.conf << EOF
+[ req ]
+distinguished_name = req
+req_extensions = v3_req
+x509_extensions = v3_ca
+[ v3_req ]
+basicConstraints        = CA:FALSE
+keyUsage                = digitalSignature
+extendedKeyUsage        = serverAuth, clientAuth, codeSigning, emailProtection
+subjectAltName          = @alt_names
+[ alt_names ]
+DNS.1 = www.localserver.jp
+DNS.2 = localserver.jp
+[ v3_ca ]
+basicConstraints        = critical, CA:true
+subjectKeyIdentifier    = hash
+keyUsage                = critical, keyCertSign, cRLSign
+EOF
+
         $ openssl ecparam -genkey -name secp384r1 -noout -out ecdsa-ca.key
         $ openssl req -new -x509 \
+            -config test.conf \
             -key ecdsa-ca.key \
             -sha256 -subj "/C=JP/O=suzu-devworks CA/CN=Test CA" \
             -days 365 \
@@ -132,11 +152,13 @@ public class ECDSACertificateRequestTests
 
         $ openssl ecparam -genkey -name prime256v1 -noout -out ecdsa-private.key
         $ openssl req -new \
+            -config test.conf \
             -key ecdsa-private.key \
             -sha256 -subj "/C=JP/O=suzu-devworks/CN=localhost" \
             -out ecdsa-localhost.csr
 
         $ openssl x509 -req -in ecdsa-localhost.csr \
+            -extfile test.conf -extensions v3_req \
             -CAkey ecdsa-ca.key -CA ecdsa-ca.crt -CAcreateserial \
             -sha256 -days 365 \
             -out ecdsa-localhost.crt
@@ -150,34 +172,55 @@ public class ECDSACertificateRequestTests
         using var keyPair = ECDsa.Create(ECCurve.NamedCurves.nistP384);
 
         var subject = new X500DistinguishedName("C=JP,O=suzu-devworks,CN=localhost");
-        var req = new CertificateRequest(
-             subject,
-             keyPair,
-             HashAlgorithmName.SHA256);
-
-        var requested = req.CreateSigningRequest();
+        var requested = new CertificateRequest(
+                subject,
+                keyPair,
+                HashAlgorithmName.SHA256)
+            //TODO I think it should be set on request.
+            .AddSubjectAlternativeName(san =>
+                {
+                    san.AddDnsName($"www.local-server.jp");
+                    san.AddDnsName($"localserver.jp");
+                })
+            .CreateSigningRequestPem();
+        //File.WriteAllText("ecdsa-localhost.csr", requested);
+        _output.WriteLine($"\n{requested}");
 
         // Act --- CA side.
         using var caKeyPair = ECDsa.Create(ECCurve.NamedCurves.nistP384);
         var issuer = new X500DistinguishedName("C=JP,O=suzu-devworks CA,CN=Test CA");
         var caCert = new CertificateRequest(
-             issuer,
-             caKeyPair,
-             HashAlgorithmName.SHA256)
-             .SetBasicConstraints()
-             .CreateSelfSigned(notBefore, notAfter);
+                issuer,
+                caKeyPair,
+                HashAlgorithmName.SHA256)
+            .AddSubjectKeyIdentifierExtension()
+            .AddExtension(X509BasicConstraintsExtension.CreateForCertificateAuthority())
+            .CreateSelfSigned(notBefore, notAfter);
         //_output.WriteLine($"\n{caCert}");
 
-        var loaded = CertificateRequest.LoadSigningRequest(requested,
+        var loaded = CertificateRequest.LoadSigningRequestPem(requested,
             HashAlgorithmName.SHA256,
-            CertificateRequestLoadOptions.Default);
+            CertificateRequestLoadOptions.UnsafeLoadCertificateExtensions);
 
         var serial = new Random().CreateSerialNumber();
-        var cert = loaded.Create(caCert, notBefore, notAfter, serial);
+        var cert = loaded
+            .AddAuthorityKeyIdentifierExtension(caCert)
+            .AddSubjectKeyIdentifierExtension()
+            .AddExtension(X509BasicConstraintsExtension.CreateForEndEntity())
+            .AddKeyUsageExtension(critical: false, X509KeyUsageFlags.DigitalSignature)
+            .AddExtendedKeyUsageExtension(critical: false,
+                usage =>
+                {
+                    usage.Add(ExtendedKeyUsages.IdKpServerAuth);
+                    usage.Add(ExtendedKeyUsages.IdKpClientAuth);
+                    usage.Add(ExtendedKeyUsages.IdKpCodeSigning);
+                    usage.Add(ExtendedKeyUsages.IdKpEmailProtection);
+                })
+            .Create(caCert, notBefore, notAfter, serial);
         //_output.WriteLine($"\n{cert}");
 
         var pem = cert.ExportCertificatePem();
-        //File.WriteAllText("server-ec.crt", pem);
+        File.WriteAllText("ecdsa-localhost.crt", pem);
         _output.WriteLine($"\n{pem}");
 
         // Assert.

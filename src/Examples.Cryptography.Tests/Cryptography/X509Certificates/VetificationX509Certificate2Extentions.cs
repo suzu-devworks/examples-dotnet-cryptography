@@ -24,19 +24,28 @@ public static class VetificationX509Certificate2Extentions
         var hash = SignatureAlgorithms.GetHashAlgorithmName(certificate.SignatureAlgorithm)
             ?? throw new NotSupportedException($"Unsupported SignatureAlgorithm \"{certificate.SignatureAlgorithm.FriendlyName}\"");
 
-        var rsa = signedBy.GetRSAPublicKey();
-        if (rsa != null)
-        {
-            return rsa.VerifyData(tbs, signature, hash, RSASignaturePadding.Pkcs1);
-        }
+        using var rsa = signedBy.GetRSAPublicKey();
+        using var ecdsa = signedBy.GetECDsaPublicKey();
 
-        var ecdsa = signedBy.GetECDsaPublicKey();
-        if (ecdsa != null)
+        var algo = certificate.SignatureAlgorithm;
+        switch (algo)
         {
-            return ecdsa.VerifyData(tbs, signature, hash, DSASignatureFormat.Rfc3279DerSequence);
-        }
+            case var _ when algo.Value == SignatureAlgorithms.sha1RSA.Value:
+            case var _ when algo.Value == SignatureAlgorithms.sha256RSA.Value:
+            case var _ when algo.Value == SignatureAlgorithms.sha384RSA.Value:
+            case var _ when algo.Value == SignatureAlgorithms.sha512RSA.Value:
 
-        throw new NotSupportedException($"Unsupported AsymmetricAlgorithm.");
+                return rsa?.VerifyData(tbs, signature, hash, RSASignaturePadding.Pkcs1) ?? false;
+
+            case var _ when algo.Value == SignatureAlgorithms.sha256ECDSA.Value:
+            case var _ when algo.Value == SignatureAlgorithms.sha384ECDSA.Value:
+            case var _ when algo.Value == SignatureAlgorithms.sha512ECDSA.Value:
+
+                return ecdsa?.VerifyData(tbs, signature, hash, DSASignatureFormat.Rfc3279DerSequence) ?? false;
+
+            default:
+                throw new NotSupportedException($"Unsupported AsymmetricAlgorithm.");
+        }
     }
 
     // https://tex2e.github.io/rfc-translater/html/rfc5280.html#4-1--Basic-Certificate-Fields
