@@ -137,7 +137,7 @@ public class RSACertificateRequestTests
         // X509Extensions is empty.
 
         var cert = req.CreateSelfSigned(notBefore, notAfter);
-        _output.WriteLine($"\n{cert}");
+        //_output.WriteLine($"\n{cert}");
 
         var pem = cert.ExportCertificatePem();
         _output.WriteLine($"\n{pem}");
@@ -149,6 +149,8 @@ public class RSACertificateRequestTests
         cert.NotBefore.Is(notBefore.Truncate(TimeSpan.TicksPerSecond).LocalDateTime);
         cert.NotAfter.Is(notAfter.Truncate(TimeSpan.TicksPerSecond).LocalDateTime);
         cert.SignatureAlgorithm.FriendlyName.Is("sha256RSA");
+
+        cert.VerifySignature(cert);
 
         // Assert.
         pem.Is(x => x.StartsWith("-----BEGIN CERTIFICATE-----")
