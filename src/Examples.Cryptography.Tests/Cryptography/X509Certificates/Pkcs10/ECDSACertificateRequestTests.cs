@@ -211,10 +211,10 @@ EOF
             .AddExtendedKeyUsageExtension(critical: false,
                 usage =>
                 {
-                    usage.Add(ExtendedKeyUsages.IdKpServerAuth);
-                    usage.Add(ExtendedKeyUsages.IdKpClientAuth);
-                    usage.Add(ExtendedKeyUsages.IdKpCodeSigning);
-                    usage.Add(ExtendedKeyUsages.IdKpEmailProtection);
+                    usage.Add(X509ExtendedKeyUsages.IdKpServerAuth);
+                    usage.Add(X509ExtendedKeyUsages.IdKpClientAuth);
+                    usage.Add(X509ExtendedKeyUsages.IdKpCodeSigning);
+                    usage.Add(X509ExtendedKeyUsages.IdKpEmailProtection);
                 })
             .Create(caCert, notBefore, notAfter, serial);
         //_output.WriteLine($"\n{cert}");
