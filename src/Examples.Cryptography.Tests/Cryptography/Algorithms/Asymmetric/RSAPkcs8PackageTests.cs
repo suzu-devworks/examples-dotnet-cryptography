@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 
-namespace Examples.Cryptography.AsymmetricKey.Rsa;
+namespace Examples.Cryptography.Algorithms.Asymmetric;
 
 public class RSAPkcs8PackageTests
 {

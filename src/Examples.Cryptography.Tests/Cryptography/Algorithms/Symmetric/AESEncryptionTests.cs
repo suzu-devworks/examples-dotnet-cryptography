@@ -1,9 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-using AES = System.Security.Cryptography.Aes;
-
-namespace Examples.Cryptography.SymmetricKey.Aes;
+namespace Examples.Cryptography.Algorithms.Symmetric;
 
 public class AESEncryptionTests
 {
@@ -24,7 +22,7 @@ public class AESEncryptionTests
         // Create a new instance of the Aes
         // class.  This generates a new key and initialization
         // vector (IV).
-        using var aes = AES.Create();
+        using var aes = Aes.Create();
         //aes.KeySize = 256; //default.
         //aes.BlockSize = 128; //default.
         //aes.Mode = CipherMode.CBC; //default.
@@ -51,7 +49,7 @@ public class AESEncryptionTests
 
         // Create an Aes object
         // with the specified key and IV.
-        using (var aes = AES.Create())
+        using (var aes = Aes.Create())
         {
             aes.Key = key;
             aes.IV = initialVector;
@@ -87,7 +85,7 @@ public class AESEncryptionTests
 
         // Create an Aes object
         // with the specified key and IV.
-        using (var aes = AES.Create())
+        using (var aes = Aes.Create())
         {
             aes.Key = key;
             aes.IV = initialVector;
@@ -116,7 +114,7 @@ public class AESEncryptionTests
     {
         string original = "Here is some data to encrypt!";
 
-        using var aes = AES.Create();
+        using var aes = Aes.Create();
 
         var encrypted = EncryptWithTransform(original, aes.Key, aes.IV);
 
@@ -127,7 +125,7 @@ public class AESEncryptionTests
 
     private static byte[] EncryptWithTransform(string plainText, byte[] key, byte[] iv)
     {
-        using var aes = AES.Create();
+        using var aes = Aes.Create();
         aes.Key = key;
         aes.IV = iv;
 
@@ -141,7 +139,7 @@ public class AESEncryptionTests
 
     private static string DecryptWithTransform(byte[] ciphertext, byte[] key, byte[] iv)
     {
-        using var aes = AES.Create();
+        using var aes = Aes.Create();
         aes.Key = key;
         aes.IV = iv;
 

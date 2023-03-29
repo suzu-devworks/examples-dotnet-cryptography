@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 
-namespace Examples.Cryptography.Hash.Sha2;
+namespace Examples.Cryptography.Algorithms.Hash;
 
 public class SHA512Tests
 {
