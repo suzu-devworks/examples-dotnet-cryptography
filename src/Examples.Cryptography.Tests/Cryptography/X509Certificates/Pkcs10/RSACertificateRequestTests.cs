@@ -28,7 +28,6 @@ public class RSACertificateRequestTests
 
         // Act.
         var subject = new X500DistinguishedName("C=JP,O=suzu-devworks,CN=localhost");
-
         var req = new CertificateRequest(
              subject,
              keyPair,
@@ -127,7 +126,6 @@ public class RSACertificateRequestTests
 
         // Act.
         var subject = new X500DistinguishedName("C=JP,O=suzu-devworks,CN=localhost");
-
         var req = new CertificateRequest(
              subject,
              keyPair,
@@ -136,10 +134,11 @@ public class RSACertificateRequestTests
 
         // X509Extensions is empty.
 
-        var cert = req.CreateSelfSigned(notBefore, notAfter);
-        //_output.WriteLine($"\n{cert}");
+        using var cert = req.CreateSelfSigned(notBefore, notAfter);
 
         var pem = cert.ExportCertificatePem();
+
+        //File.WriteAllText("server.crt", pem);
         _output.WriteLine($"\n{pem}");
 
         // Assert.

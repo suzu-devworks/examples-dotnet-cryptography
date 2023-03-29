@@ -43,6 +43,7 @@ public class ECDSACertificateRequestTests
              HashAlgorithmName.SHA256);
 
         var pem = req.CreateSigningRequestPem();
+
         //File.WriteAllText("server-ec.csr", pem);
         _output.WriteLine($"\n{pem}");
 
@@ -86,7 +87,6 @@ public class ECDSACertificateRequestTests
 
         // Act.
         var subject = new X500DistinguishedName("C=JP,O=suzu-devworks,CN=localhost");
-
         var req = new CertificateRequest(
              subject,
              keyPair,
@@ -94,10 +94,10 @@ public class ECDSACertificateRequestTests
 
         // X509Extensions is empty.
 
-        var cert = req.CreateSelfSigned(notBefore, notAfter);
-        //_output.WriteLine($"\n{cert}");
+        using var cert = req.CreateSelfSigned(notBefore, notAfter);
 
         var pem = cert.ExportCertificatePem();
+
         //File.WriteAllText("server-ec.crt", pem);
         _output.WriteLine($"\n{pem}");
 
@@ -176,38 +176,38 @@ EOF
                 subject,
                 keyPair,
                 HashAlgorithmName.SHA256)
-            //TODO I think it should be set on request.
+            // I think it should be set on request, UnsafeLoadCertificateExtensions ?
+            .AddExtension(X509BasicConstraintsExtension.CreateForEndEntity())
+            .AddKeyUsageExtension(critical: false, X509KeyUsageFlags.DigitalSignature)
             .AddSubjectAlternativeName(san =>
                 {
                     san.AddDnsName($"www.local-server.jp");
                     san.AddDnsName($"localserver.jp");
                 })
             .CreateSigningRequestPem();
+
         //File.WriteAllText("ecdsa-localhost.csr", requested);
         _output.WriteLine($"\n{requested}");
 
         // Act --- CA side.
         using var caKeyPair = ECDsa.Create(ECCurve.NamedCurves.nistP384);
         var issuer = new X500DistinguishedName("C=JP,O=suzu-devworks CA,CN=Test CA");
-        var caCert = new CertificateRequest(
+        using var caCert = new CertificateRequest(
                 issuer,
                 caKeyPair,
                 HashAlgorithmName.SHA256)
             .AddSubjectKeyIdentifierExtension()
             .AddExtension(X509BasicConstraintsExtension.CreateForCertificateAuthority())
             .CreateSelfSigned(notBefore, notAfter);
-        //_output.WriteLine($"\n{caCert}");
 
         var loaded = CertificateRequest.LoadSigningRequestPem(requested,
             HashAlgorithmName.SHA256,
             CertificateRequestLoadOptions.UnsafeLoadCertificateExtensions);
 
         var serial = new Random().CreateSerialNumber();
-        var cert = loaded
+        using var cert = loaded
             .AddAuthorityKeyIdentifierExtension(caCert)
             .AddSubjectKeyIdentifierExtension()
-            .AddExtension(X509BasicConstraintsExtension.CreateForEndEntity())
-            .AddKeyUsageExtension(critical: false, X509KeyUsageFlags.DigitalSignature)
             .AddExtendedKeyUsageExtension(critical: false,
                 usage =>
                 {
@@ -217,10 +217,10 @@ EOF
                     usage.Add(X509ExtendedKeyUsages.IdKpEmailProtection);
                 })
             .Create(caCert, notBefore, notAfter, serial);
-        //_output.WriteLine($"\n{cert}");
 
         var pem = cert.ExportCertificatePem();
-        File.WriteAllText("ecdsa-localhost.crt", pem);
+
+        //File.WriteAllText("ecdsa-localhost.crt", pem);
         _output.WriteLine($"\n{pem}");
 
         // Assert.
