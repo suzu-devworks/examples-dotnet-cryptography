@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 
-namespace Examples.Cryptography.AsymmetricKey.Ecdsa;
+namespace Examples.Cryptography.Algorithms.Asymmetric;
 
 public class ECDSAKeyPairTests
 {

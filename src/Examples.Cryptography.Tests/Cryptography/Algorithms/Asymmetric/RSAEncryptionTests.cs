@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Examples.Cryptography.AsymmetricKey.Rsa;
+namespace Examples.Cryptography.Algorithms.Asymmetric;
 
 public class RSAEncryptionTests
 {
