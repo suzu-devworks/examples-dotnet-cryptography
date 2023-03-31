@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 
-namespace Examples.Cryptography.Algorithms.Asymmetric;
+namespace Examples.Cryptography.Algorithms.Asymmetry;
 
 public class RSAPkcs8PackageTests
 {

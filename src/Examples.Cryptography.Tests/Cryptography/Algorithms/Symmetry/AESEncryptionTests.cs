@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Examples.Cryptography.Algorithms.Symmetric;
+namespace Examples.Cryptography.Algorithms.Symmetry;
 
 public class AESEncryptionTests
 {
