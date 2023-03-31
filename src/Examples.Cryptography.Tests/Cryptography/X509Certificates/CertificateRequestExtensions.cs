@@ -5,6 +5,23 @@ namespace Examples.Cryptography.X509Certificates;
 
 public static class CertificateRequestExtensions
 {
+    public static X509Certificate2 Create(this CertificateRequest request,
+        X500DistinguishedName issuerName,
+        AsymmetricAlgorithm issuerKeyPair,
+        DateTimeOffset notBefore,
+        DateTimeOffset notAfter,
+        byte[] serialNumber)
+    {
+        var generator = (issuerKeyPair is ECDsa dsa)
+            ? X509SignatureGenerator.CreateForECDsa(dsa)
+            : X509SignatureGenerator.CreateForRSA((RSA)issuerKeyPair, RSASignaturePadding.Pkcs1);
+
+        var newCertificate = request.Create(issuerName, generator,
+            notBefore, notAfter, serialNumber);
+
+        return newCertificate;
+    }
+
     public static CertificateRequest AddExtension(this CertificateRequest req,
         X509Extension extension)
     {
