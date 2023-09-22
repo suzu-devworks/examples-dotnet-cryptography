@@ -1,0 +1,11 @@
+# ADD/COPY ignore
+
+# logs
+**/*.log
+
+# certificates
+**/*.pfx
+**/*.pem
+**/*.crt
+**/*.crt
+**/*.key
