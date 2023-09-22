@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 
-namespace Examples.Cryptography.Algorithms.Asymmetry;
+namespace Examples.Cryptography.Tests.Algorithms.Asymmetry;
 
 public class RSAPemEncodingTests
 {

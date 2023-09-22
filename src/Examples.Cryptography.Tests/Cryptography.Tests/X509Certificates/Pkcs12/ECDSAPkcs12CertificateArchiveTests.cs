@@ -1,7 +1,9 @@
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using Examples.Cryptography.X509Certificates;
+using Examples.Extensions;
 
-namespace Examples.Cryptography.X509Certificates.Pkcs12;
+namespace Examples.Cryptography.Tests.X509Certificates.Pkcs12;
 
 public class ECDSAPkcs12CertificateArchiveTests
 {

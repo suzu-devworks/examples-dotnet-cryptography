@@ -2,6 +2,9 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Examples.Cryptography.X509Certificates;
 
+
+#if NET7_0_OR_GREATER
+
 public static class X509BuildersExtensions
 {
     public static X500DistinguishedNameBuilder Configure(this X500DistinguishedNameBuilder builder, Action<X500DistinguishedNameBuilder> configure)
@@ -23,3 +26,5 @@ public static class X509BuildersExtensions
         return number.ToSerialNumberBytes();
     }
 }
+
+#endif

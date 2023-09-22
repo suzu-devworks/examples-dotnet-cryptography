@@ -1,7 +1,8 @@
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using Examples.Cryptography.X509Certificates;
 
-namespace Examples.Cryptography.X509Certificates;
+namespace Examples.Cryptography.Tests.X509Certificates;
 
 public class X509Certificate2Tests : IDisposable
 {

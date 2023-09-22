@@ -26,4 +26,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Examples.Cryptography\Examples.Cryptography.csproj" />
+  </ItemGroup>
+
 </Project>
