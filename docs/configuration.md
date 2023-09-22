@@ -10,6 +10,15 @@ dotnet new sln -o .
 
 #dotnet nuget update source github --username suzu-devworks --password "{parsonal access token}" --store-password-in-clear-text
 
+## Examples.Cryptography.Tests
+dotnet new xunit -o src/Examples.Cryptography.Tests
+dotnet sln add src/Examples.Cryptography.Tests/
+cd src/Examples.Cryptography.Tests
+dotnet add package Moq
+dotnet add package ChainingAssertion.Core.Xunit
+dotnet add package System.Security.Cryptography.Xml 
+cd ../../
+
 dotnet build
 
 # Update outdated package
