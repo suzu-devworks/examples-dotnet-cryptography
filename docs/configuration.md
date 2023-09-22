@@ -26,6 +26,17 @@ dotnet add package ChainingAssertion.Core.Xunit
 dotnet add package System.Security.Cryptography.Xml 
 cd ../../
 
+## Examples.Cryptography.BC.Tests
+dotnet new xunit -o src/Examples.Cryptography.BC.Tests
+dotnet sln add src/Examples.Cryptography.BC.Tests/
+cd src/Examples.Cryptography.BC.Tests
+dotnet add reference ../Examples.Cryptography/
+dotnet add package Moq
+dotnet add package ChainingAssertion.Core.Xunit
+dotnet add package BouncyCastle.Cryptography
+cd ../../
+
+
 dotnet build
 
 # Update outdated package
