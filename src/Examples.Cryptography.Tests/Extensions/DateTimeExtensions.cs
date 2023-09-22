@@ -1,4 +1,4 @@
-namespace Examples.Cryptography;
+namespace Examples.Extensions;
 
 public static class DateTimeExtensions
 {
