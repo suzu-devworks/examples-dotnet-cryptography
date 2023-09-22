@@ -1,0 +1,37 @@
+{
+  "[aspnetcorerazor]": {
+    "editor.defaultFormatter": "ms-dotnettools.csharp"
+  },
+  "[csharp]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    },
+    "editor.defaultFormatter": "ms-dotnettools.csharp"
+  },
+  "[json][jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[markdown]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.markdownlint": "explicit"
+    },
+    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
+  },
+  "[razor]": {
+    "editor.defaultFormatter": "ms-dotnettools.csharp"
+  },
+  "csharpOrganizeUsings.sortOrder": "System",
+  "csharpOrganizeUsings.splitGroups": false,
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "files.associations": {
+    ".dockerignore": "ignore",
+    "appsettings*.json": "jsonc",
+    "web.config": "xml"
+  },
+  "markdownlint.config": {},
+  "omnisharp.enableAsyncCompletion": true,
+  "omnisharp.enableEditorConfigSupport": true,
+  "omnisharp.enableMsBuildLoadProjectsOnDemand": true,
+  "remote.autoForwardPortsFallback": 0
+}
