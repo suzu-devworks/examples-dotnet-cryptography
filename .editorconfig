@@ -275,7 +275,8 @@ dotnet_naming_rule.enums_should_be_pascalcase.style = pascalcase
 
 dotnet_naming_rule.local_functions_should_be_pascalcase.severity = suggestion
 dotnet_naming_rule.local_functions_should_be_pascalcase.symbols = local_functions
-dotnet_naming_rule.local_functions_should_be_pascalcase.style = pascalcase
+#> dotnet_naming_rule.local_functions_should_be_pascalcase.style = pascalcase
+dotnet_naming_rule.local_functions_should_be_pascalcase.style = _camelcase
 
 dotnet_naming_rule.non_field_members_should_be_pascalcase.severity = suggestion
 dotnet_naming_rule.non_field_members_should_be_pascalcase.symbols = non_field_members
