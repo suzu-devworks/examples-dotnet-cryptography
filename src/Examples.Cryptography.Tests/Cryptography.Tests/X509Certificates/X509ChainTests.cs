@@ -1,3 +1,5 @@
+#if OPENSSL_V3_ERROR
+
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using Examples.Cryptography.X509Certificates;
@@ -170,3 +172,5 @@ public class X509ChainTests : IDisposable
     }
 
 }
+
+#endif
