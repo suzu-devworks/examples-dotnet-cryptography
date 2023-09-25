@@ -1,5 +1,3 @@
-#if OPENSSL_V3_ERROR
-
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using Examples.Cryptography.X509Certificates;
@@ -38,6 +36,7 @@ public class X509ChainTests : IDisposable
 
         //Output chain information of the selected certificate.
         using var chain = X509Chain.Create();
+        chain.ChainPolicy.DisableCertificateDownloads = true;
         chain.ChainPolicy.TrustMode = X509ChainTrustMode.CustomRootTrust;
         chain.ChainPolicy.CustomTrustStore.Add(root);
         chain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
@@ -49,12 +48,8 @@ public class X509ChainTests : IDisposable
         Dump(chain);
 
         // Assert.
-#if WINDOWS
+
         success.IsTrue();
-#else
-        // ExtraStore is disabled on Linux?
-        success.IsFalse();
-#endif
 
     }
 
@@ -113,17 +108,19 @@ public class X509ChainTests : IDisposable
 
         // root CA
         var rootKeyPair = RSA.Create(4096);
-        var issuer = new X500DistinguishedName("C=JP,O=suzu-devworks CA,CN=Test CA");
+        var issuer = new X500DistinguishedName("C=JP,CN=Test CA root");
         var rootCert = new CertificateRequest(
             issuer,
             rootKeyPair,
             HashAlgorithmName.SHA256,
             RSASignaturePadding.Pkcs1)
         .AddSubjectKeyIdentifierExtension()
+        .AddAuthorityKeyIdentifierExtension()
         .AddExtension(X509BasicConstraintsExtension.CreateForCertificateAuthority())
         .CreateSelfSigned(notBefore, notAfter);
 
-        //_output.WriteLine(rootCert.ToString());
+        //File.WriteAllText($"CAroot.crt", rootCert.ExportCertificatePem());
+
         yield return (rootKeyPair, rootCert);
 
         // CA
@@ -133,17 +130,20 @@ public class X509ChainTests : IDisposable
         foreach (var i in Enumerable.Range(1, numOfCa))
         {
             var intermediateKeyPair = ECDsa.Create(ECCurve.NamedCurves.nistP256);
-            var subject = new X500DistinguishedName($"C=JP,O=suzu-devworks CA,CN=Test CA {255 + i}");
+            var subject = new X500DistinguishedName($"C=JP,CN=Test CA {255 + i}");
             var request = new CertificateRequest(
                     subject,
                     intermediateKeyPair,
                     HashAlgorithmName.SHA256)
                 .AddSubjectKeyIdentifierExtension()
+                .AddAuthorityKeyIdentifierExtension(caCert)
                 .AddExtension(X509BasicConstraintsExtension.CreateForCertificateAuthority(numOfCa - i));
 
             var serial = (255L + i).ToSerialNumberBytes();
             var intermediateCert = request.Create(
-                caCert.IssuerName, caKeyPair, notBefore, notAfter, serial);
+                caCert.SubjectName, caKeyPair, notBefore, notAfter, serial);
+
+            //File.WriteAllText($"CA{255 + i}.crt", intermediateCert.ExportCertificatePem());
 
             //_output.WriteLine(intermediateCert.ToString());
             yield return (intermediateKeyPair, intermediateCert);
@@ -154,23 +154,21 @@ public class X509ChainTests : IDisposable
 
         // End Entity
         var eeKeyPair = ECDsa.Create(ECCurve.NamedCurves.nistP256);
-        var eeSubject = new X500DistinguishedName($"C=JP,O=suzu-devworks,CN=localhost");
+        var eeSubject = new X500DistinguishedName($"C=JP,CN=localhost");
         var eeRequest = new CertificateRequest(
                 eeSubject,
                 eeKeyPair,
                 HashAlgorithmName.SHA256)
-            .AddAuthorityKeyIdentifierExtension(caCert)
             .AddSubjectKeyIdentifierExtension()
+            .AddAuthorityKeyIdentifierExtension(caCert)
             .AddExtension(X509BasicConstraintsExtension.CreateForEndEntity());
 
         var eeSerial = new Random().CreateSerialNumber();
         var eeCert = eeRequest.Create(
-                caCert.IssuerName, caKeyPair, notBefore, notAfter, eeSerial);
+                caCert.SubjectName, caKeyPair, notBefore, notAfter, eeSerial);
 
         //_output.WriteLine(eeCert.ToString());
         yield return (eeKeyPair, eeCert);
     }
 
 }
-
-#endif

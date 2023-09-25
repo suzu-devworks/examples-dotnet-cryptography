@@ -30,6 +30,13 @@ public static class CertificateRequestExtensions
         return req;
     }
 
+
+    public static T? GetExtension<T>(this CertificateRequest req)
+        where T : X509Extension
+    {
+        return req.CertificateExtensions.FirstOrDefault(x => x is T) as T;
+    }
+
     /// <summary>
     /// RFC 5280 4.2.1.1. Authority Key Identifier
     /// </summary>
@@ -40,15 +47,25 @@ public static class CertificateRequestExtensions
     /// <returns></returns>
     /// <seealso href="https://tex2e.github.io/rfc-translater/html/rfc5280.html#4-2-1-1--Authority-Key-Identifier" />
     public static CertificateRequest AddAuthorityKeyIdentifierExtension(this CertificateRequest req,
-        X509Certificate2 issuer,
+        X509Certificate2? issuer = null,
         bool includeKeyIdentifier = true,
-        bool includeIssuerAndSerial = true)
+        bool includeIssuerAndSerial = false)
     {
         // authorityKeyIdentifier   = keyid, issuer
 
+        if (issuer is null)
+        {
+            var subject = req.GetExtension<X509SubjectKeyIdentifierExtension>()
+                ?? throw new InvalidOperationException("X509SubjectKeyIdentifierExtension is required first.");
+
+            return req.AddExtension(
+                X509AuthorityKeyIdentifierExtension.CreateFromSubjectKeyIdentifier(subject!.SubjectKeyIdentifierBytes.Span)
+                );
+        }
+
         return req.AddExtension(
             X509AuthorityKeyIdentifierExtension.CreateFromCertificate(
-                issuer, includeKeyIdentifier, includeIssuerAndSerial));
+                issuer!, includeKeyIdentifier, includeIssuerAndSerial));
     }
 
     /// <summary>
