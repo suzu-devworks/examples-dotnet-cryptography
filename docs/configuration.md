@@ -14,6 +14,7 @@ dotnet new sln -o .
 dotnet new classlib -o src/Examples.Cryptography
 dotnet sln add src/Examples.Cryptography/
 cd src/Examples.Cryptography
+dotnet add package SWX.Examples.Shared --prerelease
 cd ../../
 
 ## Examples.Cryptography.Tests
