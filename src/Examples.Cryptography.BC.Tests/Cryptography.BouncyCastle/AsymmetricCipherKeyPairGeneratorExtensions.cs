@@ -6,7 +6,7 @@ using Org.BouncyCastle.Security;
 
 namespace Examples.Cryptography.BouncyCastle;
 
-public static class GeneratorsExtensions
+public static class AsymmetricCipherKeyPairGeneratorExtensions
 {
     public static IAsymmetricCipherKeyPairGenerator SetECKeyParameters(this IAsymmetricCipherKeyPairGenerator generator,
         X9ECParameters curve,
