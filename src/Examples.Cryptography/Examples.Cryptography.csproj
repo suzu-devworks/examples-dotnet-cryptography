@@ -7,4 +7,8 @@
     <RootNamespace>Examples</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="SWX.Examples.Shared" Version="1.0.0-alpha.1" />
+  </ItemGroup>
+
 </Project>
