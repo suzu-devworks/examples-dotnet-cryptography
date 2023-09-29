@@ -1,7 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>$(MyTestingFrameworks)</TargetFrameworks>
+    <TargetFramework>net7.0</TargetFramework>
+
+    <!-- <TargetFrameworks>$(MyTestingFrameworks)</TargetFrameworks> -->
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RootNamespace>Examples</RootNamespace>

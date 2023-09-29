@@ -170,11 +170,13 @@ internal static class X509CertificateTestDataGenerator
     public static X509Crl GenerateCRL(
         AsymmetricCipherKeyPair issuerKeyPair,
         X509Certificate issuer,
+        BigInteger crlNumber,
         DateTimeOffset updateAt,
-        DateTimeOffset nextUpdateAt
-
-    )
+        Action<X509V2CrlGenerator>? configureAction = null
+        )
     {
+        var nextUpdateAt = updateAt.AddDays(2);
+
         var crl = new X509V2CrlGenerator()
             .Configure(gen =>
             {
@@ -184,10 +186,23 @@ internal static class X509CertificateTestDataGenerator
 
                 gen.AddExtension(X509Extensions.AuthorityKeyIdentifier, critical: false,
                     new AuthorityKeyIdentifierStructure(issuer));
+                gen.AddExtension(X509Extensions.CrlNumber, false, new CrlNumber(crlNumber));
+                gen.AddExtension(X509Extensions.IssuingDistributionPoint, critical: false,
+                    new IssuingDistributionPoint(
+                        distributionPoint: new DistributionPointName(
+                            new GeneralNames(new GeneralName(issuer.SubjectDN))
+                        ),
+                        // only include end entity public key cerrtificates.
+                        onlyContainsAttributeCerts: false,
+                        // only include CA cerrtificates.
+                        onlyContainsCACerts: false,
+                        onlySomeReasons: null,
+                        // only include certificates issued by the CRL issuer.
+                        indirectCRL: true,
+                        onlyContainsUserCerts: false
+                    ));
 
-                //TODO
-                gen.AddCrlEntry(BigInteger.Two, updateAt.UtcDateTime, CrlReason.PrivilegeWithdrawn);
-                gen.AddExtension(X509Extensions.CrlNumber, false, new CrlNumber(BigInteger.One));
+                configureAction?.Invoke(gen);
             })
             .Generate(CreateSignatureFactory(issuerKeyPair.Private));
 
