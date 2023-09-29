@@ -2,55 +2,41 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using Examples.Cryptography.X509Certificates;
 
-namespace Examples.Cryptography.Tests.X509Certificates;
+namespace Examples.Cryptography.Tests.X509;
 
-public class X509Certificate2Tests : IDisposable
+public class X509Certificate2Tests : IClassFixture<X509DataFixture>
 {
     private readonly ITestOutputHelper _output;
-    private readonly X509Certificate2 _certificate;
+    private readonly X509DataFixture _fixture;
 
-    public X509Certificate2Tests(ITestOutputHelper output)
+    public X509Certificate2Tests(X509DataFixture fixture, ITestOutputHelper output)
     {
+        /// ```shell
+        /// dotnet test --logger "console;verbosity=detailed"
+        /// ```
         _output = output;
 
-        var now = DateTimeOffset.UtcNow;
-        var notBefore = now.AddSeconds(-50);
-        var notAfter = now.AddDays(365);
-
-        using var keyPair = RSA.Create(4096);
-        var subject = new X500DistinguishedName("C=JP,O=suzu-devworks,CN=localhost");
-        var cert = new CertificateRequest(
-             subject,
-             keyPair,
-             HashAlgorithmName.SHA256,
-             RSASignaturePadding.Pkcs1)
-             .CreateSelfSigned(notBefore, notAfter);
-
-        _certificate = cert;
-    }
-
-    public void Dispose()
-    {
-        ((IDisposable)_certificate)?.Dispose();
-        GC.SuppressFinalize(this);
+        _fixture = fixture;
     }
 
 
     [Fact]
-    public void WhenExportAndImport()
+    public void WhenImportingFromExport_ReturnsToBeforeExport()
     {
         // Arrange.
+        var (_, cert) = _fixture.RootCaSet;
 
         // Act.
-        var exported = _certificate.Export(X509ContentType.Cert);
+        var exported = cert.Export(X509ContentType.Cert);
 
         using var loaded = new X509Certificate2(exported);
         var logdedKey = loaded.GetRSAPrivateKey();
 
         // Assert.
-        loaded.Is(_certificate);
+        loaded.Is(cert);
         loaded.HasPrivateKey.IsFalse();
-        _certificate.HasPrivateKey.IsTrue();
+        cert.HasPrivateKey.IsTrue();
+
         logdedKey.IsNull();
 
         return;
@@ -58,12 +44,13 @@ public class X509Certificate2Tests : IDisposable
 
 
     [Fact]
-    public void WhenExportCertificatePem()
+    public void WhenImportingFromExportCertificatePem_ReturnsToBeforeExport()
     {
         // Arrange.
+        var (_, cert) = _fixture.RootCaSet;
 
         // Act.
-        var pem = _certificate.ExportCertificatePem();
+        var pem = cert.ExportCertificatePem();
 
         //File.WriteAllText("localhost.crt", pem);
         _output.WriteLine($"\n{pem}");
@@ -72,9 +59,10 @@ public class X509Certificate2Tests : IDisposable
         var logdedKey = loaded.GetRSAPrivateKey();
 
         // Assert.
-        loaded.Is(_certificate);
+        loaded.Is(cert);
         loaded.HasPrivateKey.IsFalse();
-        _certificate.HasPrivateKey.IsTrue();
+        cert.HasPrivateKey.IsTrue();
+
         logdedKey.IsNull();
 
         pem.Is(x => x.StartsWith("-----BEGIN CERTIFICATE-----")
@@ -83,10 +71,11 @@ public class X509Certificate2Tests : IDisposable
         return;
     }
 
-    /// <seealso href="https://learn.microsoft.com/ja-jp/dotnet/core/additional-tools/self-signed-certificates-guide#with-openssl" />
+
     [Fact]
-    public void WhenGenerateTheSameSelfSignedCertificateAsMsDocs()
+    public void WhenGenerateTheSelfSignedCertificate_WithMsDocs_WorkAsExpected()
     {
+        /// <seealso href="https://learn.microsoft.com/ja-jp/dotnet/core/additional-tools/self-signed-certificates-guide#with-openssl" />
 
         /* ```sh
         PARENT="contoso.com"
@@ -123,7 +112,7 @@ public class X509Certificate2Tests : IDisposable
         ```*/
 
         var parent = "contoso.com";
-        using var rsa = RSA.Create(4096);
+        using var rsa = RSA.Create(2048 /* 4096 */);
 
         var subject = new X500DistinguishedName($"CN={parent}");
         using var cert = new CertificateRequest(

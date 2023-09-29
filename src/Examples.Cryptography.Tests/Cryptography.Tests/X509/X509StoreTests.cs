@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
-namespace Examples.Cryptography.Tests.X509Certificates;
+namespace Examples.Cryptography.Tests.X509;
 
 public class X509StoreTests
 {
@@ -12,10 +12,11 @@ public class X509StoreTests
         _output = output;
     }
 
-    /// <seealso href="https://learn.microsoft.com/ja-jp/dotnet/api/system.security.cryptography.x509certificates?view=net-7.0"/>
     [Fact]
-    public void WhenEnumerateStoreStatus()
+    public void WhenEnumeratingStoreStatus_WorksAsExpected()
     {
+        /// <seealso href="https://learn.microsoft.com/ja-jp/dotnet/api/system.security.cryptography.x509certificates?view=net-7.0"/>
+
         foreach (var message in EnumerateStoreStatus())
         {
             _output.WriteLine(message);
@@ -59,10 +60,11 @@ public class X509StoreTests
     }
 
 
-    /// <seealso href="https://learn.microsoft.com/ja-jp/dotnet/api/system.security.cryptography.x509certificates.x509certificate2collection.find?view=net-7.0"/>
     [Fact]
-    public void WhenFindFromStore()
+    public void WhenFindingFromStore_WorksAsExpected()
     {
+        /// <seealso href="https://learn.microsoft.com/ja-jp/dotnet/api/system.security.cryptography.x509certificates.x509certificate2collection.find?view=net-7.0"/>
+
         using var store = new X509Store(StoreName.Root, StoreLocation.LocalMachine);
         store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
 

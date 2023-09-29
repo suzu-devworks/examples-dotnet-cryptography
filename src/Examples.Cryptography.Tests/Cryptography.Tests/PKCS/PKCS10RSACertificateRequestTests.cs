@@ -3,20 +3,26 @@ using System.Security.Cryptography.X509Certificates;
 using Examples.Cryptography.X509Certificates;
 using Examples.Fluency;
 
-namespace Examples.Cryptography.Tests.X509Certificates.Pkcs10;
+namespace Examples.Cryptography.Tests.PKCS;
 
-public class RSACertificateRequestTests
+public class PKCS10RSACertificateRequestTests : IClassFixture<PKCSDataFixture>
 {
     private readonly ITestOutputHelper _output;
+    private readonly PKCSDataFixture _fixture;
 
-    public RSACertificateRequestTests(ITestOutputHelper output)
+    public PKCS10RSACertificateRequestTests(PKCSDataFixture fixture, ITestOutputHelper output)
     {
+        /// ```shell
+        /// dotnet test --logger "console;verbosity=detailed"
+        /// ```
         _output = output;
+
+        _fixture = fixture;
     }
 
 
     [Fact]
-    public void WhenCreateSigningRequest()
+    public void WhenLoadingFromCreateSigningRequest_ReturnsToBeforeRequest()
     {
         /* ```sh
         $ openssl req -new  \
@@ -26,13 +32,13 @@ public class RSACertificateRequestTests
         ``` */
 
         // Arrange.
-        using var keyPair = RSA.Create(4096);
+        var rsa = _fixture.RSAKeyProvider;
 
         // Act.
         var subject = new X500DistinguishedName("C=JP,O=suzu-devworks,CN=localhost");
         var req = new CertificateRequest(
              subject,
-             keyPair,
+             rsa,
              HashAlgorithmName.SHA256,
              RSASignaturePadding.Pkcs1);
 
@@ -55,7 +61,7 @@ public class RSACertificateRequestTests
 
 
     [Fact]
-    public void WhenCreateSigningRequestPem()
+    public void WhenLoadingFromCreateSigningRequestPem_ReturnsToBeforeRequest()
     {
         /* ```sh
         $ openssl req -new  \
@@ -65,7 +71,7 @@ public class RSACertificateRequestTests
         ``` */
 
         // Arrange.
-        using var rsa = RSA.Create(4096);
+        var rsa = _fixture.RSAKeyProvider;
 
         // Act.
         var subject = new X500DistinguishedNameBuilder()
@@ -109,7 +115,7 @@ public class RSACertificateRequestTests
 
 
     [Fact]
-    public void WhenCreateSelfSigned()
+    public void WhenCallingCreateSelfSigned_WorkAsExpected()
     {
         /* ```sh
         $ openssl req -new -x509 \
@@ -120,17 +126,17 @@ public class RSACertificateRequestTests
         ``` */
 
         // Arrange.
+        var rsa = _fixture.RSAKeyProvider;
+
         var now = DateTimeOffset.UtcNow;
         var notBefore = now.AddSeconds(-50);
         var notAfter = now.AddSeconds(60);
-
-        using var keyPair = RSA.Create(4096);
 
         // Act.
         var subject = new X500DistinguishedName("C=JP,O=suzu-devworks,CN=localhost");
         var req = new CertificateRequest(
              subject,
-             keyPair,
+             rsa,
              HashAlgorithmName.SHA256,
              RSASignaturePadding.Pkcs1);
 

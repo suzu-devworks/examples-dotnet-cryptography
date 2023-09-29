@@ -2,16 +2,23 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using Examples.Cryptography.X509Certificates;
 
-namespace Examples.Cryptography.Tests.X509Certificates.Pkcs12;
+namespace Examples.Cryptography.Tests.PKCS;
 
-public class ECDSAPkcs12CertificateArchiveTests
+public class PKCS12ECDSACertificateArchiveTests : IClassFixture<PKCSDataFixture>
 {
     private readonly ITestOutputHelper _output;
+    private readonly PKCSDataFixture _fixture;
 
-    public ECDSAPkcs12CertificateArchiveTests(ITestOutputHelper output)
+    public PKCS12ECDSACertificateArchiveTests(PKCSDataFixture fixture, ITestOutputHelper output)
     {
+        /// ```shell
+        /// dotnet test --logger "console;verbosity=detailed"
+        /// ```
         _output = output;
+
+        _fixture = fixture;
     }
+
 
     [Fact]
     public void WhenExportAndLoad()
@@ -29,12 +36,12 @@ public class ECDSAPkcs12CertificateArchiveTests
         ``` */
 
         // Arrange.
+        var ecdsa = _fixture.ECKeyProvider;
+
         var password = "BadP@ssw0rd";
         var now = DateTimeOffset.UtcNow;
         var notBefore = now.AddSeconds(-50);
         var notAfter = now.AddDays(365);
-
-        using var ecdsa = ECDsa.Create(ECCurve.NamedCurves.nistP256);
 
         var subject = new X500DistinguishedName("C=JP,O=suzu-devworks,CN=localhost");
         var req = new CertificateRequest(

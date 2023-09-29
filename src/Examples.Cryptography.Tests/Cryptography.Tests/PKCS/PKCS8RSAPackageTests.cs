@@ -1,31 +1,36 @@
 using System.Security.Cryptography;
 
-namespace Examples.Cryptography.Tests.Algorithms.Asymmetry;
+namespace Examples.Cryptography.Tests.PKCS;
 
-public class RSAPkcs8PackageTests
+public class PKCS8RSAPackageTests : IClassFixture<PKCSDataFixture>
 {
     private readonly ITestOutputHelper _output;
+    private readonly PKCSDataFixture _fixture;
 
-    public RSAPkcs8PackageTests(ITestOutputHelper output)
+    public PKCS8RSAPackageTests(PKCSDataFixture fixture, ITestOutputHelper output)
     {
+        /// ```shell
+        /// dotnet test --logger "console;verbosity=detailed"
+        /// ```
         _output = output;
+
+        _fixture = fixture;
     }
 
     // PKCS #8 = RFC 5958 Asymmetric Key Packages
 
     [Fact]
-    public void WhenExportAndImportPkcs8PrivateKeyPem()
+    public void WhenImportingFromExportPkcs8PrivateKeyPem_ReturnsToBeforeExport()
     {
         //```sh
-        // $ openssl genrsa -out private.key 4096
+        // $ openssl genrsa -out private.key 2048
         // $ openssl pkcs8 -topk8 -nocrypt -in private.key -out private.pk8
         //```
 
         // Arrange.
-        var keySize = 4096;
+        var provider = _fixture.RSAKeyProvider;
 
         // Act.
-        using var provider = RSA.Create(keySize);
         var pem = provider.ExportPkcs8PrivateKeyPem();
 
         //File.WriteAllText(@"private.pk8", pem);
@@ -45,24 +50,23 @@ public class RSAPkcs8PackageTests
 
 
     [Fact]
-    public void WhenExportAndImportEncryptedPkcs8PrivateKeyPem()
+    public void WhenImportingFromExportEncryptedPkcs8PrivateKeyPem_ReturnsToBeforeExport()
     {
         //```sh
-        // $ openssl genrsa -out private.key 4096
+        // $ openssl genrsa -out private.key 2048
         // $ openssl pkcs8 -topk8 -in private.key -out private.pk8e
         //```
 
         // Arrange.
-        var keySize = 4096;
+        var provider = _fixture.RSAKeyProvider;
         var password = "BadP@ssw0rd".ToCharArray();
+
+        // Act.
         // he password-based encryption (PBE) parameters.
         var pbeParameters = new PbeParameters(
             PbeEncryptionAlgorithm.Aes256Cbc,
             HashAlgorithmName.SHA256,
             RandomNumberGenerator.GetInt32(1, 100_000));
-
-        // Act.
-        using var provider = RSA.Create(keySize);
         var pem = provider.ExportEncryptedPkcs8PrivateKeyPem(password, pbeParameters);
 
         //File.WriteAllText(@"private.pk8e", pem);

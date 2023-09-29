@@ -3,20 +3,26 @@ using System.Security.Cryptography.X509Certificates;
 using Examples.Cryptography.X509Certificates;
 using Examples.Fluency;
 
-namespace Examples.Cryptography.Tests.X509Certificates.Pkcs10;
+namespace Examples.Cryptography.Tests.PKCS;
 
-public class ECDSACertificateRequestTests
+public class PKCS10ECDSACertificateRequestTests : IClassFixture<PKCSDataFixture>
 {
     private readonly ITestOutputHelper _output;
+    private readonly PKCSDataFixture _fixture;
 
-    public ECDSACertificateRequestTests(ITestOutputHelper output)
+    public PKCS10ECDSACertificateRequestTests(PKCSDataFixture fixture, ITestOutputHelper output)
     {
+        /// ```shell
+        /// dotnet test --logger "console;verbosity=detailed"
+        /// ```
         _output = output;
+
+        _fixture = fixture;
     }
 
 
     [Fact]
-    public void WhenCreateSigningRequestPem()
+    public void WhenLoadingFromCreateSigningRequestPem_ReturnsToBeforeRequest()
     {
         /* ```sh
         $ openssl ecparam -genkey -name secp384r1 -noout -out ecdsa-private.key
@@ -27,7 +33,7 @@ public class ECDSACertificateRequestTests
         ``` */
 
         // Arrange.
-        using var ecdsa = ECDsa.Create(ECCurve.NamedCurves.nistP384);
+        var ecdsa = _fixture.ECKeyProvider;
 
         // Act.
         var subject = new X500DistinguishedNameBuilder()
@@ -69,7 +75,7 @@ public class ECDSACertificateRequestTests
 
 
     [Fact]
-    public void WhenCreateSelfSigned()
+    public void WhenCallingCreateSelfSigned_WorkAsExpected()
     {
         /* ```sh
         $ openssl ecparam -genkey -name secp384r1 -noout -out ecdsa-private.key
@@ -81,27 +87,21 @@ public class ECDSACertificateRequestTests
         ``` */
 
         // Arrange.
-        var now = DateTimeOffset.UtcNow;
-        var notBefore = now.AddSeconds(-50);
-        var notAfter = now.AddDays(365);
+        var ecdsa = _fixture.ECKeyProvider;
 
-        using var keyPair = ECDsa.Create(ECCurve.NamedCurves.nistP384);
+        var notBefore = DateTimeOffset.UtcNow.AddSeconds(-50);
+        var notAfter = notBefore.AddDays(365);
 
         // Act.
         var subject = new X500DistinguishedName("C=JP,O=suzu-devworks,CN=localhost");
         var req = new CertificateRequest(
              subject,
-             keyPair,
+             ecdsa,
              HashAlgorithmName.SHA256);
 
         // X509Extensions is empty.
 
         using var cert = req.CreateSelfSigned(notBefore, notAfter);
-
-        var pem = cert.ExportCertificatePem();
-
-        //File.WriteAllText("server-ec.crt", pem);
-        _output.WriteLine($"\n{pem}");
 
         // Assert.
         cert.Version.Is(3);
@@ -114,6 +114,11 @@ public class ECDSACertificateRequestTests
         cert.VerifySignature(cert);
 
         // Assert.
+        var pem = cert.ExportCertificatePem();
+
+        //File.WriteAllText("server-ec.crt", pem);
+        _output.WriteLine($"\n{pem}");
+
         pem.Is(x => x.StartsWith("-----BEGIN CERTIFICATE-----")
                     && x.EndsWith("-----END CERTIFICATE-----"));
 
@@ -122,7 +127,7 @@ public class ECDSACertificateRequestTests
 
 
     [Fact]
-    public void WhenCreate()
+    public void WhenFollowingTheFlow_WorkAsExpected()
     {
         /* ```sh
          $ cat > test.conf << EOF
@@ -166,78 +171,97 @@ EOF
             -out ecdsa-localhost.crt
         ``` */
 
-        // Arrange --- Requester side.
-        var now = DateTimeOffset.UtcNow;
-        var notBefore = now.AddSeconds(-50);
-        var notAfter = now.AddDays(365);
-
-        using var keyPair = ECDsa.Create(ECCurve.NamedCurves.nistP384);
-
+        // Arrange.
         var subject = new X500DistinguishedName("C=JP,O=suzu-devworks,CN=localhost");
-        var requested = new CertificateRequest(
-                subject,
-                keyPair,
-                HashAlgorithmName.SHA256)
-            // I think it should be set on request, UnsafeLoadCertificateExtensions ?
-            .AddExtension(X509BasicConstraintsExtension.CreateForEndEntity())
-            .AddKeyUsageExtension(critical: false, X509KeyUsageFlags.DigitalSignature)
-            .AddSubjectAlternativeName(san =>
-                {
-                    san.AddDnsName($"www.local-server.jp");
-                    san.AddDnsName($"localserver.jp");
-                })
-            .CreateSigningRequestPem();
-
-        //File.WriteAllText("ecdsa-localhost.csr", requested);
-        _output.WriteLine($"\n{requested}");
-
-        // Act --- CA side.
-        using var caKeyPair = ECDsa.Create(ECCurve.NamedCurves.nistP384);
         var issuer = new X500DistinguishedName("C=JP,O=suzu-devworks CA,CN=Test CA");
-        using var caCert = new CertificateRequest(
-                issuer,
-                caKeyPair,
-                HashAlgorithmName.SHA256)
-            .AddSubjectKeyIdentifierExtension()
-            .AddExtension(X509BasicConstraintsExtension.CreateForCertificateAuthority())
-            .CreateSelfSigned(notBefore, notAfter);
 
-        var loaded = CertificateRequest.LoadSigningRequestPem(requested,
-            HashAlgorithmName.SHA256,
-            CertificateRequestLoadOptions.UnsafeLoadCertificateExtensions);
+        var notBefore = DateTimeOffset.UtcNow.AddSeconds(-50);
+        var notAfter = notBefore.AddDays(365);
 
-        var serial = new Random().CreateSerialNumber();
-        using var cert = loaded
-            .AddAuthorityKeyIdentifierExtension(caCert)
-            .AddSubjectKeyIdentifierExtension()
-            .AddExtendedKeyUsageExtension(critical: false,
-                usage =>
+        // Act.
+
+        string DoRequesterSide()
+        {
+            var ecdsa = _fixture.ECKeyProvider;
+
+            var request = new CertificateRequest(
+                    subject,
+                    ecdsa,
+                    HashAlgorithmName.SHA256)
+                // I think it should be set on request, UnsafeLoadCertificateExtensions ?
+                .AddExtension(X509BasicConstraintsExtension.CreateForEndEntity())
+                .AddKeyUsageExtension(critical: false, X509KeyUsageFlags.DigitalSignature)
+                .AddSubjectAlternativeName(san =>
                 {
-                    usage.Add(X509ExtendedKeyUsages.IdKpServerAuth);
-                    usage.Add(X509ExtendedKeyUsages.IdKpClientAuth);
-                    usage.Add(X509ExtendedKeyUsages.IdKpCodeSigning);
-                    usage.Add(X509ExtendedKeyUsages.IdKpEmailProtection);
-                })
-            .Create(caCert, notBefore, notAfter, serial);
+                    san.AddDnsName("www.local-server.jp");
+                    san.AddDnsName("localserver.jp");
+                });
 
-        var pem = cert.ExportCertificatePem();
+            var pem = request.CreateSigningRequestPem();
 
-        //File.WriteAllText("ecdsa-localhost.crt", pem);
-        _output.WriteLine($"\n{pem}");
+            //File.WriteAllText("ecdsa-localhost.csr", requested);
+            _output.WriteLine($"\n{pem}");
+
+            return pem;
+        }
+        var requestPem = DoRequesterSide();
+
+        // Act.
+        string DoSignnerSide(string requestPem)
+        {
+            var ecdsa = _fixture.ECKeyProvider;
+
+
+            using var caCert = new CertificateRequest(
+                    issuer,
+                    ecdsa,
+                    HashAlgorithmName.SHA256)
+                .AddSubjectKeyIdentifierExtension()
+                .AddExtension(X509BasicConstraintsExtension.CreateForCertificateAuthority())
+                .CreateSelfSigned(notBefore, notAfter);
+
+            var request = CertificateRequest.LoadSigningRequestPem(requestPem,
+                HashAlgorithmName.SHA256,
+                CertificateRequestLoadOptions.UnsafeLoadCertificateExtensions);
+
+            var serial = new Random().CreateSerialNumber();
+            using var cert = request
+                .AddAuthorityKeyIdentifierExtension(caCert)
+                .AddSubjectKeyIdentifierExtension()
+                .AddExtendedKeyUsageExtension(critical: false,
+                    usage =>
+                    {
+                        usage.Add(X509ExtendedKeyUsages.IdKpServerAuth);
+                        usage.Add(X509ExtendedKeyUsages.IdKpClientAuth);
+                        usage.Add(X509ExtendedKeyUsages.IdKpCodeSigning);
+                        usage.Add(X509ExtendedKeyUsages.IdKpEmailProtection);
+                    })
+                .Create(caCert, notBefore, notAfter, serial);
+
+            // Asseret.
+            cert.VerifySignature(caCert);
+
+            var pem = cert.ExportCertificatePem();
+
+            //File.WriteAllText("ecdsa-localhost.crt", pem);
+            _output.WriteLine($"\n{pem}");
+
+            return pem;
+        }
+        var certPem = DoSignnerSide(requestPem);
 
         // Assert.
+        certPem.Is(x => x.StartsWith("-----BEGIN CERTIFICATE-----")
+                    && x.EndsWith("-----END CERTIFICATE-----"));
+
+        using var cert = X509Certificate2.CreateFromPem(certPem);
+
         cert.Version.Is(3);
         cert.IssuerName.RawData.Is(issuer.RawData);
         cert.SubjectName.RawData.Is(subject.RawData);
         cert.NotBefore.Is(notBefore.Truncate(TimeSpan.TicksPerSecond).LocalDateTime);
         cert.NotAfter.Is(notAfter.Truncate(TimeSpan.TicksPerSecond).LocalDateTime);
         cert.SignatureAlgorithm.FriendlyName.Is("sha256ECDSA");
-
-        cert.VerifySignature(caCert);
-
-        // Assert.
-        pem.Is(x => x.StartsWith("-----BEGIN CERTIFICATE-----")
-                    && x.EndsWith("-----END CERTIFICATE-----"));
 
         return;
     }
