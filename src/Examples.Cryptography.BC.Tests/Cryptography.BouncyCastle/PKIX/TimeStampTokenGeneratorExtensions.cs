@@ -2,7 +2,7 @@ using Org.BouncyCastle.Asn1.Tsp;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Tsp;
 
-namespace Examples.Cryptography.BouncyCastle.Pkcs;
+namespace Examples.Cryptography.BouncyCastle.PKIX;
 
 /// <summary>
 /// Extension methods for <see cref="TimeStampTokenGenerator" />.

@@ -34,7 +34,10 @@ cd src/Examples.Cryptography.BC.Tests
 dotnet add reference ../Examples.Cryptography/
 dotnet add package Moq
 dotnet add package ChainingAssertion.Core.Xunit
+dotnet add package Microsoft.Extensions.Http
 dotnet add package BouncyCastle.Cryptography
+dotnet add package BouncyCastle.Cryptography
+
 cd ../../
 
 

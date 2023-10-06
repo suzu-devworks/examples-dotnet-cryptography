@@ -1,4 +1,5 @@
 using System.Text;
+using Examples.Cryptography.BouncyCastle.Utilities;
 using Examples.Fluency;
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.Cms;
@@ -8,15 +9,44 @@ using Org.BouncyCastle.Cms;
 using Org.BouncyCastle.Tsp;
 using Org.BouncyCastle.X509;
 using Org.BouncyCastle.X509.Extension;
+using Org.BouncyCastle.X509.Store;
 
-namespace Examples.Cryptography.BouncyCastle.Pkcs;
+namespace Examples.Cryptography.BouncyCastle.PKIX;
 
+/// <summary>
+/// Extension methods for <see cref="TimeStampToken" />.
+/// </summary>
 public static class TimeStampTokeExtensions
 {
     /// <summary>
+    /// Find the TSA certificate by <see cref="TimeStampToken" />.
+    /// Looks for a certificate with that name if the tsa field is present.
+    /// </summary>
+    /// <param name="tat">The <see cref="TimeStampToken" /> instance.</param>
+    /// <returns>The TSA certificate.</returns>
+    public static X509Certificate? FindTSACertificate(this TimeStampToken tat)
+    {
+        var tsaOption = tat.TimeStampInfo.Tsa;
+
+        X509CertStoreSelector? selector = null;
+        if (tsaOption is not null)
+        {
+            selector = new X509CertStoreSelector
+            {
+                Subject = X509Name.GetInstance(tsaOption.Name)
+            };
+        }
+
+        var tsaCert = tat.GetCertificates().EnumerateMatches(selector)
+            .FirstOrDefault();
+
+        return tsaCert;
+    }
+
+    /// <summary>
     /// Converts the contents of <see cref="TimeStampToken" /> to a <c>string</c> for log output.
     /// </summary>
-    /// <param name="tat">the <see cref="TimeStampToken" /> instance.</param>
+    /// <param name="tat">The <see cref="TimeStampToken" /> instance.</param>
     /// <param name="indent">A indent indent.</param>
     /// <returns>A <c>string</c> for log output.</returns>
     public static string DumpAsString(this TimeStampToken tat, int indent = 0)
@@ -394,18 +424,5 @@ public static class TimeStampTokeExtensions
         return builder.ToString();
     }
 
-    private static void AppendLebelLine(this StringBuilder builder, int lebel, string key, string? value = null)
-    {
-        var indent = Enumerable.Repeat("  ", lebel).ToSeparatedString("");
-        var indentedKey = $"{indent}{key}".PadRight(32);
-
-        builder.Append(indentedKey);
-        if (value is not null)
-        {
-            builder.Append($" = {value}");
-        }
-        builder.AppendLine();
-
-    }
 
 }

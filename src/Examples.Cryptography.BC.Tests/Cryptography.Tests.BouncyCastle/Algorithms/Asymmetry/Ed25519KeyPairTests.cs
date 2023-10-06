@@ -12,9 +12,9 @@ public class Ed25519KeyPairTests
 
     public Ed25519KeyPairTests(ITestOutputHelper output)
     {
-        /// ```
-        /// dotnet test --logger "console;verbosity=detailed"
-        /// ```
+        // ```
+        // dotnet test --logger "console;verbosity=detailed"
+        // ```
         _output = output;
         _keyPair = GenerateKeyPair();
     }

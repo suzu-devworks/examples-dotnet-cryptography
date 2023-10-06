@@ -13,9 +13,9 @@ public class X509ChainTests
 
     public X509ChainTests(ITestOutputHelper output)
     {
-        /// ```
-        /// dotnet test --logger "console;verbosity=detailed"
-        /// ```
+        // ```
+        // dotnet test --logger "console;verbosity=detailed"
+        // ```
         _output = output;
     }
 

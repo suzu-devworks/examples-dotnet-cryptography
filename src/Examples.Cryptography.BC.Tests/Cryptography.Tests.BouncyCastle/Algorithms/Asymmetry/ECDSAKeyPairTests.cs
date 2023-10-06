@@ -13,9 +13,9 @@ public class ECDSAKeyPairTests
 
     public ECDSAKeyPairTests(ITestOutputHelper output)
     {
-        /// ```
-        /// dotnet test --logger "console;verbosity=detailed"
-        /// ```
+        // ```
+        // dotnet test --logger "console;verbosity=detailed"
+        // ```
         _output = output;
         _keyPair = GenerateKeyPair();
     }

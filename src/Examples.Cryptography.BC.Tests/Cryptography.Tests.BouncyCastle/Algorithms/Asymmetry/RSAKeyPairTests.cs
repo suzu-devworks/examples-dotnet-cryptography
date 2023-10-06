@@ -13,9 +13,9 @@ public class RSAKeyPairTests
 
     public RSAKeyPairTests(ITestOutputHelper output)
     {
-        /// ```
-        /// dotnet test --logger "console;verbosity=detailed"
-        /// ```
+        // ```
+        // dotnet test --logger "console;verbosity=detailed"
+        // ```
         _output = output;
         _keyPair = GenerateKeyPair();
     }
