@@ -15,7 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Examples.Cryptography.BouncyCastle;
 using Examples.Cryptography.BouncyCastle.PKIX;
 using Examples.Cryptography.BouncyCastle.Utilities;
-using Examples.Cryptography.BouncyCastle.X509Certificates;
+using Examples.Cryptography.BouncyCastle.X509;
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.Nist;
 using Org.BouncyCastle.Asn1.Tsp;

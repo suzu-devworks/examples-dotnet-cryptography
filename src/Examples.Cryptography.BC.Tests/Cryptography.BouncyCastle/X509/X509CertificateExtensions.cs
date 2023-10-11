@@ -3,7 +3,7 @@ using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.X509;
 using Org.BouncyCastle.X509.Extension;
 
-namespace Examples.Cryptography.BouncyCastle.X509Certificates;
+namespace Examples.Cryptography.BouncyCastle.X509;
 
 /// <summary>
 /// Extension methods for <see cref="X509Certificate" />.

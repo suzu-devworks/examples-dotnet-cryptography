@@ -1,6 +1,6 @@
 using Org.BouncyCastle.X509;
 
-namespace Examples.Cryptography.BouncyCastle.X509Certificates;
+namespace Examples.Cryptography.BouncyCastle.X509;
 
 /// <summary>
 /// Extension methods for <see cref="X509Crl" />.

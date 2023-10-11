@@ -5,7 +5,7 @@ using Org.BouncyCastle.X509.Store;
 
 using X509Certificate = Org.BouncyCastle.X509.X509Certificate;
 
-namespace Examples.Cryptography.Tests.BouncyCastle.X509Certificates;
+namespace Examples.Cryptography.Tests.BouncyCastle.X509;
 
 public class X509ChainTests
 {

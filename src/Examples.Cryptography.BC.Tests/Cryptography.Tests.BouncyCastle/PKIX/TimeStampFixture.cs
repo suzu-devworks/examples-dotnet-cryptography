@@ -1,6 +1,6 @@
 using System.Text;
 using Examples.Cryptography.BouncyCastle.PKIX;
-using Examples.Cryptography.Tests.BouncyCastle.X509Certificates;
+using Examples.Cryptography.Tests.BouncyCastle.X509;
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.Nist;
 using Org.BouncyCastle.Asn1.Ocsp;

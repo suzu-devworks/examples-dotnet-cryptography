@@ -1,5 +1,5 @@
 using Examples.Cryptography.BouncyCastle;
-using Examples.Cryptography.BouncyCastle.X509Certificates;
+using Examples.Cryptography.BouncyCastle.X509;
 using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.EC;
@@ -10,7 +10,7 @@ using Org.BouncyCastle.Security;
 using Org.BouncyCastle.X509;
 using Org.BouncyCastle.X509.Extension;
 
-namespace Examples.Cryptography.Tests.BouncyCastle.X509Certificates;
+namespace Examples.Cryptography.Tests.BouncyCastle.X509;
 
 internal static class X509CertificateTestDataGenerator
 {
