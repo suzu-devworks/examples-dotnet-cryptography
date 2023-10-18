@@ -1,4 +1,4 @@
-# OpenSSL.
+# Certificate chain with OpenSSL.
 
  OpenSSL 3.0.2 15 Mar 2022 (Library: OpenSSL 3.0.2 15 Mar 2022)
 

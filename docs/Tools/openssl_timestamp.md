@@ -1,5 +1,7 @@
 # TimestampToken with OpenSSL
 
+ OpenSSL 3.0.2 15 Mar 2022 (Library: OpenSSL 3.0.2 15 Mar 2022)
+
 ## Free TSA.
 
 - [freeTSA.org](https://freetsa.org/index_en.php)
