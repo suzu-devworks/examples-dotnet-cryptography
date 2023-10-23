@@ -46,25 +46,25 @@ public static class X509V3CertificateGeneratorExtensions
     /// Configure basic settings for root CA.
     /// </summary>
     /// <param name="generator">The <see cref="X509V3CertificateGenerator" /> instance.</param>
-    /// <param name="keyPair">The root CA key pair.</param>
+    /// <param name="publicKey">The root CA public key.</param>
     /// <param name="subject">The root CA subject.</param>
     /// <returns>The <see cref="X509V3CertificateGenerator" /> Instances for daisy chaining</returns>
     public static X509V3CertificateGenerator WithRootCA(this X509V3CertificateGenerator generator,
-        AsymmetricCipherKeyPair keyPair,
+        AsymmetricKeyParameter publicKey,
         X509Name subject
         )
     {
         generator.SetIssuerDN(subject);
         generator.SetSerialNumber(BigInteger.One);
         generator.SetSubjectDN(subject);
-        generator.SetPublicKey(keyPair.Public);
+        generator.SetPublicKey(publicKey);
 
         generator.AddExtension(X509Extensions.AuthorityKeyIdentifier,
             critical: false,
-            new AuthorityKeyIdentifierStructure(keyPair.Public));
+            new AuthorityKeyIdentifierStructure(publicKey));
         generator.AddExtension(X509Extensions.SubjectKeyIdentifier,
             critical: false,
-            new SubjectKeyIdentifierStructure(keyPair.Public));
+            new SubjectKeyIdentifierStructure(publicKey));
         generator.AddExtension(X509Extensions.BasicConstraints,
             critical: true,
             new BasicConstraints(cA: true));
@@ -76,15 +76,15 @@ public static class X509V3CertificateGeneratorExtensions
     /// Configure basic settings for intermidiate CA.
     /// </summary>
     /// <param name="generator">The <see cref="X509V3CertificateGenerator" /> instance.</param>
-    /// <param name="keyPair">The root CA key pair.</param>
-    /// <param name="subject">The root CA subject.</param>
+    /// <param name="publicKey">The intermidiate CA public key.</param>
+    /// <param name="subject">The intermidiate CA subject.</param>
     /// <param name="issuerCert">The issuer certificate.</param>
     /// <param name="serial">A Serial number issued by issuer.</param>
     /// <param name="pathLenConstraint">PathLength value to set in BasicConstraints.
     /// Without this, you cannot chain.</param>
     /// <returns>The <see cref="X509V3CertificateGenerator" /> Instances for daisy chaining</returns>
     public static X509V3CertificateGenerator WithIntermidiateCA(this X509V3CertificateGenerator generator,
-        AsymmetricCipherKeyPair keyPair,
+        AsymmetricKeyParameter publicKey,
         X509Name subject,
         X509Certificate issuerCert,
         BigInteger serial,
@@ -94,14 +94,14 @@ public static class X509V3CertificateGeneratorExtensions
         generator.SetIssuerDN(issuerCert.SubjectDN);
         generator.SetSerialNumber(serial);
         generator.SetSubjectDN(subject);
-        generator.SetPublicKey(keyPair.Public);
+        generator.SetPublicKey(publicKey);
 
         generator.AddExtension(X509Extensions.AuthorityKeyIdentifier,
             critical: false,
             new AuthorityKeyIdentifierStructure(issuerCert));
         generator.AddExtension(X509Extensions.SubjectKeyIdentifier,
             critical: false,
-            new SubjectKeyIdentifierStructure(keyPair.Public));
+            new SubjectKeyIdentifierStructure(publicKey));
         generator.AddExtension(X509Extensions.BasicConstraints,
             critical: true,
             new BasicConstraints(pathLenConstraint));
@@ -116,13 +116,13 @@ public static class X509V3CertificateGeneratorExtensions
     /// Configure basic settings for end entity certificate.
     /// </summary>
     /// <param name="generator">The <see cref="X509V3CertificateGenerator" /> instance.</param>
-    /// <param name="keyPair">The root CA key pair.</param>
-    /// <param name="subject">The root CA subject.</param>
+    /// <param name="publicKey">The end entity public key.</param>
+    /// <param name="subject">The end entity subject.</param>
     /// <param name="issuerCert">The issuer certificate.</param>
     /// <param name="serial">A Serial number issued by issuer.</param>
     /// <returns>The <see cref="X509V3CertificateGenerator" /> Instances for daisy chaining</returns>
     public static X509V3CertificateGenerator WithEndEntity(this X509V3CertificateGenerator generator,
-        AsymmetricCipherKeyPair keyPair,
+        AsymmetricKeyParameter publicKey,
         X509Name subject,
         X509Certificate issuerCert,
         BigInteger serial
@@ -131,14 +131,14 @@ public static class X509V3CertificateGeneratorExtensions
         generator.SetIssuerDN(issuerCert.SubjectDN);
         generator.SetSerialNumber(serial);
         generator.SetSubjectDN(subject);
-        generator.SetPublicKey(keyPair.Public);
+        generator.SetPublicKey(publicKey);
 
         generator.AddExtension(X509Extensions.AuthorityKeyIdentifier,
             critical: false,
             new AuthorityKeyIdentifierStructure(issuerCert));
         generator.AddExtension(X509Extensions.SubjectKeyIdentifier,
             critical: false,
-            new SubjectKeyIdentifierStructure(keyPair.Public));
+            new SubjectKeyIdentifierStructure(publicKey));
         generator.AddExtension(X509Extensions.BasicConstraints,
             critical: true,
             new BasicConstraints(cA: false));

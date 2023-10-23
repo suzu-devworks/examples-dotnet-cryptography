@@ -65,7 +65,7 @@ internal static class X509CertificateTestDataGenerator
         )
     {
         var cert = new X509V3CertificateGenerator()
-            .WithRootCA(keyPair, subject)
+            .WithRootCA(keyPair.Public, subject)
             .SetValidity(now.UtcDateTime, days)
             .Generate(CreateSignatureFactory(keyPair.Private));
 
@@ -84,7 +84,7 @@ internal static class X509CertificateTestDataGenerator
         )
     {
         var cert = new X509V3CertificateGenerator()
-            .WithIntermidiateCA(keyPair, subject, issuerCert, serial, pathlength)
+            .WithIntermidiateCA(keyPair.Public, subject, issuerCert, serial, pathlength)
             .SetValidity(now.UtcDateTime, days)
             .Generate(CreateSignatureFactory(issuerKeyPair.Private));
 
@@ -103,7 +103,7 @@ internal static class X509CertificateTestDataGenerator
          )
     {
         var cert = new X509V3CertificateGenerator()
-            .WithEndEntity(keyPair, subject, issuerCert, serial)
+            .WithEndEntity(keyPair.Public, subject, issuerCert, serial)
             .SetValidity(now.UtcDateTime, days)
             .Configure(gen => configure?.Invoke(gen))
             .Generate(CreateSignatureFactory(issuerKeyPair.Private));
