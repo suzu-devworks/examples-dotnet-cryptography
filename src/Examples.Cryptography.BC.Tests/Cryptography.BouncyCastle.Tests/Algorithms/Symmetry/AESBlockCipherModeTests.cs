@@ -6,7 +6,7 @@ using Org.BouncyCastle.Crypto.Paddings;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
 
-namespace Examples.Cryptography.Tests.BouncyCastle.Algorithms.Symmetry;
+namespace Examples.Cryptography.BouncyCastle.Tests.Algorithms.Symmetry;
 
 public class AESBlockCipherModeTests
 {

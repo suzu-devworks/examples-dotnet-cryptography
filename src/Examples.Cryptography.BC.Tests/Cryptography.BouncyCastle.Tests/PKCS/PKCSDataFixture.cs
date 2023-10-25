@@ -6,7 +6,7 @@ using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.X509;
 
-namespace Examples.Cryptography.Tests.BouncyCastle.PKCS;
+namespace Examples.Cryptography.BouncyCastle.Tests.PKCS;
 
 public class PKCSDataFixture : IDisposable
 {

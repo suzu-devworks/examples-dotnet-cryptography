@@ -5,7 +5,7 @@ using Org.BouncyCastle.Crypto.Digests;
 using Org.BouncyCastle.Crypto.Macs;
 using Org.BouncyCastle.Crypto.Parameters;
 
-namespace Examples.Cryptography.Tests.BouncyCastle.Algorithms.Hashing
+namespace Examples.Cryptography.BouncyCastle.Tests.Algorithms.Hashing
 {
     public class Sha2HMACTests
     {

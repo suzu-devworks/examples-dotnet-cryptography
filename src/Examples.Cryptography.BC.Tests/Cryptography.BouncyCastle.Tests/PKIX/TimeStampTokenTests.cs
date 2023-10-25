@@ -10,7 +10,7 @@ using Org.BouncyCastle.Tsp;
 using Org.BouncyCastle.Utilities.Collections;
 using Org.BouncyCastle.X509;
 
-namespace Examples.Cryptography.Tests.BouncyCastle.PKIX;
+namespace Examples.Cryptography.BouncyCastle.Tests.PKIX;
 
 public class TimeStampTokenTests : IClassFixture<TimeStampDataFixture>
 {

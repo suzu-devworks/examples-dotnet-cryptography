@@ -8,7 +8,7 @@ using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.X509;
 
-namespace Examples.Cryptography.Tests.BouncyCastle.PKCS;
+namespace Examples.Cryptography.BouncyCastle.Tests.PKCS;
 
 public class PKCS10CertRequestTests : IClassFixture<PKCSDataFixture>
 {

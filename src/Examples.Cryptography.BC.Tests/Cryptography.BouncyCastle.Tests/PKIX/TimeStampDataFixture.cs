@@ -16,7 +16,7 @@ using Org.BouncyCastle.Utilities.Collections;
 using Org.BouncyCastle.X509;
 using Org.BouncyCastle.X509.Extension;
 
-namespace Examples.Cryptography.Tests.BouncyCastle.PKIX;
+namespace Examples.Cryptography.BouncyCastle.Tests.PKIX;
 
 public class TimeStampDataFixture : IDisposable
 {

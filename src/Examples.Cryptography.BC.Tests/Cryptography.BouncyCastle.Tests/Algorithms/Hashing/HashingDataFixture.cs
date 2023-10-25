@@ -1,4 +1,4 @@
-namespace Examples.Cryptography.Tests.BouncyCastle.Algorithms.Hashing;
+namespace Examples.Cryptography.BouncyCastle.Tests.Algorithms.Hashing;
 
 public class HashingDataFixture : IDisposable
 {

@@ -2,7 +2,7 @@ using Examples.Fluency;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Digests;
 
-namespace Examples.Cryptography.Tests.BouncyCastle.Algorithms.Hashing;
+namespace Examples.Cryptography.BouncyCastle.Tests.Algorithms.Hashing;
 
 public class Sha2DigestTests : IClassFixture<HashingDataFixture>
 {

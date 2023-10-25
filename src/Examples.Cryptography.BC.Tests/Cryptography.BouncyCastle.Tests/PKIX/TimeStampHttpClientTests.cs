@@ -28,7 +28,7 @@ using Org.BouncyCastle.X509.Extension;
 using Xunit.Sdk;
 using Examples.Cryptography.BouncyCastle.Logging;
 
-namespace Examples.Cryptography.Tests.BouncyCastle.PKIX;
+namespace Examples.Cryptography.BouncyCastle.Tests.PKIX;
 
 public class TimeStampHttpClientTests : IClassFixture<TimeStampDataFixture>
 {

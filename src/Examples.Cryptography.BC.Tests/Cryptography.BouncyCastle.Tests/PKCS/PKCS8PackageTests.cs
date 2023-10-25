@@ -10,7 +10,7 @@ using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
 using Xunit.Sdk;
 
-namespace Examples.Cryptography.Tests.BouncyCastle.PKCS;
+namespace Examples.Cryptography.BouncyCastle.Tests.PKCS;
 
 public class PKCS8PackageTests : IClassFixture<PKCSDataFixture>
 {

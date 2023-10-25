@@ -1,15 +1,16 @@
+using System.Diagnostics;
 using Examples.Cryptography.BouncyCastle.Algorithms;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Security;
 
-namespace Examples.Cryptography.Tests.BouncyCastle.Algorithms.Asymmetry;
+namespace Examples.Cryptography.BouncyCastle.Tests.Algorithms.Asymmetry;
 
-public class DSAKeyPairTests
+public class Ed25519KeyPairTests
 {
     private readonly ITestOutputHelper _output;
     private readonly AsymmetricCipherKeyPair _keyPair;
 
-    public DSAKeyPairTests(ITestOutputHelper output)
+    public Ed25519KeyPairTests(ITestOutputHelper output)
     {
         // ```
         // dotnet test --logger "console;verbosity=detailed"
@@ -18,18 +19,17 @@ public class DSAKeyPairTests
         _keyPair = GenerateKeyPair();
     }
 
-    private static AsymmetricCipherKeyPair GenerateKeyPair()
+    private AsymmetricCipherKeyPair GenerateKeyPair()
     {
-        var keyPair = GeneratorUtilities.GetKeyPairGenerator("DSA")
-            // .Configure(g =>
-            // {
-            //     var random = new SecureRandom();
-            //     var paramGen = new DsaParametersGenerator();
-            //     paramGen.Init(size: 1024, certainty: 80, random);
-            //     g.Init(new DsaKeyGenerationParameters(random, paramGen.GenerateParameters()));
-            // })
-            .ConfigureDefault()
+        var sw = Stopwatch.StartNew();
+
+        var keyPair = GeneratorUtilities.GetKeyPairGenerator("Ed25519")
+            //.Configure(g => g.Init(new Ed25519KeyGenerationParameters(new SecureRandom())))
+            .ConfigureEd25519Key()
             .GenerateKeyPair();
+
+        sw.Stop();
+        _output.WriteLine($"Ed25519 key pair generate time {sw.Elapsed}");
 
         return keyPair;
     }
@@ -42,8 +42,8 @@ public class DSAKeyPairTests
         var keyPair = _keyPair;
 
         // ### Act. ###
-        var der = keyPair.ExportDSAPrivateKey();
-        var actual = AsymmetricCipherKeyPairAgent.CreateDSAPrivateKeyFrom(der);
+        var der = keyPair.ExportPrivateKey();
+        var actual = AsymmetricCipherKeyPairAgent.CreateFrom(der);
 
         // ### Assert. ###
         // It's back to normal.
@@ -70,13 +70,12 @@ public class DSAKeyPairTests
         actual.Public.Is(keyPair.Public);
 
         // PEM assertions
-        //File.WriteAllText(@"dsa-private.key", pem);
+        //File.WriteAllText(@"ed25519-private.key", pem);
         _output.WriteLine($"{pem}");
-        pem.Is(x => x.StartsWith("-----BEGIN DSA PRIVATE KEY-----")
-            && x.EndsWith("-----END DSA PRIVATE KEY-----"));
+        pem.Is(x => x.StartsWith("-----BEGIN PRIVATE KEY-----")
+            && x.EndsWith("-----END PRIVATE KEY-----"));
 
         return;
     }
 
 }
-

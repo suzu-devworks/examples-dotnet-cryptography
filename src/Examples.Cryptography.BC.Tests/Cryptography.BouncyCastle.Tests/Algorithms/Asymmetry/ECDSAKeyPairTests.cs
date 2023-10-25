@@ -1,8 +1,9 @@
+using System.Diagnostics;
 using Examples.Cryptography.BouncyCastle.Algorithms;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Security;
 
-namespace Examples.Cryptography.Tests.BouncyCastle.Algorithms.Asymmetry;
+namespace Examples.Cryptography.BouncyCastle.Tests.Algorithms.Asymmetry;
 
 public class ECDSAKeyPairTests
 {
@@ -18,7 +19,7 @@ public class ECDSAKeyPairTests
         _keyPair = GenerateKeyPair();
     }
 
-    private static AsymmetricCipherKeyPair GenerateKeyPair()
+    private AsymmetricCipherKeyPair GenerateKeyPair()
     {
         // There seem to be several ways to create X9ECParameters.
 
@@ -34,10 +35,15 @@ public class ECDSAKeyPairTests
         // var curve = CustomNamedCurves.GetByName("P-256");
         // ```
 
+        var sw = Stopwatch.StartNew();
+
         var keyPair = GeneratorUtilities.GetKeyPairGenerator("ECDSA")
              //.ConfigureECKey(curve)
              .ConfigureDefault()
              .GenerateKeyPair();
+
+        sw.Stop();
+        _output.WriteLine($"ECDSA key pair generate time {sw.Elapsed}");
 
         return keyPair;
     }

@@ -3,7 +3,7 @@ using Examples.Cryptography.BouncyCastle.Algorithms;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Security;
 
-namespace Examples.Cryptography.Tests.BouncyCastle.Algorithms.Asymmetry;
+namespace Examples.Cryptography.BouncyCastle.Tests.Algorithms.Asymmetry;
 
 public class RSAKeyPairTests
 {
@@ -41,7 +41,7 @@ public class RSAKeyPairTests
             .GenerateKeyPair();
 
         sw.Stop();
-        _output.WriteLine($"RSA generate time {sw.Elapsed}");
+        _output.WriteLine($"RSA key pair generate time {sw.Elapsed}");
 
         return keyPair;
     }

@@ -5,7 +5,7 @@ using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.X509.Extension;
 
-namespace Examples.Cryptography.Tests.BouncyCastle.PKCS;
+namespace Examples.Cryptography.BouncyCastle.Tests.PKCS;
 
 public class PKCS12StoreTests : IClassFixture<PKCSDataFixture>
 {

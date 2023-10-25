@@ -6,7 +6,7 @@ using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.X509;
 
-namespace Examples.Cryptography.Tests.BouncyCastle.X509;
+namespace Examples.Cryptography.BouncyCastle.Tests.X509;
 
 public class X509DataFixture : IDisposable
 {

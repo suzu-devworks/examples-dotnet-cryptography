@@ -4,7 +4,7 @@ using Org.BouncyCastle.X509.Store;
 
 using X509Certificate = Org.BouncyCastle.X509.X509Certificate;
 
-namespace Examples.Cryptography.Tests.BouncyCastle.X509;
+namespace Examples.Cryptography.BouncyCastle.Tests.X509;
 
 public class X509ChainTests : IClassFixture<X509DataFixture>
 {
