@@ -1,4 +1,5 @@
 using System.Text;
+using Examples.Cryptography.BouncyCastle.Logging;
 using Examples.Cryptography.BouncyCastle.PKIX;
 using Org.BouncyCastle.Asn1.Nist;
 using Org.BouncyCastle.Asn1.Tsp;
@@ -11,12 +12,12 @@ using Org.BouncyCastle.X509;
 
 namespace Examples.Cryptography.Tests.BouncyCastle.PKIX;
 
-public class TimeStampTokenTests : IClassFixture<TimeStampFixture>
+public class TimeStampTokenTests : IClassFixture<TimeStampDataFixture>
 {
-    private readonly TimeStampFixture _fixture;
+    private readonly TimeStampDataFixture _fixture;
     private readonly ITestOutputHelper _output;
 
-    public TimeStampTokenTests(TimeStampFixture fixture, ITestOutputHelper output)
+    public TimeStampTokenTests(TimeStampDataFixture fixture, ITestOutputHelper output)
     {
         _fixture = fixture;
 

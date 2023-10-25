@@ -7,11 +7,11 @@ using Org.BouncyCastle.X509.Extension;
 
 namespace Examples.Cryptography.Tests.BouncyCastle.PKCS;
 
-public class PKCS12StoreTests : IClassFixture<PKCSFixture>
+public class PKCS12StoreTests : IClassFixture<PKCSDataFixture>
 {
-    private readonly PKCSFixture _fixture;
+    private readonly PKCSDataFixture _fixture;
 
-    public PKCS12StoreTests(PKCSFixture fixture)
+    public PKCS12StoreTests(PKCSDataFixture fixture)
     {
         _fixture = fixture;
     }

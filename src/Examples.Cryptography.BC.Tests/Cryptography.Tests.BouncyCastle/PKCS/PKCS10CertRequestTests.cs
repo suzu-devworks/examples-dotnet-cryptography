@@ -10,11 +10,11 @@ using Org.BouncyCastle.X509;
 
 namespace Examples.Cryptography.Tests.BouncyCastle.PKCS;
 
-public class PKCS10CertRequestTests : IClassFixture<PKCSFixture>
+public class PKCS10CertRequestTests : IClassFixture<PKCSDataFixture>
 {
-    private readonly PKCSFixture _fixture;
+    private readonly PKCSDataFixture _fixture;
 
-    public PKCS10CertRequestTests(PKCSFixture fixture)
+    public PKCS10CertRequestTests(PKCSDataFixture fixture)
     {
         _fixture = fixture;
     }
@@ -63,7 +63,7 @@ public class PKCS10CertRequestTests : IClassFixture<PKCSFixture>
         var now = DateTimeOffset.Now;
         var serial = new BigInteger(256, new SecureRandom());
 
-        var request = Pkcs10CertificationRequestAgent.ImportCertificateRequestPem(pem);
+        var request = Pkcs10CertificationRequestAgent.CreateFromPem(pem);
 
         request.Verify().IsTrue();
 
@@ -79,12 +79,11 @@ public class PKCS10CertRequestTests : IClassFixture<PKCSFixture>
         // When receive your certificate, please verify that it is yours.
         cert.Verify(issuerKeyPair.Public);
 
-        // var certPem = cert.ExportCertificatePem();
-        // certPem.Is(x => x.StartsWith("-----BEGIN CERTIFICATE -----")
-        //          && x.EndsWith("-----END CERTIFICATE -----"));
+        var certPem = cert.ExportCertificatePem();
+        certPem.Is(x => x.StartsWith("-----BEGIN CERTIFICATE-----")
+                 && x.EndsWith("-----END CERTIFICATE-----"));
 
         return;
     }
-
 
 }

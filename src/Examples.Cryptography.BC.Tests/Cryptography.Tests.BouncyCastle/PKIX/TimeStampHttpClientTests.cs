@@ -14,7 +14,6 @@ using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Examples.Cryptography.BouncyCastle;
 using Examples.Cryptography.BouncyCastle.PKIX;
-using Examples.Cryptography.BouncyCastle.Utilities;
 using Examples.Cryptography.BouncyCastle.X509;
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.Nist;
@@ -27,18 +26,19 @@ using Org.BouncyCastle.Tsp;
 using Org.BouncyCastle.X509;
 using Org.BouncyCastle.X509.Extension;
 using Xunit.Sdk;
+using Examples.Cryptography.BouncyCastle.Logging;
 
 namespace Examples.Cryptography.Tests.BouncyCastle.PKIX;
 
-public class TimeStampHttpClientTests : IClassFixture<TimeStampFixture>
+public class TimeStampHttpClientTests : IClassFixture<TimeStampDataFixture>
 {
     private static readonly TimeSpan OnlineTimeout = TimeSpan.FromSeconds(5);
 
-    private readonly TimeStampFixture _fixture;
+    private readonly TimeStampDataFixture _fixture;
     private readonly IServiceProvider _services;
     private readonly ITestOutputHelper _output;
 
-    public TimeStampHttpClientTests(TimeStampFixture fixture, ITestOutputHelper output)
+    public TimeStampHttpClientTests(TimeStampDataFixture fixture, ITestOutputHelper output)
     {
         _fixture = fixture;
         _services = InitializeServiceProvider();

@@ -1,6 +1,6 @@
 using Org.BouncyCastle.OpenSsl;
 
-namespace Examples.Cryptography.BouncyCastle.Utilities;
+namespace Examples.Cryptography.BouncyCastle;
 
 /// <summary>
 /// The <see cref="HttpClient" /> for file download.

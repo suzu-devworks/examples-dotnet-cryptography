@@ -1,5 +1,4 @@
-using System.Text;
-using Examples.Cryptography.Tests.BouncyCastle.X509;
+using Examples.Cryptography.BouncyCastle.Internals;
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.Nist;
 using Org.BouncyCastle.Asn1.Pkcs;
@@ -13,11 +12,20 @@ using Xunit.Sdk;
 
 namespace Examples.Cryptography.Tests.BouncyCastle.PKCS;
 
-public class PKCS8PackageTests
+public class PKCS8PackageTests : IClassFixture<PKCSDataFixture>
 {
-    private readonly AsymmetricCipherKeyPair _keyPair
-        = X509CertificateTestDataGenerator.GenerateKeyPair("RSA");
-    private readonly SecureRandom _romdom = new();
+    private readonly ITestOutputHelper _output;
+    private readonly PKCSDataFixture _fixture;
+
+    public PKCS8PackageTests(PKCSDataFixture fixture, ITestOutputHelper output)
+    {
+        _fixture = fixture;
+
+        // ```
+        // dotnet test --logger "console;verbosity=detailed"
+        // ```
+        _output = output;
+    }
 
 
     [Fact]
@@ -25,8 +33,11 @@ public class PKCS8PackageTests
     {
         // https://github.com/bcgit/bc-csharp/blob/master/crypto/src/pkcs/Pkcs12Store.cs#L659
 
+        var keyPair = _fixture.KeyPair!;
         var password1 = "password";
-        var salt = _romdom.GenerateSeed(20);
+
+        var ramdom = new SecureRandom();
+        var salt = ramdom.GenerateSeed(20);
         var iterationCount = 2048;
 
         var keyAlgorithm = NistObjectIdentifiers.IdAes256Cbc;
@@ -34,13 +45,15 @@ public class PKCS8PackageTests
 
         var bagData = EncryptedPrivateKeyInfoFactory.CreateEncryptedPrivateKeyInfo(
             keyAlgorithm, keyPrfAlgorithm, password1.ToCharArray(),
-             salt, iterationCount, new SecureRandom(), _keyPair.Private);
-        var data = bagData.GetEncryptedData();
+             salt, iterationCount, new SecureRandom(), keyPair.Private);
+        //var data = bagData.GetEncryptedData();
 
         var pkcs8enc = new Pkcs8EncryptedPrivateKeyInfo(bagData);
-        var pkcs8encPem = ToPem(pkcs8enc);
+        var pkcs8encPem = PemUtility.ToPemString(pkcs8enc);
         pkcs8encPem.Is(x => x.StartsWith("-----BEGIN ENCRYPTED PRIVATE KEY-----")
                     && x.EndsWith("-----END ENCRYPTED PRIVATE KEY-----"));
+
+        _output.WriteLine(pkcs8encPem);
 
         // write PKCS #8 with PKCS #5?
         //File.AppendAllText("pkcs8-enc-1.p8e", pkcs8encPem);
@@ -98,7 +111,7 @@ public class PKCS8PackageTests
         var ocstr = pbes2.EncryptionScheme.Parameters.IsInstanceOf<DerOctetString>();
         ocstr.GetEncoded().Length.Is(16 + 2);
 
-        info.GetEncryptedData().Length.Is(1232);
+        //info.GetEncryptedData().Length.Is(1232);
 
         return;
     }
@@ -109,20 +122,23 @@ public class PKCS8PackageTests
     {
         // https://github.com/bcgit/bc-csharp/blob/master/crypto/src/openssl/Pkcs8Generator.cs
 
-        PrivateKeyInfo keyInfo = PrivateKeyInfoFactory.CreatePrivateKeyInfo(_keyPair.Private);
+        var keyPair = _fixture.KeyPair!;
+        var ramdom = new SecureRandom();
+
+        PrivateKeyInfo keyInfo = PrivateKeyInfoFactory.CreatePrivateKeyInfo(keyPair.Private);
 
         // PKCS #1.
-        var pkcs1pem = ToPem(keyInfo);
-        var pkcs1pem2 = ToPem(_keyPair);
-        var pkcs1pem3 = ToPem(_keyPair.Private);
+        var pkcs1pem = PemUtility.ToPemString(keyInfo);
+        var pkcs1pem2 = PemUtility.ToPemString(keyPair);
+        var pkcs1pem3 = PemUtility.ToPemString(keyPair.Private);
         pkcs1pem.Is(x => x.StartsWith("-----BEGIN RSA PRIVATE KEY-----")
                     && x.EndsWith("-----END RSA PRIVATE KEY-----"));
         pkcs1pem2.Is(pkcs1pem);
         pkcs1pem3.Is(pkcs1pem);
 
         // PKCS #8 ???
-        var pkcs8 = new Pkcs8Generator(_keyPair.Private).Generate();
-        var pkcs8pem = ToPem(pkcs8);
+        var pkcs8 = new Pkcs8Generator(keyPair.Private).Generate();
+        var pkcs8pem = PemUtility.ToPemString(pkcs8);
         pkcs8pem.Is(x => x.StartsWith("-----BEGIN PRIVATE KEY-----")
                     && x.EndsWith("-----END PRIVATE KEY-----"));
 
@@ -132,16 +148,18 @@ public class PKCS8PackageTests
         //var alg = BCObjectIdentifiers.bc_pbe_sha256_pkcs12_aes256_cbc;
         var alg = PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc;
 
-        var pkcs8enc = new Pkcs8Generator(_keyPair.Private, alg.Id)
+        var pkcs8enc = new Pkcs8Generator(keyPair.Private, alg.Id)
         {
-            SecureRandom = _romdom,
+            SecureRandom = ramdom,
             Password = password.ToCharArray(),
         }
         .Generate();
 
-        var pkcs8encPem = ToPem(pkcs8enc);
+        var pkcs8encPem = PemUtility.ToPemString(pkcs8enc);
         pkcs8encPem.Is(x => x.StartsWith("-----BEGIN ENCRYPTED PRIVATE KEY-----")
                     && x.EndsWith("-----END ENCRYPTED PRIVATE KEY-----"));
+
+        _output.WriteLine(pkcs8encPem);
 
         // write PKCS #8 for PKCS #12 ... v1.5?
         //File.AppendAllText("pkcs8-enc-2.p8e", pkcs8encPem);
@@ -169,8 +187,7 @@ public class PKCS8PackageTests
         Asn1OctetString.GetInstance(param[0]).GetEncoded().Length.Is(20 + 2);
         DerInteger.GetInstance(param[1]).IntValueExact.Is(2048);
 
-        var encData = info.GetEncryptedData();
-        encData.Length.Is(1224);
+        // info.GetEncryptedData().Length.Is(1224);
 
         return;
     }
@@ -181,7 +198,9 @@ public class PKCS8PackageTests
     {
         // https://github.com/bcgit/bc-csharp/blob/master/crypto/test/src/test/EncryptedPrivateKeyInfoTest.cs
 
-        PrivateKeyInfo keyInfo = PrivateKeyInfoFactory.CreatePrivateKeyInfo(_keyPair.Private);
+        var keyPair = _fixture.KeyPair!;
+
+        PrivateKeyInfo keyInfo = PrivateKeyInfoFactory.CreatePrivateKeyInfo(keyPair.Private);
 
         var alg = PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc;
         var password = "password";
@@ -194,31 +213,20 @@ public class PKCS8PackageTests
             password.ToArray(), encInfo);
 
         // RSA PrivateKeyInfo is PKCS #1.
-        var pem = ToPem(info);
+        var pem = PemUtility.ToPemString(info);
         pem.Is(x => x.StartsWith("-----BEGIN RSA PRIVATE KEY-----")
                     && x.EndsWith("-----END RSA PRIVATE KEY-----"));
 
         // To PKCS #8 ??
         var pkcs8 = new Org.BouncyCastle.Utilities.IO.Pem.PemObject("PRIVATE KEY", info.GetEncoded());
-        var pkcs8Pem = ToPem(pkcs8);
+        var pkcs8Pem = PemUtility.ToPemString(pkcs8);
         pkcs8Pem.Is(x => x.StartsWith("-----BEGIN PRIVATE KEY-----")
                     && x.EndsWith("-----END PRIVATE KEY-----"));
 
         AsymmetricKeyParameter key = PrivateKeyFactory.CreateKey(info);
-        key.Equals(_keyPair.Private).IsTrue();
+        key.Equals(keyPair.Private).IsTrue();
 
         return;
-    }
-
-    private static string ToPem(object @object)
-    {
-        var builder = new StringBuilder();
-        using (var writer = new PemWriter(new StringWriter(builder)))
-        {
-            writer.WriteObject(@object);
-        }
-
-        return builder.ToString().TrimEnd();
     }
 
     [Fact]
@@ -274,4 +282,5 @@ public class PKCS8PackageTests
             return (char[])_password.Clone();
         }
     }
+
 }

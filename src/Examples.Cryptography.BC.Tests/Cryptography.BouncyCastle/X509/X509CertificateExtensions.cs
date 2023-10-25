@@ -95,16 +95,4 @@ public static class X509CertificateExtensions
         return new Uri($"{gname.Name}");
     }
 
-    /// <summary>
-    /// Converts the contents of <see cref="X509Certificate" /> to a <c>string</c> for log output.
-    /// </summary>
-    /// <param name="certificate">The <see cref="X509Certificate" /> instance.</param>
-    /// <param name="indent">A indent indent.</param>
-    /// <returns>A <c>string</c> for log output.</returns>
-    public static string DumpAsString(this X509Certificate certificate, int indent = 0)
-    {
-        _ = indent;
-        return certificate.ToString();
-    }
-
 }

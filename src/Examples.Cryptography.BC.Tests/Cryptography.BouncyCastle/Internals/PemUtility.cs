@@ -2,11 +2,11 @@ using System.Text;
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.OpenSsl;
 
-namespace Examples.Cryptography.BouncyCastle.Utilities;
+namespace Examples.Cryptography.BouncyCastle.Internals;
 
 internal static class PemUtility
 {
-    public static string ToPemString(Asn1Encodable encodable)
+    public static string ToPemString(object encodable)
     {
         var builder = new StringBuilder();
         //using var memory = new MemoryStream();

@@ -1,4 +1,3 @@
-using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Pkix;
 using Org.BouncyCastle.Utilities.Collections;
 using Org.BouncyCastle.X509.Store;
@@ -7,12 +6,15 @@ using X509Certificate = Org.BouncyCastle.X509.X509Certificate;
 
 namespace Examples.Cryptography.Tests.BouncyCastle.X509;
 
-public class X509ChainTests
+public class X509ChainTests : IClassFixture<X509DataFixture>
 {
+    private readonly X509DataFixture _fixture;
     private readonly ITestOutputHelper _output;
 
-    public X509ChainTests(ITestOutputHelper output)
+    public X509ChainTests(X509DataFixture fixture, ITestOutputHelper output)
     {
+        _fixture = fixture;
+
         // ```
         // dotnet test --logger "console;verbosity=detailed"
         // ```
@@ -26,13 +28,10 @@ public class X509ChainTests
     {
         // ### Arrange. ###
         // Prepare a chain with multiple intermediate CAs
-        var certs = X509CertificateTestDataGenerator.CreateChainCertificates(
-                numOfCerts: 4,
-                DateTimeOffset.UtcNow,
-                new X509Name("C=JP,CN=localhost")
-                ).ToArray();
-        var (_, root) = certs.FirstOrDefault();
-        var (_, ee) = certs.LastOrDefault();
+        var certs = _fixture.Certificates;
+
+        var (_, root) = _fixture.RootCaSet;
+        var (_, ee) = _fixture.EndEntitySet;
 
         // Search for the target certificate by subject of ee.
         var selector = new X509CertStoreSelector
@@ -46,7 +45,7 @@ public class X509ChainTests
         };
 
         IStore<X509Certificate> x509CertStore
-            = CollectionUtilities.CreateStore(certs.Select(x => x.Item2));
+            = CollectionUtilities.CreateStore(certs);
 
         // ### Act. ###
         var parameters = new PkixBuilderParameters(trustanchors, selector)

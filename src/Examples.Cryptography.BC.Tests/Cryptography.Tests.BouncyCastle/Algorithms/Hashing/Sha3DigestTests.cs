@@ -4,12 +4,12 @@ using Org.BouncyCastle.Crypto.Digests;
 
 namespace Examples.Cryptography.Tests.BouncyCastle.Algorithms.Hashing;
 
-public class Sha3DigestTests : IClassFixture<LargeDataFixture>
+public class Sha3DigestTests : IClassFixture<HashingDataFixture>
 {
-    private readonly LargeDataFixture _lob;
+    private readonly HashingDataFixture _lob;
     private readonly ITestOutputHelper _output;
 
-    public Sha3DigestTests(LargeDataFixture lob, ITestOutputHelper output)
+    public Sha3DigestTests(HashingDataFixture lob, ITestOutputHelper output)
     {
         _lob = lob;
         _output = output;

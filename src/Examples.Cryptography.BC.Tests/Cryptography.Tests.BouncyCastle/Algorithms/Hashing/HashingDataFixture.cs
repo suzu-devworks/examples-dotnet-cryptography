@@ -1,8 +1,8 @@
 namespace Examples.Cryptography.Tests.BouncyCastle.Algorithms.Hashing;
 
-public class LargeDataFixture : IDisposable
+public class HashingDataFixture : IDisposable
 {
-    public LargeDataFixture()
+    public HashingDataFixture()
     {
 
         _millionSameCharacterData = new(() => GenerateSameCharacterData('@', size: 1_000_000));

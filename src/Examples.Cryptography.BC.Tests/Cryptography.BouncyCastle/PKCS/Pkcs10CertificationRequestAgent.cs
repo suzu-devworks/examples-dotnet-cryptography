@@ -1,4 +1,4 @@
-using Examples.Cryptography.BouncyCastle.Utilities;
+using Examples.Cryptography.BouncyCastle.Internals;
 using Org.BouncyCastle.Asn1.Pkcs;
 using Org.BouncyCastle.OpenSsl;
 using Org.BouncyCastle.Pkcs;
@@ -16,7 +16,9 @@ public static class Pkcs10CertificationRequestAgent
     /// <param name="request">A <see cref="Pkcs10CertificationRequest" /> instance.</param>
     /// <returns>A string containing the PEM-encoded PrivateKey.</returns>
     public static string ExportCertificateRequestPem(this Pkcs10CertificationRequest request)
-        => PemUtility.ToPemString(request);
+    {
+        return PemUtility.ToPemString(request);
+    }
 
     /// <summary>
     /// Imports the certificate request from an <see cref="CertificationRequest" />, replacement for this object.
@@ -24,7 +26,7 @@ public static class Pkcs10CertificationRequestAgent
     /// <param name="pem">The PEM text of the key to import.</param>
     /// <returns>The <see cref="Pkcs10CertificationRequest" /> instance
     /// containing the imported certificate request.</returns>
-    public static Pkcs10CertificationRequest ImportCertificateRequestPem(string pem)
+    public static Pkcs10CertificationRequest CreateFromPem(string pem)
     {
         using var reader = new PemReader(new StringReader(pem));
         var loaded = reader.ReadObject();
@@ -36,6 +38,5 @@ public static class Pkcs10CertificationRequestAgent
 
         throw new NotSupportedException($"type is {loaded.GetType().Name}");
     }
-
 
 }

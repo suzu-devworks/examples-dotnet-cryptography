@@ -1,6 +1,7 @@
 using System.Text;
+using Examples.Cryptography.BouncyCastle.Algorithms;
 using Examples.Cryptography.BouncyCastle.PKIX;
-using Examples.Cryptography.Tests.BouncyCastle.X509;
+using Examples.Cryptography.BouncyCastle.X509;
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.Nist;
 using Org.BouncyCastle.Asn1.Ocsp;
@@ -13,12 +14,13 @@ using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Tsp;
 using Org.BouncyCastle.Utilities.Collections;
 using Org.BouncyCastle.X509;
+using Org.BouncyCastle.X509.Extension;
 
 namespace Examples.Cryptography.Tests.BouncyCastle.PKIX;
 
-public class TimeStampFixture : IDisposable
+public class TimeStampDataFixture : IDisposable
 {
-    public TimeStampFixture()
+    public TimeStampDataFixture()
     {
         // ... lazy initialize data ...
         var notBefore = DateTimeOffset.Now.AddSeconds(-50);
@@ -57,36 +59,52 @@ public class TimeStampFixture : IDisposable
     }
 
 
-    private static (AsymmetricCipherKeyPair, X509Certificate) InitializeCaSets(DateTimeOffset notBefore)
+    private static (AsymmetricCipherKeyPair, X509Certificate) InitializeCaSets(
+        DateTimeOffset notBefore,
+        int days = 365)
     {
-        var caKeyPair = X509CertificateTestDataGenerator.GenerateKeyPair("Ed25519");
-        var caCert = X509CertificateTestDataGenerator.GenerateRootCACertificate(
-                   caKeyPair,
-                   new X509Name("C=JP,CN=Test CA root for TSA"),
-                   notBefore);
+        var keyPair = GeneratorUtilities.GetKeyPairGenerator("Ed25519")
+          .ConfigureDefault()
+          .GenerateKeyPair();
 
-        return (caKeyPair, caCert);
+        var cert = new X509V3CertificateGenerator()
+            .WithRootCA(
+                keyPair.Public,
+                new X509Name("C=JP,CN=Test CA root for TSA"))
+            .SetValidity(notBefore.UtcDateTime, days)
+            .Generate(keyPair.Private.CreateDefaultSignature());
+
+        return (keyPair, cert);
     }
 
 
-    private (AsymmetricCipherKeyPair, X509Certificate) InitializeTsaSets(DateTimeOffset notBefore)
+    private (AsymmetricCipherKeyPair, X509Certificate) InitializeTsaSets(
+         DateTimeOffset notBefore,
+        int days = 365)
     {
-        var random = new SecureRandom();
-        var (caKeyPair, caCert) = CaSet;
+        var (issuerKeyPair, issuerCert) = CaSet;
 
-        var keyPair = X509CertificateTestDataGenerator.GenerateKeyPair("ECDSA");
-        var cert = X509CertificateTestDataGenerator.GenerateCertificate(
-            keyPair,
-            new X509Name("C=JP,CN=Test TSA"),
-            caKeyPair,
-            caCert,
-            BigInteger.ValueOf(random.NextInt64(100L, int.MaxValue)),
-            notBefore,
-            configure: gen =>
+        var keyPair = GeneratorUtilities.GetKeyPairGenerator("ECDSA")
+          .ConfigureDefault()
+          .GenerateKeyPair();
+
+        var random = new SecureRandom();
+        var serial = BigInteger.ValueOf(random.NextInt64(100L, int.MaxValue));
+
+        var cert = new X509V3CertificateGenerator()
+            .WithEndEntity(
+                keyPair.Public,
+                subject: new X509Name("C=JP,CN=Test TSA"),
+                issuerCert,
+                serial)
+            .SetValidity(notBefore.UtcDateTime, days)
+            .Configure(gen =>
             {
-                gen.AddExtension(X509Extensions.KeyUsage, critical: true,
+                gen.AddExtension(X509Extensions.KeyUsage,
+                    critical: true,
                     new KeyUsage(KeyUsage.DigitalSignature));
-                gen.AddExtension(X509Extensions.ExtendedKeyUsage, critical: true,
+                gen.AddExtension(X509Extensions.ExtendedKeyUsage,
+                    critical: true,
                     new ExtendedKeyUsage(KeyPurposeID.id_kp_timeStamping));
                 gen.AddExtension(X509Extensions.AuthorityInfoAccess,
                     critical: false,
@@ -112,55 +130,86 @@ public class TimeStampFixture : IDisposable
                                         "https://localhost:1234/ca.crl")
                                 )), reasons: null, crlIssuer: null),
                         }));
-            }
-        );
+            })
+            .Generate(issuerKeyPair.Private.CreateDefaultSignature());
 
         return (keyPair, cert);
     }
 
 
-    private (AsymmetricCipherKeyPair, X509Certificate) InitializeOCSPSignerSets(DateTimeOffset notBefore)
+    private (AsymmetricCipherKeyPair, X509Certificate) InitializeOCSPSignerSets(
+        DateTimeOffset notBefore,
+        int days = 365)
     {
+        var (issuerKeyPair, issuerCert) = CaSet;
+
+        var keyPair = GeneratorUtilities.GetKeyPairGenerator("ECDSA")
+          .ConfigureDefault()
+          .GenerateKeyPair();
+
         var random = new SecureRandom();
-        var (caKeyPair, caCert) = CaSet;
+        var serial = BigInteger.ValueOf(random.NextInt64(200L, int.MaxValue));
 
-        var keyPair = X509CertificateTestDataGenerator.GenerateKeyPair("ECDSA");
-        var cert = X509CertificateTestDataGenerator.GenerateCertificate(
-                keyPair,
-                new X509Name("C=JP,CN=Test OCSP signer"),
-                caKeyPair,
-                caCert,
-                BigInteger.ValueOf(random.NextInt64(100L, int.MaxValue)),
-                notBefore,
-                configure: gen =>
-                {
-                    gen.AddExtension(X509Extensions.KeyUsage,
-                        critical: true,
-                        new KeyUsage(KeyUsage.DigitalSignature));
-                    gen.AddExtension(X509Extensions.ExtendedKeyUsage,
-                        critical: true,
-                        new ExtendedKeyUsage(KeyPurposeID.id_kp_OCSPSigning));
-                }
-            );
+        var cert = new X509V3CertificateGenerator()
+            .WithEndEntity(
+                keyPair.Public,
+                subject: new X509Name("C=JP,CN=Test TSA"),
+                issuerCert,
+                serial)
+            .SetValidity(notBefore.UtcDateTime, days)
+            .Configure(gen =>
+            {
+                gen.AddExtension(X509Extensions.KeyUsage,
+                    critical: true,
+                    new KeyUsage(KeyUsage.DigitalSignature));
+                gen.AddExtension(X509Extensions.ExtendedKeyUsage,
+                    critical: true,
+                    new ExtendedKeyUsage(KeyPurposeID.id_kp_OCSPSigning));
+            })
+           .Generate(issuerKeyPair.Private.CreateDefaultSignature());
 
         return (keyPair, cert);
     }
 
 
-    private X509Crl InitializeCaCrl(DateTimeOffset now)
+    private X509Crl InitializeCaCrl(
+        DateTimeOffset updateAt,
+        int days = 2)
     {
-        var (caKeyPair, caCert) = CaSet;
+        var (issuerKeyPair, issuerCert) = CaSet;
 
-        var crl = X509CertificateTestDataGenerator.GenerateCRL(
-                    caKeyPair,
-                    caCert,
-                    crlNumber: BigInteger.One,
-                    now,
-                    configureAction: gen =>
-                    {
-                        gen.AddCrlEntry(BigInteger.One, now.UtcDateTime, CrlReason.KeyCompromise);
-                        gen.AddCrlEntry(BigInteger.Two, now.UtcDateTime, CrlReason.PrivilegeWithdrawn);
-                    });
+        var nextUpdateAt = updateAt.AddDays(days);
+        var crlNumber = BigInteger.One;
+
+        var crl = new X509V2CrlGenerator()
+            .Configure(gen =>
+            {
+                gen.SetIssuerDN(PrincipalUtilities.GetSubjectX509Principal(issuerCert));
+                gen.SetThisUpdate(updateAt.UtcDateTime);
+                gen.SetNextUpdate(nextUpdateAt.UtcDateTime);
+
+                gen.AddExtension(X509Extensions.AuthorityKeyIdentifier, critical: false,
+                    new AuthorityKeyIdentifierStructure(issuerCert));
+                gen.AddExtension(X509Extensions.CrlNumber, false, new CrlNumber(crlNumber));
+                gen.AddExtension(X509Extensions.IssuingDistributionPoint, critical: false,
+                    new IssuingDistributionPoint(
+                        distributionPoint: new DistributionPointName(
+                            new GeneralNames(new GeneralName(issuerCert.SubjectDN))
+                        ),
+                        // only include end entity public key cerrtificates.
+                        onlyContainsAttributeCerts: false,
+                        // only include CA cerrtificates.
+                        onlyContainsCACerts: false,
+                        onlySomeReasons: null,
+                        // only include certificates issued by the CRL issuer.
+                        indirectCRL: true,
+                        onlyContainsUserCerts: false
+                    ));
+
+                gen.AddCrlEntry(BigInteger.One, updateAt.UtcDateTime, CrlReason.KeyCompromise);
+                gen.AddCrlEntry(BigInteger.Two, updateAt.UtcDateTime, CrlReason.PrivilegeWithdrawn);
+            })
+            .Generate(issuerKeyPair.Private.CreateDefaultSignature());
 
         return crl;
     }

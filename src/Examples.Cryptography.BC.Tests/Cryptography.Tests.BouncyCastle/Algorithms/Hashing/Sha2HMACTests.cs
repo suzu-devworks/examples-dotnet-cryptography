@@ -24,7 +24,7 @@ namespace Examples.Cryptography.Tests.BouncyCastle.Algorithms.Hashing
                           "before being used by the HMAC algorithm.";
             byte[] key = "RBDc0q3nQ5ys+xmRvtn1h8gj7BhrVBHa5cizWcPSEU4=".ToBase64Bytes();
 
-            HMac hmac = new HMac(digest);
+            HMac hmac = new(digest);
             Span<byte> buffer = stackalloc byte[hmac.GetMacSize()];
             hmac.Init(new KeyParameter(key));
 

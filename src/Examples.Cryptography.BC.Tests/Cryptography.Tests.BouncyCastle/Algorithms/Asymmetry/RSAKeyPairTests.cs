@@ -1,7 +1,6 @@
-using Examples.Cryptography.BouncyCastle;
+using System.Diagnostics;
+using Examples.Cryptography.BouncyCastle.Algorithms;
 using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Security;
 
 namespace Examples.Cryptography.Tests.BouncyCastle.Algorithms.Asymmetry;
@@ -20,22 +19,29 @@ public class RSAKeyPairTests
         _keyPair = GenerateKeyPair();
     }
 
-    private static AsymmetricCipherKeyPair GenerateKeyPair()
+    private AsymmetricCipherKeyPair GenerateKeyPair()
     {
+        var sw = Stopwatch.StartNew();
+
         var keyPair = GeneratorUtilities.GetKeyPairGenerator("RSA")
-            .Configure(g => g.Init(
-                // ## Since the default value is given, it is the same as commenting it out. ##
-                // new KeyGenerationParameters(
-                //     random: new SecureRandom(),
-                //     strength: 2048,
-                // )
-                new RsaKeyGenerationParameters(
-                    publicExponent: BigInteger.ValueOf(0x10001), // (default)should be a Fermat number.
-                    random: new SecureRandom(),
-                    strength: 2048, // 4096 bytes is too late.
-                    certainty: 100 // (default) Affects prime numbers?
-                    )))
+            // ## Since the default value is given, it is the same as commenting it out. ##
+            //.Configure(g => g.Init(
+            // new KeyGenerationParameters(
+            //     random: new SecureRandom(),
+            //     strength: 2048,
+            //     )))
+            //.Configure(g => g.Init(
+            // new RsaKeyGenerationParameters(
+            //     publicExponent: BigInteger.ValueOf(0x10001), // (default)should be a Fermat number.
+            //     random: new SecureRandom(),
+            //     strength: 2048, // 4096 bytes is too late.
+            //     certainty: 100 // (default) Affects prime numbers
+            //     )))
+            .ConfigureDefault()
             .GenerateKeyPair();
+
+        sw.Stop();
+        _output.WriteLine($"RSA generate time {sw.Elapsed}");
 
         return keyPair;
     }
@@ -49,7 +55,7 @@ public class RSAKeyPairTests
 
         // ### Act. ###
         var der = keyPair.ExportRsaPrivateKey();
-        var actual = AsymmetricCipherKeyPairAgent.ImportRSAPrivateKey(der);
+        var actual = AsymmetricCipherKeyPairAgent.CreateRSAPrivateKeyFrom(der);
 
         // ### Assert. ###
         // It's back to normal.
@@ -69,7 +75,7 @@ public class RSAKeyPairTests
 
         // ### Act. ###
         var pem = keyPair.ExportPrivateKeyPem();
-        var actual = AsymmetricCipherKeyPairAgent.ImportPrivateKeyPem(pem);
+        var actual = AsymmetricCipherKeyPairAgent.CreateFromPem(pem);
 
         // ### Assert. ###
         // It's back to normal

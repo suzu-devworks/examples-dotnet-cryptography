@@ -1,7 +1,5 @@
-using Examples.Cryptography.BouncyCastle;
-using Org.BouncyCastle.Asn1.X9;
+using Examples.Cryptography.BouncyCastle.Algorithms;
 using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.EC;
 using Org.BouncyCastle.Security;
 
 namespace Examples.Cryptography.Tests.BouncyCastle.Algorithms.Asymmetry;
@@ -36,9 +34,9 @@ public class ECDSAKeyPairTests
         // var curve = CustomNamedCurves.GetByName("P-256");
         // ```
 
-        X9ECParameters? curve = CustomNamedCurves.GetByName("P-256");
         var keyPair = GeneratorUtilities.GetKeyPairGenerator("ECDSA")
-             .SetECKeyParameters(curve)
+             //.ConfigureECKey(curve)
+             .ConfigureDefault()
              .GenerateKeyPair();
 
         return keyPair;
@@ -53,7 +51,7 @@ public class ECDSAKeyPairTests
 
         // ### Act. ###
         var der = keyPair.ExportECPrivateKey();
-        var actual = AsymmetricCipherKeyPairAgent.ImportECPrivateKey(der);
+        var actual = AsymmetricCipherKeyPairAgent.CreateECPrivateKeyFrom(der);
 
         // ### Assert. ###
         // It's back to normal.
@@ -72,7 +70,7 @@ public class ECDSAKeyPairTests
 
         // ### Act. ###
         var pem = keyPair.ExportPrivateKeyPem();
-        var actual = AsymmetricCipherKeyPairAgent.ImportPrivateKeyPem(pem);
+        var actual = AsymmetricCipherKeyPairAgent.CreateFromPem(pem);
 
         // ### Assert. ###
         // It's back to normal

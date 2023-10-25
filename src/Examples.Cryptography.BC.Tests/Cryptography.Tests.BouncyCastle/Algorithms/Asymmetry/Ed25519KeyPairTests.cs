@@ -1,6 +1,5 @@
-using Examples.Cryptography.BouncyCastle;
+using Examples.Cryptography.BouncyCastle.Algorithms;
 using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
 
 namespace Examples.Cryptography.Tests.BouncyCastle.Algorithms.Asymmetry;
@@ -22,7 +21,8 @@ public class Ed25519KeyPairTests
     private static AsymmetricCipherKeyPair GenerateKeyPair()
     {
         var keyPair = GeneratorUtilities.GetKeyPairGenerator("Ed25519")
-            .Configure(g => g.Init(new Ed25519KeyGenerationParameters(new SecureRandom())))
+            //.Configure(g => g.Init(new Ed25519KeyGenerationParameters(new SecureRandom())))
+            .ConfigureEd25519Key()
             .GenerateKeyPair();
 
         return keyPair;
@@ -37,7 +37,7 @@ public class Ed25519KeyPairTests
 
         // ### Act. ###
         var der = keyPair.ExportPrivateKey();
-        var actual = AsymmetricCipherKeyPairAgent.ImportPrivateKey(der);
+        var actual = AsymmetricCipherKeyPairAgent.CreateFrom(der);
 
         // ### Assert. ###
         // It's back to normal.
@@ -56,7 +56,7 @@ public class Ed25519KeyPairTests
 
         // ### Act. ###
         var pem = keyPair.ExportPrivateKeyPem();
-        var actual = AsymmetricCipherKeyPairAgent.ImportPrivateKeyPem(pem);
+        var actual = AsymmetricCipherKeyPairAgent.CreateFromPem(pem);
 
         // ### Assert. ###
         // It's back to normal

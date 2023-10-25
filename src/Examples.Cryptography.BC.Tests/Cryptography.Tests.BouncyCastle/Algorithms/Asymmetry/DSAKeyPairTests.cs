@@ -1,7 +1,5 @@
-using Examples.Cryptography.BouncyCastle;
+using Examples.Cryptography.BouncyCastle.Algorithms;
 using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Generators;
-using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
 
 namespace Examples.Cryptography.Tests.BouncyCastle.Algorithms.Asymmetry;
@@ -23,13 +21,14 @@ public class DSAKeyPairTests
     private static AsymmetricCipherKeyPair GenerateKeyPair()
     {
         var keyPair = GeneratorUtilities.GetKeyPairGenerator("DSA")
-            .Configure(g =>
-            {
-                var random = new SecureRandom();
-                var paramGen = new DsaParametersGenerator();
-                paramGen.Init(size: 1024, certainty: 80, random);
-                g.Init(new DsaKeyGenerationParameters(random, paramGen.GenerateParameters()));
-            })
+            // .Configure(g =>
+            // {
+            //     var random = new SecureRandom();
+            //     var paramGen = new DsaParametersGenerator();
+            //     paramGen.Init(size: 1024, certainty: 80, random);
+            //     g.Init(new DsaKeyGenerationParameters(random, paramGen.GenerateParameters()));
+            // })
+            .ConfigureDefault()
             .GenerateKeyPair();
 
         return keyPair;
@@ -44,7 +43,7 @@ public class DSAKeyPairTests
 
         // ### Act. ###
         var der = keyPair.ExportDSAPrivateKey();
-        var actual = AsymmetricCipherKeyPairAgent.ImportDSAPrivateKey(der);
+        var actual = AsymmetricCipherKeyPairAgent.CreateDSAPrivateKeyFrom(der);
 
         // ### Assert. ###
         // It's back to normal.
@@ -63,7 +62,7 @@ public class DSAKeyPairTests
 
         // ### Act. ###
         var pem = keyPair.ExportPrivateKeyPem();
-        var actual = AsymmetricCipherKeyPairAgent.ImportPrivateKeyPem(pem);
+        var actual = AsymmetricCipherKeyPairAgent.CreateFromPem(pem);
 
         // ### Assert. ###
         // It's back to normal
