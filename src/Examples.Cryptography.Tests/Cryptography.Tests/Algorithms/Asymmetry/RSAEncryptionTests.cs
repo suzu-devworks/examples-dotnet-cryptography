@@ -1,21 +1,50 @@
+using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace Examples.Cryptography.Tests.Algorithms.Asymmetry;
 
-public class RSAEncryptionTests
+public class RSAEncryptionTests : IDisposable
 {
     private readonly ITestOutputHelper _output;
+    private readonly RSA _keyPair;
 
     public RSAEncryptionTests(ITestOutputHelper output)
     {
+        /// ```shell
+        /// dotnet test --logger "console;verbosity=detailed"
+        /// ```
         _output = output;
+
+        _keyPair = GenerateKeyPair();
     }
 
+    public void Dispose()
+    {
+        _keyPair?.Dispose();
+        GC.SuppressFinalize(this);
+    }
+
+    private RSA GenerateKeyPair()
+    {
+        var sw = Stopwatch.StartNew();
+
+        var key = RSA.Create(keySizeInBits: 2048);
+
+        sw.Stop();
+        _output.WriteLine($"RSA generate time {sw.Elapsed}");
+
+        return key;
+    }
+
+
     [Fact]
-    public void WhenEncryptAndDecrypy()
+    public void WhenDecryptingFromEncryptedData_WorksAsExpected()
     {
         // https://learn.microsoft.com/ja-jp/dotnet/api/system.security.cryptography.rsacryptoserviceprovider?view=net-7.0
+
+        // ### Arrange. ###
+        var provider = _keyPair!;
 
         var input = "Data to Encrypt";
         var actual = (string?)null;
@@ -33,15 +62,15 @@ public class RSAEncryptionTests
             //Create a new instance of RSACryptoServiceProvider to generate
             //public and private key data.
             //> 公開鍵データと秘密鍵データを生成するために、RSACryptoServiceProvider の新しいインスタンスを作成します。
-            //> using var rsaProvider = new RSACryptoServiceProvider(4096);
-            using var rsaProvider = RSA.Create(4096);
+            //> using var rsaProvider = new RSACryptoServiceProvider(2048);
+            //using var rsaProvider = RSA.Create(2048);
 
             //Pass the data to ENCRYPT, the public key information
             //(using RSACryptoServiceProvider.ExportParameters(false),
             //and a boolean flag specifying no OAEP padding.
             //> ENCRYPT に公開鍵データを渡します.
             encryptedData = RSAEncrypt(dataToEncrypt,
-                rsaProvider.ExportParameters(includePrivateParameters: false),
+                provider.ExportParameters(includePrivateParameters: false),
                 doOAEPPadding: false);
 
             //Pass the data to DECRYPT, the private key information
@@ -49,7 +78,7 @@ public class RSAEncryptionTests
             //and a boolean flag specifying no OAEP padding.
             //> DECRYPT に秘密鍵データを渡します。
             decryptedData = RSADecrypt(encryptedData,
-                rsaProvider.ExportParameters(includePrivateParameters: true),
+                provider.ExportParameters(includePrivateParameters: true),
                 doOAEPPadding: false);
 
             actual = converter.GetString(decryptedData);
@@ -136,9 +165,12 @@ public class RSAEncryptionTests
 
 
     [Fact]
-    public void WhenSignData()
+    public void WhenDataSigning_WorksAsExpected()
     {
         // https://learn.microsoft.com/ja-jp/dotnet/api/system.security.cryptography.rsacryptoserviceprovider.signdata?view=net-7.0
+
+        // ### Arrange. ###
+        var provider = _keyPair!;
 
         try
         {
@@ -155,7 +187,7 @@ public class RSAEncryptionTests
             // Create a new instance of the RSACryptoServiceProvider class
             // and automatically create a new key-pair.
             //> var provider = new RSACryptoServiceProvider();
-            var provider = RSA.Create(4096);
+            //var provider = RSA.Create(2048);
 
             // Export the key information to an RSAParameters object.
             // You must pass true to export the private key for signing.
@@ -192,7 +224,7 @@ public class RSAEncryptionTests
             // Create a new instance of RSACryptoServiceProvider using the
             // key from RSAParameters.
             //> var rsa = new RSACryptoServiceProvider();
-            var rsa = RSA.Create();
+            using var rsa = RSA.Create();
 
             rsa.ImportParameters(key);
 
@@ -217,7 +249,7 @@ public class RSAEncryptionTests
             // Create a new instance of RSACryptoServiceProvider using the
             // key from RSAParameters.
             //var rsa = new RSACryptoServiceProvider();
-            var rsa = RSA.Create();
+            using var rsa = RSA.Create();
 
             rsa.ImportParameters(key);
 

@@ -2,36 +2,53 @@ using System.Security.Cryptography;
 
 namespace Examples.Cryptography.Tests.Algorithms.Asymmetry;
 
-public class RSAKeyPairTests
+public class RSAKeyPairTests : IDisposable
 {
     private readonly ITestOutputHelper _output;
+    private readonly RSA _keyPair;
 
     public RSAKeyPairTests(ITestOutputHelper output)
     {
+        /// ```shell
+        /// dotnet test --logger "console;verbosity=detailed"
+        /// ```
         _output = output;
+
+        _keyPair = GenerateKeyPair();
     }
+
+    public void Dispose()
+    {
+        _keyPair?.Dispose();
+        GC.SuppressFinalize(this);
+    }
+
+    private static RSA GenerateKeyPair()
+        => RSA.Create(keySizeInBits: 2048);
 
 
     [Fact]
-    public void WhenExportAndImportPrivateKey()
+    public void WhenImportingFromExportRSAPrivateKey_ReturnsToBeforeExport()
     {
-        // ```sh
-        // $ openssl genrsa -out private.key 4096
+        // ```shell
         // $ openssl rsa -in private.key -inform pem -out private.der -outform der
         // ```
 
-        // Arrange.
-        var keySize = 4096;
+        // ### Arrange. ###
+        var keyPair = _keyPair!;
 
-        // Act.
-        using var provider = RSA.Create(keySize);
-        var exported = provider.ExportRSAPrivateKey();
+        // ### Act. ###
+        var exported = keyPair.ExportRSAPrivateKey();
 
-        using var otherProvider = RSA.Create();
-        otherProvider.ImportRSAPrivateKey(exported, out var readcount);
-        var other = otherProvider.ExportRSAPrivateKey();
+        using var actual = RSA.Create();
+        actual.ImportRSAPrivateKey(exported, out var readcount);
 
-        // Assert.
+        // ### Assert. ###
+        // How to check equals?
+        actual.IsNot(keyPair);
+
+        // Is it a　success if the arrays are equal?.
+        var other = actual.ExportRSAPrivateKey();
         other.Is(exported);
         other.Length.Is(readcount);
 
@@ -40,144 +57,170 @@ public class RSAKeyPairTests
 
 
     [Fact]
-    public void WhenExportAndImportPrivateKeyPem()
+    public void WhenImportingFromExportPrivateKeyPem_ReturnsToBeforeExport()
     {
-        // ```sh
-        // $ openssl genrsa -out private.key 4096
+        // ```shell
+        // $ openssl rsa -in private.der -inform der -out private.key -outform pem
         // ```
 
-        // Arrange.
-        var keySize = 4096;
+        // ### Arrange. ###
+        var keyPair = _keyPair!;
 
-        // Act.
-        using var provider = RSA.Create(keySize);
-        var pem = provider.ExportRSAPrivateKeyPem();
+        // ### Act. ###
+        var pem = keyPair.ExportRSAPrivateKeyPem();
 
-        //File.WriteAllText(@"private.key", pem);
-        _output.WriteLine($"\n{pem}");
+        using var actual = RSA.Create();
+        actual.ImportFromPem(pem);
 
-        using var otherProvider = RSA.Create();
-        otherProvider.ImportFromPem(pem);
-        var other = otherProvider.ExportRSAPrivateKeyPem();
+        // ### Assert. ###
+        // How to check equals?
+        actual.IsNot(keyPair);
 
-        // Assert.
+        // Is it a　success if the arrays are equal?.
+        var other = actual.ExportRSAPrivateKeyPem();
         other.Is(pem);
+
+        // PEM assertions
         pem.Is(x => x.StartsWith("-----BEGIN RSA PRIVATE KEY-----")
                     && x.EndsWith("-----END RSA PRIVATE KEY-----"));
 
+        _output.WriteLine($"{pem}");
+        //File.WriteAllText(@"rsa-private.key", pem);
+
         return;
     }
 
 
     [Fact]
-    public void WhenExportAndImportPrivateKeyXml()
+    public void WhenImportingFromToXmlString_IncludePrivateKey_ReturnsToBeforeExport()
     {
-        // Arrange.
-        var keySize = 4096;
+        // ### Arrange. ###
+        var keyPair = (RSA)_keyPair;
 
-        // Act.
-        using var provider = RSA.Create(keySize);
-        var xml = provider.ToXmlString(includePrivateParameters: true);
+        // ### Act. ###
+        var xml = keyPair.ToXmlString(includePrivateParameters: true);
 
-        _output.WriteLine($"\n{xml}");
+        using var actual = RSA.Create();
+        actual.FromXmlString(xml);
 
-        using var otherProvider = RSA.Create();
-        otherProvider.FromXmlString(xml);
+        // ### Assert. ###
+        // How to check equals?
+        actual.IsNot(keyPair);
 
-        var other = otherProvider.ToXmlString(includePrivateParameters: true);
-
-        // Assert.
+        // Is it a　success if the arrays are equal?.
+        var other = actual.ToXmlString(includePrivateParameters: true);
         other.Is(xml);
 
+        _output.WriteLine($"{xml}");
+        //File.WriteAllText(@"rsa-private.xml", xml);
+
         return;
     }
 
 
     [Fact]
-    public void WhenExportAndImportPublicKey()
+    public void WhenImportingFromExportRSAPublicKey_ReturnsOnlyPublicKey()
     {
-        //```sh
-        // $ openssl genrsa -out private.key 4096
+        //```shell
         // $ openssl rsa -pubout -in private.key -inform pem -out public.key -outform der
         //```
 
-        // Arrange.
-        var keySize = 4096;
+        // ### Arrange. ###
+        var keyPair = (RSA)_keyPair;
 
-        // Act.
-        using var provider = RSA.Create(keySize);
-        var exported = provider.ExportRSAPublicKey();
+        // ### Act. ###
+        var exported = keyPair.ExportRSAPublicKey();
 
-        using var otherProvider = RSA.Create();
-        otherProvider.ImportRSAPublicKey(exported, out var readcount);
-        var other = otherProvider.ExportRSAPublicKey();
+        using var actual = RSA.Create();
+        actual.ImportRSAPublicKey(exported, out var readcount);
 
-        // Assert.
+        // ### Assert. ###
+        // How to check equals?
+        actual.IsNot(keyPair);
+
+        // Is it a　success if the arrays are equal?.
+        var other = actual.ExportRSAPublicKey();
         other.Is(exported);
         other.Length.Is(readcount);
-        Assert.Throws<CryptographicException>(() => otherProvider.ExportRSAPrivateKey());
+
+        // Exporting the private key will fail
+        // because only the public key has been restored.
+        Assert.Throws<CryptographicException>(() =>
+            actual.ExportRSAPrivateKey());
 
         return;
     }
 
 
     [Fact]
-    public void WhenExportAndImportPublicKeyPem()
+    public void WhenImportingFromExportRSAPublicKeyPem_ReturnsOnlyPublicKey()
     {
-        //```sh
-        // $ openssl genrsa -out private.key 4096
+        //```shell
         // $ openssl rsa -pubout -in private.key -out public.key
         //```
 
-        // Arrange.
-        var keySize = 4096;
+        // ### Arrange. ###
+        var keyPair = (RSA)_keyPair;
 
-        // Act.
-        using var provider = RSA.Create(keySize);
-        var pem = provider.ExportRSAPublicKeyPem();
+        // ### Act. ###
+        var pem = keyPair.ExportRSAPublicKeyPem();
 
-        //File.WriteAllText(@"public.key", pem);
-        _output.WriteLine($"\n{pem}");
+        using var actual = RSA.Create();
+        actual.ImportFromPem(pem);
 
-        using var otherProvider = RSA.Create();
-        otherProvider.ImportFromPem(pem);
-        var other = otherProvider.ExportRSAPublicKeyPem();
+        // ### Assert. ###
+        // How to check equals?
+        actual.IsNot(keyPair);
 
-        // Assert.
+        // Is it a　success if the arrays are equal?.
+        var other = actual.ExportRSAPublicKeyPem();
         other.Is(pem);
+
+        // PEM assertions
         pem.Is(x => x.StartsWith("-----BEGIN RSA PUBLIC KEY-----")
                     && x.EndsWith("-----END RSA PUBLIC KEY-----"));
 
+        _output.WriteLine($"{pem}");
+        //File.WriteAllText(@"rsa-public.key", pem);
+
+        // Exporting the private key will fail
+        // because only the public key has been restored.
         Assert.Throws<CryptographicException>(() =>
-            otherProvider.ExportRSAPrivateKeyPem());
+            actual.ExportRSAPrivateKeyPem());
 
         return;
     }
 
 
     [Fact]
-    public void WhenExportAndImportPublicKeyXml()
+    public void WhenImportingFromToXmlString_WithExcludePrivateKey_ReturnsOnlyPublicKey()
     {
-        // Arrange.
-        var keySize = 4096;
+        // ### Arrange. ###
+        var keyPair = (RSA)_keyPair;
 
-        // Act.
-        using var provider = RSA.Create(keySize);
-        var xml = provider.ToXmlString(includePrivateParameters: false);
+        // ### Act. ###
+        var xml = keyPair.ToXmlString(includePrivateParameters: false);
 
-        _output.WriteLine($"\n{xml}");
+        using var actual = RSA.Create();
+        actual.FromXmlString(xml);
 
-        using var otherProvider = RSA.Create();
-        otherProvider.FromXmlString(xml);
-        var other = otherProvider.ToXmlString(includePrivateParameters: false);
+        // ### Assert. ###
+        // How to check equals?
+        actual.IsNot(keyPair);
 
-        // Assert.
+        // Is it a　success if the arrays are equal?.
+        var other = actual.ToXmlString(includePrivateParameters: false);
         other.Is(xml);
+
+        _output.WriteLine($"{xml}");
+        //File.WriteAllText(@"rsa-public.xml", xml);
+
+        // Exporting the private key will fail
+        // because only the public key has been restored.
         Assert.Throws<CryptographicException>(() =>
-            otherProvider.ExportRSAPrivateKeyPem());
+            actual.ToXmlString(includePrivateParameters: true));
 
         return;
     }
-
 
 }
