@@ -92,7 +92,7 @@ public class RSAKeyPairTests
 
 
     [Fact]
-    public void WhenConverrtingPrivateKeyFromMicrofot_DoExportedResulesIsMatch()
+    public void WhenConvertingPrivateKeyFromMicrosoft_DoExportedResultsIsMatch()
     {
         // ### Arrange. ###
         // generate System.Security.Cryptography.ECDsa KeyPair.

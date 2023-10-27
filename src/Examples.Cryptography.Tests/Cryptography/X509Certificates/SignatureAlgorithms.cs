@@ -19,7 +19,7 @@ public static class SignatureAlgorithms
     public static readonly Oid sha384ECDSA = new("1.2.840.10045.4.3.3");
     public static readonly Oid sha512ECDSA = new("1.2.840.10045.4.3.4");
 
-    private static readonly Dictionary<string, HashAlgorithmName> hashs = new()
+    private static readonly Dictionary<string, HashAlgorithmName> hashes = new()
     {
         [sha1RSA.Value!] = HashAlgorithmName.SHA1,
         [sha256RSA.Value!] = HashAlgorithmName.SHA256,
@@ -31,13 +31,13 @@ public static class SignatureAlgorithms
     };
 
     /// <summary>
-    /// Converts signunature OID to <see cref="HashAlgorithmName"/> entry.
+    /// Converts signature OID to <see cref="HashAlgorithmName"/> entry.
     /// </summary>
-    /// <param name="signunature">The signunature OID.</param>
+    /// <param name="signature">The signature OID.</param>
     /// <returns>A <see cref="HashAlgorithmName" />An entry.</returns>
-    public static HashAlgorithmName? GetHashAlgorithmName(Oid signunature)
+    public static HashAlgorithmName? GetHashAlgorithmName(Oid signature)
     {
-        if (hashs.TryGetValue(signunature.Value ?? "unknown", out var hashName))
+        if (hashes.TryGetValue(signature.Value ?? "unknown", out var hashName))
         {
             return hashName;
         }

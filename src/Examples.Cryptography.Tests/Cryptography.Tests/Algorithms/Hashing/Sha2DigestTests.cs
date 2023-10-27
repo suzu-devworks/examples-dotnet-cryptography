@@ -3,6 +3,8 @@ using Examples.Fluency;
 
 namespace Examples.Cryptography.Tests.Algorithms.Hashing;
 
+#pragma warning disable IDE0063
+
 public class Sha2DigestTests : IClassFixture<HashingDataFixture>
 {
     private readonly HashingDataFixture _fixture;

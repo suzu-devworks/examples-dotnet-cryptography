@@ -21,10 +21,10 @@ public static class X509CertificateLoggingExtensions
     {
         var builder = new StringBuilder();
 
-        builder.AppendLebelLine(indent, "subject", $"{certificate.SubjectDN}");
-        builder.AppendLebelLine(indent, "issuer", $"{certificate.IssuerDN}");
-        builder.AppendLebelLine(indent, "serialNumber", $"{certificate.SerialNumber}");
-        builder.AppendLebelLine(indent, "notAfter", $"{certificate.NotAfter}");
+        builder.AppendLevelLine(indent, "subject", $"{certificate.SubjectDN}");
+        builder.AppendLevelLine(indent, "issuer", $"{certificate.IssuerDN}");
+        builder.AppendLevelLine(indent, "serialNumber", $"{certificate.SerialNumber}");
+        builder.AppendLevelLine(indent, "notAfter", $"{certificate.NotAfter}");
 
         if (showDetail)
         {
@@ -48,7 +48,7 @@ public static class X509CertificateLoggingExtensions
             .Select((x, i) => (x, i)))
         {
             var ext = extensions.GetExtension(oid);
-            builder.AppendLebelLine(indent + 1, $"[{index}]", $"critical({ext.IsCritical}) {oid} value = {ext.Value}");
+            builder.AppendLevelLine(indent + 1, $"[{index}]", $"critical({ext.IsCritical}) {oid} value = {ext.Value}");
         }
 
         return builder.ToString();

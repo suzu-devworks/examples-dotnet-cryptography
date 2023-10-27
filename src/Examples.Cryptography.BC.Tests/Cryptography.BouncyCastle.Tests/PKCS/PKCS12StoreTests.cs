@@ -26,7 +26,7 @@ public class PKCS12StoreTests : IClassFixture<PKCSDataFixture>
 
         var (_, rootCert) = _fixture.RootCaSet;
         var (_, caCert) = _fixture.IntermediateCaSet;
-        var (entiryKeyPair, entityCert) = _fixture.EndEntitySet;
+        var (entryKeyPair, entityCert) = _fixture.EndEntitySet;
 
         X509CertificateEntry[] chain = new[] {
             new X509CertificateEntry(entityCert),
@@ -39,7 +39,7 @@ public class PKCS12StoreTests : IClassFixture<PKCSDataFixture>
             [PkcsObjectIdentifiers.Pkcs9AtFriendlyName]
                 = new DerBmpString("My Key"),
             [PkcsObjectIdentifiers.Pkcs9AtLocalKeyID]
-                = new SubjectKeyIdentifierStructure(entiryKeyPair.Public),
+                = new SubjectKeyIdentifierStructure(entryKeyPair.Public),
         };
 
         Pkcs12Store store = new Pkcs12StoreBuilder()
@@ -50,7 +50,7 @@ public class PKCS12StoreTests : IClassFixture<PKCSDataFixture>
             //.SetCertAlgorithm(NistObjectIdentifiers.IdAes256Cbc) // error?.
             .Build();
 
-        store.SetKeyEntry("My Key", new AsymmetricKeyEntry(entiryKeyPair.Private, bagAttr), chain);
+        store.SetKeyEntry("My Key", new AsymmetricKeyEntry(entryKeyPair.Private, bagAttr), chain);
 
         // MAC: sha1, Iteration 1024. only ?
         // https://github.com/bcgit/bc-csharp/blob/master/crypto/src/pkcs/Pkcs12Store.cs#L950
@@ -89,7 +89,7 @@ public class PKCS12StoreTests : IClassFixture<PKCSDataFixture>
         others.Count.Is(1);
         others.Aliases.Is(new[] { "My Key" });
 
-        importedKey.Key.Is(entiryKeyPair.Private);
+        importedKey.Key.Is(entryKeyPair.Private);
         importedCert.Certificate.Is(entityCert);
         importedChain.Is(chain);
 

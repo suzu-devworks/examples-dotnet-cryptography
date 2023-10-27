@@ -1,6 +1,7 @@
 using System.Text;
 using Examples.Cryptography.BouncyCastle.Logging;
 using Examples.Cryptography.BouncyCastle.PKIX;
+using Examples.Cryptography.Generics;
 using Org.BouncyCastle.Asn1.Nist;
 using Org.BouncyCastle.Asn1.Tsp;
 using Org.BouncyCastle.Asn1.X509;

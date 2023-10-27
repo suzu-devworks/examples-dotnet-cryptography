@@ -1,7 +1,7 @@
 using System.Text;
 using Examples.Cryptography.BouncyCastle.Algorithms;
-using Examples.Cryptography.BouncyCastle.PKIX;
 using Examples.Cryptography.BouncyCastle.X509;
+using Examples.Cryptography.Generics;
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.Nist;
 using Org.BouncyCastle.Asn1.Ocsp;
@@ -71,7 +71,7 @@ public class TimeStampDataFixture : IDisposable
             .WithRootCA(
                 keyPair.Public,
                 new X509Name("C=JP,CN=Test CA root for TSA"))
-            .SetValidity(notBefore.UtcDateTime, days)
+            .SetValidityPeriod(notBefore.UtcDateTime, days)
             .Generate(keyPair.Private.CreateDefaultSignature());
 
         return (keyPair, cert);
@@ -97,7 +97,7 @@ public class TimeStampDataFixture : IDisposable
                 subject: new X509Name("C=JP,CN=Test TSA"),
                 issuerCert,
                 serial)
-            .SetValidity(notBefore.UtcDateTime, days)
+            .SetValidityPeriod(notBefore.UtcDateTime, days)
             .Configure(gen =>
             {
                 gen.AddExtension(X509Extensions.KeyUsage,
@@ -156,7 +156,7 @@ public class TimeStampDataFixture : IDisposable
                 subject: new X509Name("C=JP,CN=Test TSA"),
                 issuerCert,
                 serial)
-            .SetValidity(notBefore.UtcDateTime, days)
+            .SetValidityPeriod(notBefore.UtcDateTime, days)
             .Configure(gen =>
             {
                 gen.AddExtension(X509Extensions.KeyUsage,
@@ -196,9 +196,9 @@ public class TimeStampDataFixture : IDisposable
                         distributionPoint: new DistributionPointName(
                             new GeneralNames(new GeneralName(issuerCert.SubjectDN))
                         ),
-                        // only include end entity public key cerrtificates.
+                        // only include end entity public key certificates.
                         onlyContainsAttributeCerts: false,
-                        // only include CA cerrtificates.
+                        // only include CA certificates.
                         onlyContainsCACerts: false,
                         onlySomeReasons: null,
                         // only include certificates issued by the CRL issuer.

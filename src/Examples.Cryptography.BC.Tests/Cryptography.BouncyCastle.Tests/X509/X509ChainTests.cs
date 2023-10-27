@@ -39,7 +39,7 @@ public class X509ChainTests : IClassFixture<X509DataFixture>
             Subject = ee.SubjectDN
         };
 
-        var trustanchors = new HashSet<TrustAnchor>
+        var trustAnchors = new HashSet<TrustAnchor>
         {
             new(root, null)
         };
@@ -48,7 +48,7 @@ public class X509ChainTests : IClassFixture<X509DataFixture>
             = CollectionUtilities.CreateStore(certs);
 
         // ### Act. ###
-        var parameters = new PkixBuilderParameters(trustanchors, selector)
+        var parameters = new PkixBuilderParameters(trustAnchors, selector)
         {
             IsRevocationEnabled = false
         };

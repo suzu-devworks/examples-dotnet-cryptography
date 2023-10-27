@@ -53,11 +53,11 @@ public static class OcspRespLoggingExtensions
 
         var builder = new StringBuilder();
 
-        builder.AppendLebelLine(indent, "OcspResp");
-        builder.AppendLebelLine(indent + 1, "responseStatus", $"{response.Status}");
-        builder.AppendLebelLine(indent + 1, "responseBytes");
-        builder.AppendLebelLine(indent + 2, "responseType", "id-pkix-ocsp-basic(1.3.6.1.5.5.7.48.1.1)");
-        builder.AppendLebelLine(indent + 2, "response (BasicOCSPResponse)");
+        builder.AppendLevelLine(indent, "OcspResp");
+        builder.AppendLevelLine(indent + 1, "responseStatus", $"{response.Status}");
+        builder.AppendLevelLine(indent + 1, "responseBytes");
+        builder.AppendLevelLine(indent + 2, "responseType", "id-pkix-ocsp-basic(1.3.6.1.5.5.7.48.1.1)");
+        builder.AppendLevelLine(indent + 2, "response (BasicOCSPResponse)");
         builder.Append(basic.DumpAsString(indent + 3));
 
         return builder.ToString();
@@ -91,41 +91,41 @@ public static class OcspRespLoggingExtensions
 
         var builder = new StringBuilder();
 
-        builder.AppendLebelLine(indent, "tbsResponseData");
-        builder.AppendLebelLine(indent + 1, "version", $"{basic.Version}");
-        builder.AppendLebelLine(indent + 1, "responderID");
+        builder.AppendLevelLine(indent, "tbsResponseData");
+        builder.AppendLevelLine(indent + 1, "version", $"{basic.Version}");
+        builder.AppendLevelLine(indent + 1, "responderID");
         builder.Append(basic.ResponderId.DumpAsString(indent + 2));
 
-        builder.AppendLebelLine(indent + 1, "producedAt", $"{basic.ProducedAt}");
-        builder.AppendLebelLine(indent + 1, "responses");
+        builder.AppendLevelLine(indent + 1, "producedAt", $"{basic.ProducedAt}");
+        builder.AppendLevelLine(indent + 1, "responses");
 
         foreach (var (single, index) in basic.Responses
             .Select((x, i) => (x, i)))
         {
-            builder.AppendLebelLine(indent + 2, $"[{index}]");
+            builder.AppendLevelLine(indent + 2, $"[{index}]");
             builder.Append(single.DumpAsString(indent + 3));
         }
 
         if (basic.ResponseExtensions?.GetExtensionOids().Any() ?? false)
         {
             // OPTIONS
-            builder.AppendLebelLine(indent + 1, "responseExtensions");
+            builder.AppendLevelLine(indent + 1, "responseExtensions");
             builder.Append(basic.ResponseExtensions.DumpAsString(indent + 1));
         }
 
-        builder.AppendLebelLine(indent, "signatureAlgorithm");
-        builder.AppendLebelLine(indent + 1, "algorithm", basic.SignatureAlgOid);
-        builder.AppendLebelLine(indent, "signature", basic.GetSignature().ToBase64String());
+        builder.AppendLevelLine(indent, "signatureAlgorithm");
+        builder.AppendLevelLine(indent + 1, "algorithm", basic.SignatureAlgOid);
+        builder.AppendLevelLine(indent, "signature", basic.GetSignature().ToBase64String());
 
         if (basic.GetCerts().Any())
         {
             // OPTIONS
-            builder.AppendLebelLine(indent, "certs");
+            builder.AppendLevelLine(indent, "certs");
 
             foreach (var (cert, index) in basic.GetCerts()
                 .Select((x, i) => (x, i)))
             {
-                builder.AppendLebelLine(indent + 2, $"[{index}]");
+                builder.AppendLevelLine(indent + 2, $"[{index}]");
                 builder.Append(cert.DumpAsString(indent + 3));
             }
         }
@@ -148,11 +148,11 @@ public static class OcspRespLoggingExtensions
 
         if (asn1.Name is not null)
         {
-            builder.AppendLebelLine(indent, "byName", $"{asn1.Name}");
+            builder.AppendLevelLine(indent, "byName", $"{asn1.Name}");
         }
         else
         {
-            builder.AppendLebelLine(indent, "byKey (SHA-1)", $"{asn1.GetKeyHash().ToBase64String()}");
+            builder.AppendLevelLine(indent, "byKey (SHA-1)", $"{asn1.GetKeyHash().ToBase64String()}");
         }
 
         return builder.ToString();
@@ -191,28 +191,28 @@ public static class OcspRespLoggingExtensions
 
         var builder = new StringBuilder();
 
-        builder.AppendLebelLine(indent, "certID");
+        builder.AppendLevelLine(indent, "certID");
         builder.Append(single.GetCertID().DumpAsString(indent + 1));
 
-        builder.AppendLebelLine(indent, "certStatus", $"{status}");
+        builder.AppendLevelLine(indent, "certStatus", $"{status}");
         if (single.GetCertStatus() is RevokedStatus revoke)
         {
-            builder.AppendLebelLine(indent + 1, "revocationTime", $"{revoke.RevocationTime}");
-            builder.AppendLebelLine(indent + 1, "revocationReason", $"{revoke.RevocationReason}");
+            builder.AppendLevelLine(indent + 1, "revocationTime", $"{revoke.RevocationTime}");
+            builder.AppendLevelLine(indent + 1, "revocationReason", $"{revoke.RevocationReason}");
         }
 
-        builder.AppendLebelLine(indent, "thisUpdate", $"{single.ThisUpdate}");
+        builder.AppendLevelLine(indent, "thisUpdate", $"{single.ThisUpdate}");
 
         if (single.NextUpdate is not null)
         {
             // OPTIONAL
-            builder.AppendLebelLine(indent, "nextUpdate", $"{single.NextUpdate}");
+            builder.AppendLevelLine(indent, "nextUpdate", $"{single.NextUpdate}");
         }
 
         if (single.SingleExtensions?.GetExtensionOids().Any() ?? false)
         {
             // OPTIONAL
-            builder.AppendLebelLine(indent, "singleExtensions");
+            builder.AppendLevelLine(indent, "singleExtensions");
             builder.Append(single.SingleExtensions.DumpAsString(indent));
         }
 
@@ -232,11 +232,11 @@ public static class OcspRespLoggingExtensions
 
         var builder = new StringBuilder();
 
-        builder.AppendLebelLine(indent, "hashAlgorithm");
-        builder.AppendLebelLine(indent + 1, "algorithm", certId.HashAlgOid);
-        builder.AppendLebelLine(indent, "issuerNameHash", $"{certId.GetIssuerNameHash().ToBase64String()}");
-        builder.AppendLebelLine(indent, "issuerKeyHash", $"{certId.GetIssuerKeyHash().ToBase64String()}");
-        builder.AppendLebelLine(indent, "serialNumber", $"{certId.SerialNumber}");
+        builder.AppendLevelLine(indent, "hashAlgorithm");
+        builder.AppendLevelLine(indent + 1, "algorithm", certId.HashAlgOid);
+        builder.AppendLevelLine(indent, "issuerNameHash", $"{certId.GetIssuerNameHash().ToBase64String()}");
+        builder.AppendLevelLine(indent, "issuerKeyHash", $"{certId.GetIssuerKeyHash().ToBase64String()}");
+        builder.AppendLevelLine(indent, "serialNumber", $"{certId.SerialNumber}");
 
         return builder.ToString();
     }

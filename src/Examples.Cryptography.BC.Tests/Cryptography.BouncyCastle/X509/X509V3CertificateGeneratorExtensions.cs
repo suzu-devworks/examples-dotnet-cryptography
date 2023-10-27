@@ -12,27 +12,13 @@ namespace Examples.Cryptography.BouncyCastle.X509;
 public static class X509V3CertificateGeneratorExtensions
 {
     /// <summary>
-    /// Call delegate to confine the settings to <see cref="X509V3CertificateGenerator" /> to the function scope.
-    /// </summary>
-    /// <param name="generator">The <see cref="X509V3CertificateGenerator" /> instance.</param>
-    /// <param name="configureAction">A delegate for setting.</param>
-    /// <returns>The <see cref="X509V3CertificateGenerator" /> Instances for daisy chaining</returns>
-    public static X509V3CertificateGenerator Configure(this X509V3CertificateGenerator generator,
-        Action<X509V3CertificateGenerator> configureAction)
-    {
-        configureAction.Invoke(generator);
-
-        return generator;
-    }
-
-    /// <summary>
     /// Sets expiration date to <see cref="X509V3CertificateGenerator" />.
     /// </summary>
     /// <param name="generator">The <see cref="X509V3CertificateGenerator" /> instance.</param>
     /// <param name="now">The expiration start date. This will be <c>NotBefore</c>.</param>
     /// <param name="days">The number of valid days. Adding this value will result in <c>NotAfter</c>.</param>
     /// <returns>The <see cref="X509V3CertificateGenerator" /> Instances for daisy chaining</returns>
-    public static X509V3CertificateGenerator SetValidity(this X509V3CertificateGenerator generator,
+    public static X509V3CertificateGenerator SetValidityPeriod(this X509V3CertificateGenerator generator,
         DateTime now,
         int days)
     {
@@ -73,17 +59,17 @@ public static class X509V3CertificateGeneratorExtensions
     }
 
     /// <summary>
-    /// Configure basic settings for intermidiate CA.
+    /// Configure basic settings for intermediate CA.
     /// </summary>
     /// <param name="generator">The <see cref="X509V3CertificateGenerator" /> instance.</param>
-    /// <param name="publicKey">The intermidiate CA public key.</param>
-    /// <param name="subject">The intermidiate CA subject.</param>
+    /// <param name="publicKey">The intermediate CA public key.</param>
+    /// <param name="subject">The intermediate CA subject.</param>
     /// <param name="issuerCert">The issuer certificate.</param>
     /// <param name="serial">A Serial number issued by issuer.</param>
     /// <param name="pathLenConstraint">PathLength value to set in BasicConstraints.
     /// Without this, you cannot chain.</param>
     /// <returns>The <see cref="X509V3CertificateGenerator" /> Instances for daisy chaining</returns>
-    public static X509V3CertificateGenerator WithIntermidiateCA(this X509V3CertificateGenerator generator,
+    public static X509V3CertificateGenerator WithIntermediateCA(this X509V3CertificateGenerator generator,
         AsymmetricKeyParameter publicKey,
         X509Name subject,
         X509Certificate issuerCert,

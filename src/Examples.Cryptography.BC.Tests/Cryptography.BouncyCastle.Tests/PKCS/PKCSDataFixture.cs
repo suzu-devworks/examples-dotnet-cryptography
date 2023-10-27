@@ -1,5 +1,6 @@
 using Examples.Cryptography.BouncyCastle.Algorithms;
 using Examples.Cryptography.BouncyCastle.X509;
+using Examples.Cryptography.Generics;
 using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Math;
@@ -52,7 +53,7 @@ public class PKCSDataFixture : IDisposable
             .WithRootCA(
                 keyPair.Public,
                 new X509Name("C=JP,CN=Test CA root for PKCS"))
-            .SetValidity(notBefore.UtcDateTime, days)
+            .SetValidityPeriod(notBefore.UtcDateTime, days)
             .Generate(keyPair.Private.CreateDefaultSignature());
 
         return (keyPair, cert);
@@ -70,13 +71,13 @@ public class PKCSDataFixture : IDisposable
           .GenerateKeyPair();
 
         var cert = new X509V3CertificateGenerator()
-          .WithIntermidiateCA(
+          .WithIntermediateCA(
                 keyPair.Public,
                 new X509Name($"C=JP,CN=Test CA for PKCS"),
                 issuerCert,
                 serial: BigInteger.One,
                 pathLenConstraint: 1)
-          .SetValidity(notBefore.UtcDateTime, days)
+          .SetValidityPeriod(notBefore.UtcDateTime, days)
           .Generate(issuerKeyPair.Private.CreateDefaultSignature());
 
         return (keyPair, cert);
@@ -102,7 +103,7 @@ public class PKCSDataFixture : IDisposable
                 subject: new X509Name("C=JP,CN=Test PKCS"),
                 issuerCert,
                 serial)
-            .SetValidity(notBefore.UtcDateTime, days)
+            .SetValidityPeriod(notBefore.UtcDateTime, days)
             .Configure(gen => gen.AddExtension(X509Extensions.KeyUsage, critical: true,
                 new KeyUsage(KeyUsage.DigitalSignature)))
             .Generate(issuerKeyPair.Private.CreateDefaultSignature());

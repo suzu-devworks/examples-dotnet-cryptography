@@ -57,7 +57,7 @@ public static class CertificateRequestExtensions
     /// </summary>
     /// <param name="request">The <see cref="CertificateRequest" /> instance.</param>
     /// <typeparam name="T">The derived class of <see cref="X509Extension" />.</typeparam>
-    /// <returns>An extention entry.</returns>
+    /// <returns>An extension entry.</returns>
     public static T? GetExtension<T>(this CertificateRequest request)
         where T : X509Extension
     {
