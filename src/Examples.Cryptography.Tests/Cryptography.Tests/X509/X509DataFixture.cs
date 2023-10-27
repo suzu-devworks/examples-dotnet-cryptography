@@ -88,8 +88,8 @@ public class X509DataFixture : IDisposable
                 .AddAuthorityKeyIdentifierExtension(issuerCert)
                 .AddExtension(X509BasicConstraintsExtension.CreateForCertificateAuthority(numOfCerts - 2 - i));
 
-            var serial = (255L + i).ToSerialNumberBytes();
-            var cert = request.Create(issuerCert.SubjectName, issuerKeyPair, notBefore, notAfter, serial);
+            var serial = new CertificateSerialNumber(255L + i).ToBytes();
+            var cert = request.CreateCertificate(issuerCert.SubjectName, issuerKeyPair, notBefore, notAfter, serial);
 
             //File.WriteAllText($"CA-{255 + i}.crt", intermediateCert.ExportCertificatePem());
 
@@ -121,8 +121,8 @@ public class X509DataFixture : IDisposable
             .AddAuthorityKeyIdentifierExtension(issuerCert)
             .AddExtension(X509BasicConstraintsExtension.CreateForEndEntity());
 
-        var serial = new Random().CreateSerialNumber();
-        var cert = request.Create(issuerCert.SubjectName, issuerKeyPair, notBefore, notAfter, serial);
+        var serial = new CertificateSerialNumber(100, new Random()).ToBytes();
+        var cert = request.CreateCertificate(issuerCert.SubjectName, issuerKeyPair, notBefore, notAfter, serial);
 
         //File.WriteAllText($"EE.crt", intermediateCert.ExportCertificatePem());
 

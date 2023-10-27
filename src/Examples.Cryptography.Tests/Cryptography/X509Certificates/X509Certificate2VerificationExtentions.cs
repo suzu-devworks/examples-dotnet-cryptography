@@ -4,28 +4,46 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Examples.Cryptography.X509Certificates;
 
-public static class X509Certificate2VetificationExtentions
+/// <summary>
+/// Extension methods for <see cref="X509Certificate2" />.
+/// </summary>
+public static class X509Certificate2VerificationExtentions
 {
-    public static void VerifySignature(this X509Certificate2 cert,
-        X509Certificate2 signedBy)
+    /// <summary>
+    /// Validates the certificate signature using the signer certificate,
+    /// Generates an exception if it fails.
+    /// </summary>
+    /// <param name="certificate">The Certificate to verify.</param>
+    /// <param name="signer">The signed certificate.</param>
+    /// <exception cref="NotSupportedException">If you are using an unsupported signature algorithm.</exception>
+    public static void ValidateSignature(this X509Certificate2 certificate,
+        X509Certificate2 signer)
     {
-        if (!cert.VerifiesSignature(signedBy))
+        if (!certificate.VerifiesSignature(signer))
         {
-            throw new ApplicationException($"A public key was presented that is not for certificate signing.");
+            throw new InvalidDataException("A public key was presented that is not for certificate signing.");
         }
     }
 
+    /// <summary>
+    /// Verifies the certificate signature with the signer certificate.
+    /// </summary>
+    /// <param name="certificate">The Certificate to verify.</param>
+    /// <param name="signer">The signed certificate.</param>
+    /// <returns>true if signature matches the signature computed using the specified hash algorithm;
+    /// otherwise, false.</returns>
+    /// <exception cref="NotSupportedException">If you are using an unsupported signature algorithm.</exception>
     /// <seealso href="https://security.stackexchange.com/questions/43172/evaluate-the-signature-of-an-x509-certificate-in-net" />
     public static bool VerifiesSignature(this X509Certificate2 certificate,
-        X509Certificate2 signedBy)
+        X509Certificate2 signer)
     {
         var signature = certificate.Signature();
         var tbs = certificate.TbsCertificate();
         var hash = SignatureAlgorithms.GetHashAlgorithmName(certificate.SignatureAlgorithm)
-            ?? throw new NotSupportedException($"Unsupported SignatureAlgorithm \"{certificate.SignatureAlgorithm.FriendlyName}\"");
+            ?? throw new NotSupportedException($"Unsupported SignatureAlgorithm \"{certificate.SignatureAlgorithm.FriendlyName}\".");
 
-        using var rsa = signedBy.GetRSAPublicKey();
-        using var ecdsa = signedBy.GetECDsaPublicKey();
+        using var rsa = signer.GetRSAPublicKey();
+        using var ecdsa = signer.GetECDsaPublicKey();
 
         var algo = certificate.SignatureAlgorithm;
         switch (algo)
@@ -44,21 +62,22 @@ public static class X509Certificate2VetificationExtentions
                 return ecdsa?.VerifyData(tbs, signature, hash, DSASignatureFormat.Rfc3279DerSequence) ?? false;
 
             default:
-                throw new NotSupportedException($"Unsupported AsymmetricAlgorithm.");
+                throw new NotSupportedException($"Unsupported AsymmetricAlgorithm \"{algo.Value}\".");
         }
     }
 
-    // https://tex2e.github.io/rfc-translater/html/rfc5280.html#4-1--Basic-Certificate-Fields
-    //
-    // Certificate  ::=  SEQUENCE  {
-    //     tbsCertificate TBSCertificate (SEQUENCE),
-    //     signatureAlgorithm   AlgorithmIdentifier (SEQUENCE),
-    //     signatureValue BIT STRING
-    // }
 
     private static byte[] Signature(this X509Certificate2 certificate,
         AsnEncodingRules encodingRules = AsnEncodingRules.BER)
     {
+        // https://tex2e.github.io/rfc-translater/html/rfc5280.html#4-1--Basic-Certificate-Fields
+        //
+        // Certificate  ::=  SEQUENCE  {
+        //     tbsCertificate TBSCertificate (SEQUENCE),
+        //     signatureAlgorithm   AlgorithmIdentifier (SEQUENCE),
+        //     signatureValue BIT STRING
+        // }
+
         var signedData = certificate.RawDataMemory;
         AsnDecoder.ReadSequence(
             signedData.Span,
@@ -118,4 +137,5 @@ public static class X509Certificate2VetificationExtentions
         // include ASN1 4 byte header to get WHOLE TBS Cert
         return certificateSpan[..(tbsLength + tbsOffset)];
     }
+
 }

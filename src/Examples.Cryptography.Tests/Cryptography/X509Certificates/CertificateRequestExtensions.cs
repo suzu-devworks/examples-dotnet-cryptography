@@ -3,18 +3,34 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Examples.Cryptography.X509Certificates;
 
+/// <summary>
+/// Extension methods for <see cref="CertificateRequest" />.
+/// </summary>
 public static class CertificateRequestExtensions
 {
-    public static X509Certificate2 Create(this CertificateRequest request,
+    /// <summary>
+    /// Creates <see cref="X509Certificate2" /> instance from <see cref="CertificateRequest" />.
+    /// </summary>
+    /// <param name="request">The <see cref="CertificateRequest" /> instance.</param>
+    /// <param name="issuerName">The <see cref="X500DistinguishedName" /> for the issuer.</param>
+    /// <param name="issuerKeyPair">The issuer key pair.</param>
+    /// <param name="notBefore">The oldest date and time when this certificate is considered valid.</param>
+    /// <param name="notAfter">The date and time when this certificate is no longer considered valid.</param>
+    /// <param name="serialNumber">The serial number to use for the new certificate.</param>
+    /// <returns>A <see cref="X509Certificate2" /> instance.</returns>
+    public static X509Certificate2 CreateCertificate(this CertificateRequest request,
         X500DistinguishedName issuerName,
         AsymmetricAlgorithm issuerKeyPair,
         DateTimeOffset notBefore,
         DateTimeOffset notAfter,
         byte[] serialNumber)
     {
-        var generator = (issuerKeyPair is ECDsa dsa)
-            ? X509SignatureGenerator.CreateForECDsa(dsa)
-            : X509SignatureGenerator.CreateForRSA((RSA)issuerKeyPair, RSASignaturePadding.Pkcs1);
+        var generator = issuerKeyPair switch
+        {
+            ECDsa ecdsa => X509SignatureGenerator.CreateForECDsa(ecdsa),
+            RSA rsa => X509SignatureGenerator.CreateForRSA(rsa, RSASignaturePadding.Pkcs1),
+            _ => throw new NotSupportedException($"not supported {issuerKeyPair.GetType()}"),
+        };
 
         var newCertificate = request.Create(issuerName, generator,
             notBefore, notAfter, serialNumber);
@@ -22,126 +38,150 @@ public static class CertificateRequestExtensions
         return newCertificate;
     }
 
-    public static CertificateRequest AddExtension(this CertificateRequest req,
+    /// <summary>
+    /// Adds X.509 v3 extensions to <see cref="CertificateRequest" />.
+    /// </summary>
+    /// <param name="request">The <see cref="CertificateRequest" /> instance.</param>
+    /// <param name="extension">The <see cref="X509Extension" /> instance.</param>
+    /// <returns>An extended <see cref="CertificateRequest" /> instance.</returns>
+    public static CertificateRequest AddExtension(this CertificateRequest request,
         X509Extension extension)
     {
-        req.CertificateExtensions.Add(extension);
+        request.CertificateExtensions.Add(extension);
 
-        return req;
-    }
-
-
-    public static T? GetExtension<T>(this CertificateRequest req)
-        where T : X509Extension
-    {
-        return req.CertificateExtensions.FirstOrDefault(x => x is T) as T;
+        return request;
     }
 
     /// <summary>
-    /// RFC 5280 4.2.1.1. Authority Key Identifier
+    /// Gets X.509 v3 extensions from <see cref="CertificateRequest" />.
     /// </summary>
-    /// <param name="req"></param>
-    /// <param name="issuer"></param>
-    /// <param name="includeKeyIdentifier"></param>
-    /// <param name="includeIssuerAndSerial"></param>
-    /// <returns></returns>
-    /// <seealso href="https://tex2e.github.io/rfc-translater/html/rfc5280.html#4-2-1-1--Authority-Key-Identifier" />
-    public static CertificateRequest AddAuthorityKeyIdentifierExtension(this CertificateRequest req,
+    /// <param name="request">The <see cref="CertificateRequest" /> instance.</param>
+    /// <typeparam name="T">The derived class of <see cref="X509Extension" />.</typeparam>
+    /// <returns>An extention entry.</returns>
+    public static T? GetExtension<T>(this CertificateRequest request)
+        where T : X509Extension
+    {
+        return request.CertificateExtensions.FirstOrDefault(x => x is T) as T;
+    }
+
+    /// <summary>
+    /// Adds RFC 5280 4.2.1.1. Authority Key Identifier.
+    /// </summary>
+    /// <param name="request">The <see cref="CertificateRequest" /> instance.</param>
+    /// <param name="issuer">The issuer certificate.</param>
+    /// <param name="includeKeyIdentifier">True to include the Subject Key Identifier value from the certificate
+    ///     as the key identifier value in this extension; otherwise, false.</param>
+    /// <param name="includeIssuerAndSerial">True to include the certificate's issuer name and serial number
+    ///     in this extension; otherwise, false.</param>
+    /// <returns>An extended <see cref="CertificateRequest" /> instance.</returns>
+    /// <seealso href="https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.1" />
+    public static CertificateRequest AddAuthorityKeyIdentifierExtension(this CertificateRequest request,
         X509Certificate2? issuer = null,
         bool includeKeyIdentifier = true,
         bool includeIssuerAndSerial = false)
     {
+        // ```openssl.conf
         // authorityKeyIdentifier   = keyid, issuer
+        // ```
 
         if (issuer is null)
         {
-            var subject = req.GetExtension<X509SubjectKeyIdentifierExtension>()
+            var subject = request.GetExtension<X509SubjectKeyIdentifierExtension>()
                 ?? throw new InvalidOperationException("X509SubjectKeyIdentifierExtension is required first.");
 
-            return req.AddExtension(
+            return request.AddExtension(
                 X509AuthorityKeyIdentifierExtension.CreateFromSubjectKeyIdentifier(subject!.SubjectKeyIdentifierBytes.Span)
                 );
         }
 
-        return req.AddExtension(
+        return request.AddExtension(
             X509AuthorityKeyIdentifierExtension.CreateFromCertificate(
                 issuer!, includeKeyIdentifier, includeIssuerAndSerial));
     }
 
     /// <summary>
-    /// RFC 5280 4.2.1.2. Subject Key Identifier
+    /// Adds RFC 5280 4.2.1.2. Subject Key Identifier.
     /// </summary>
-    /// <param name="req"></param>
-    /// <returns></returns>
-    /// <seealso href="https://tex2e.github.io/rfc-translater/html/rfc5280.html#4-2-1-2--Subject-Key-Identifier" />
-    public static CertificateRequest AddSubjectKeyIdentifierExtension(this CertificateRequest req)
+    /// <param name="request">The <see cref="CertificateRequest" /> instance.</param>
+    /// <returns>An extended <see cref="CertificateRequest" /> instance.</returns>
+    /// <seealso href="https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.2" />
+    public static CertificateRequest AddSubjectKeyIdentifierExtension(this CertificateRequest request)
     {
+        // ```openssl.conf
         // subjectKeyIdentifier     = hash
+        // ```
 
-        return req.AddExtension(
+        return request.AddExtension(
             new X509SubjectKeyIdentifierExtension(
-                key: req.PublicKey,
+                key: request.PublicKey,
                 algorithm: X509SubjectKeyIdentifierHashAlgorithm.Sha1,
                 critical: false));
     }
 
     /// <summary>
-    /// RFC 5280 4.2.1.3. Key Usage
+    /// Adds RFC 5280 4.2.1.3. Key Usage.
     /// </summary>
-    /// <param name="req"></param>
-    /// <param name="critical"></param>
-    /// <param name="flags"></param>
-    /// <returns></returns>
-    /// <seealso href="https://tex2e.github.io/rfc-translater/html/rfc5280.html#4-2-1-3--Key-Usage" />
-    public static CertificateRequest AddKeyUsageExtension(this CertificateRequest req,
+    /// <param name="request">The <see cref="CertificateRequest" /> instance.</param>
+    /// <param name="critical">True if the extension is critical; otherwise, false.</param>
+    /// <param name="flags">One of the <see cref="X509KeyUsageFlags" /> values.</param>
+    /// <returns>An extended <see cref="CertificateRequest" /> instance.</returns>
+    /// <seealso href="https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.3" />
+    public static CertificateRequest AddKeyUsageExtension(this CertificateRequest request,
         bool critical,
         X509KeyUsageFlags flags = X509KeyUsageFlags.KeyCertSign | X509KeyUsageFlags.CrlSign)
     {
+        // ```openssl.conf
         // keyUsage                = critical, keyCertSign, cRLSign
+        // ```
 
-        return req.AddExtension(
+        return request.AddExtension(
             new X509KeyUsageExtension(flags, critical));
     }
 
     /// <summary>
-    /// RFC 5280 4.2.1.6. Subject Alternative Name
+    /// Adds RFC 5280 4.2.1.6. Subject Alternative Name.
     /// </summary>
-    /// <param name="req"></param>
-    /// <param name="action"></param>
-    /// <returns></returns>
-    /// <seealso href="https://tex2e.github.io/rfc-translater/html/rfc5280.html#4-2-1-6--Subject-Alternative-Name" />
-    public static CertificateRequest AddSubjectAlternativeName(this CertificateRequest req,
+    /// <param name="request">The <see cref="CertificateRequest" /> instance.</param>
+    /// <param name="action">The delegate method for configuration.</param>
+    /// <returns>An extended <see cref="CertificateRequest" /> instance.</returns>
+    /// <seealso href="https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.6" />
+    public static CertificateRequest AddSubjectAlternativeName(this CertificateRequest request,
         Action<SubjectAlternativeNameBuilder> action)
     {
+        // ```openssl.conf
         // subjectAltName           = @alt_names
         //
         // [ alt_names ]
         // DNS.1 = www.local-server.jp
         // DNS.2 = localserver.jp
+        // ```
 
         var builder = new SubjectAlternativeNameBuilder();
         action?.Invoke(builder);
-        return req.AddExtension(builder.Build());
+
+        return request.AddExtension(builder.Build());
     }
 
     /// <summary>
-    /// RFC 5280 4.2.1.9. Basic Constraints
+    /// Adds RFC 5280 4.2.1.9. Basic Constraints.
     /// </summary>
-    /// <param name="req"></param>
+    /// <param name="request">The <see cref="CertificateRequest" /> instance.</param>
     /// <param name="critical"></param>
     /// <param name="isCa"></param>
     /// <param name="pathLengthConstraint"></param>
-    /// <returns></returns>
-    /// <seealso href="https://tex2e.github.io/rfc-translater/html/rfc5280.html#4-2-1-9--Basic-Constraints" />
+    /// <returns>An extended <see cref="CertificateRequest" /> instance.</returns>
+    /// <seealso href="https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.9" />
     [Obsolete(message: "Use req.AddExtension() with X509BasicConstraintsExtension static factories.")]
-    public static CertificateRequest AddBasicConstraintsExtension(this CertificateRequest req,
+    public static CertificateRequest AddBasicConstraintsExtension(this CertificateRequest request,
         bool critical = false,
         bool isCa = true,
         int? pathLengthConstraint = null)
     {
+        // ```openssl.conf
         // basicConstraints         = critical, CA:true
+        // ```
 
-        return req.AddExtension(
+        return request.AddExtension(
             new X509BasicConstraintsExtension(
                 isCa,
                 pathLengthConstraint != null,
@@ -151,44 +191,46 @@ public static class CertificateRequestExtensions
     }
 
     /// <summary>
-    /// RFC 5280 4.2.1.12. Extended Key Usage
+    /// Adds RFC 5280 4.2.1.12. Extended Key Usage.
     /// </summary>
-    /// <param name="req"></param>
-    /// <param name="action"></param>
-    /// <returns></returns>
-    /// <seealso href="https://tex2e.github.io/rfc-translater/html/rfc5280.html#4-2-1-12--Extended-Key-Usage" />
-    public static CertificateRequest AddExtendedKeyUsageExtension(this CertificateRequest req,
+    /// <param name="request">The <see cref="CertificateRequest" /> instance.</param>
+    /// <param name="action">The delegate method for configuration.</param>
+    /// <returns>An extended <see cref="CertificateRequest" /> instance.</returns>
+    /// <seealso href="https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.12" />
+    public static CertificateRequest AddExtendedKeyUsageExtension(this CertificateRequest request,
         bool critical,
         Action<OidCollection> action)
     {
+        // ```openssl.conf
         // extendedKeyUsage = serverAuth, clientAuth, codeSigning, emailProtection
+        // ```
 
-        var exKeyUsages = new OidCollection();
-        action?.Invoke(exKeyUsages);
+        var extendedKeyUsages = new OidCollection();
+        action?.Invoke(extendedKeyUsages);
 
-        return req.AddExtension(
-            new X509EnhancedKeyUsageExtension(exKeyUsages, critical));
+        return request.AddExtension(
+            new X509EnhancedKeyUsageExtension(extendedKeyUsages, critical));
     }
 
     /// <summary>
-    /// RFC 5280 4.2.1.13. CRL Distribution Points
+    /// Adds RFC 5280 4.2.1.13. CRL Distribution Points.
     /// </summary>
-    /// <param name="req"></param>
+    /// <param name="request">The <see cref="CertificateRequest" /> instance.</param>
     /// <param name="action"></param>
-    /// <returns></returns>
-    /// <seealso href="https://tex2e.github.io/rfc-translater/html/rfc5280.html#4-2-1-13--CRL-Distribution-Points" />
-    public static CertificateRequest AddCRLDistributionPointsExtension(this CertificateRequest req,
+    /// <returns>An extended <see cref="CertificateRequest" /> instance.</returns>
+    /// <seealso href="https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.13" />
+    public static CertificateRequest AddCRLDistributionPointsExtension(this CertificateRequest request,
         Action<object> action)
     {
         throw new NotImplementedException();
     }
 
     /// <summary>
-    /// RFC 5280 4.2.2.1. Authority Information Access
+    /// Adds RFC 5280 4.2.2.1. Authority Information Access.
     /// </summary>
-    /// <param name="req"></param>
-    /// <value></value>
-    /// <seealso href="https://tex2e.github.io/rfc-translater/html/rfc5280.html#4-2-2-1--Authority-Information-Access" />
+    /// <param name="request">The <see cref="CertificateRequest" /> instance.</param>
+    /// <returns>An extended <see cref="CertificateRequest" /> instance.</returns>
+    /// <seealso href="https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.2.1" />
     public static CertificateRequest AddAuthorityInformationAccessExtension(this CertificateRequest req)
     {
         throw new NotImplementedException();

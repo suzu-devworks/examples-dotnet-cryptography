@@ -66,7 +66,7 @@ public class PKCS12ECDSACertificateArchiveTests : IClassFixture<PKCSDataFixture>
         loaded.Is(cert);
         loaded.HasPrivateKey.IsTrue();
 
-        loaded.VerifySignature(cert);
+        loaded.ValidateSignature(cert);
 
         logdedEcdsa.IsNotNull();
         logdedEcdsa!.KeySize.Is(ecdsa.KeySize);

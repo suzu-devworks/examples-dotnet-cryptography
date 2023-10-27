@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using Examples.Cryptography.Generics;
 using Examples.Cryptography.X509Certificates;
 using Examples.Fluency;
 
@@ -111,7 +112,7 @@ public class PKCS10ECDSACertificateRequestTests : IClassFixture<PKCSDataFixture>
         cert.NotAfter.Is(notAfter.Truncate(TimeSpan.TicksPerSecond).LocalDateTime);
         cert.SignatureAlgorithm.FriendlyName.Is("sha256ECDSA");
 
-        cert.VerifySignature(cert);
+        cert.ValidateSignature(cert);
 
         // Assert.
         var pem = cert.ExportCertificatePem();
@@ -224,7 +225,7 @@ EOF
                 HashAlgorithmName.SHA256,
                 CertificateRequestLoadOptions.UnsafeLoadCertificateExtensions);
 
-            var serial = new Random().CreateSerialNumber();
+            var serial = new CertificateSerialNumber(new Random()).ToBytes();
             using var cert = request
                 .AddAuthorityKeyIdentifierExtension(caCert)
                 .AddSubjectKeyIdentifierExtension()
@@ -239,7 +240,7 @@ EOF
                 .Create(caCert, notBefore, notAfter, serial);
 
             // Asseret.
-            cert.VerifySignature(caCert);
+            cert.ValidateSignature(caCert);
 
             var pem = cert.ExportCertificatePem();
 

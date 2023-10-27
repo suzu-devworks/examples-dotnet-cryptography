@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using Examples.Cryptography.Generics;
 using Examples.Cryptography.X509Certificates;
 using Examples.Fluency;
 
@@ -157,7 +158,7 @@ public class PKCS10RSACertificateRequestTests : IClassFixture<PKCSDataFixture>
         cert.NotAfter.Is(notAfter.Truncate(TimeSpan.TicksPerSecond).LocalDateTime);
         cert.SignatureAlgorithm.FriendlyName.Is("sha256RSA");
 
-        cert.VerifySignature(cert);
+        cert.ValidateSignature(cert);
 
         // Assert.
         pem.Is(x => x.StartsWith("-----BEGIN CERTIFICATE-----")
