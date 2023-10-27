@@ -13,7 +13,7 @@ public class AESEncryptionTests
     }
 
     [Fact]
-    public void WhenEncryptAndDecrypy_WithStream()
+    public void WhenDecryptingFromEncryptedData_WithStream_ReturnsToBeforeData()
     {
         // https://learn.microsoft.com/ja-jp/dotnet/api/system.security.cryptography.aes?view=net-7.0
 
@@ -110,7 +110,7 @@ public class AESEncryptionTests
     }
 
     [Fact]
-    public void WhenEncryptAndDecrypy_WithTransform()
+    public void WhenDecryptingFromEncryptedData_WithTransform_ReturnsToBeforeData()
     {
         string original = "Here is some data to encrypt!";
 

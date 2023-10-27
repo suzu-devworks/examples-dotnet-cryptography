@@ -3,7 +3,11 @@ using System.Security.Cryptography;
 namespace Examples.Cryptography.X509Certificates;
 
 #pragma warning disable IDE1006
+#pragma warning disable CS1591
 
+/// <summary>
+/// Defines OBJECT IDENTIFIER for hash algorithm.
+/// </summary>
 /// <seealso href="https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-gpnap/a48b02b2-2a10-4eb0-bed4-1807a6d2f5ad" />
 public static class SignatureAlgorithms
 {
@@ -15,7 +19,7 @@ public static class SignatureAlgorithms
     public static readonly Oid sha384ECDSA = new("1.2.840.10045.4.3.3");
     public static readonly Oid sha512ECDSA = new("1.2.840.10045.4.3.4");
 
-    private static readonly Dictionary<string, HashAlgorithmName> hashs = new()
+    private static readonly Dictionary<string, HashAlgorithmName> hashes = new()
     {
         [sha1RSA.Value!] = HashAlgorithmName.SHA1,
         [sha256RSA.Value!] = HashAlgorithmName.SHA256,
@@ -26,13 +30,19 @@ public static class SignatureAlgorithms
         [sha512ECDSA.Value!] = HashAlgorithmName.SHA512,
     };
 
-    public static HashAlgorithmName? GetHashAlgorithmName(Oid signunature)
+    /// <summary>
+    /// Converts signature OID to <see cref="HashAlgorithmName"/> entry.
+    /// </summary>
+    /// <param name="signature">The signature OID.</param>
+    /// <returns>A <see cref="HashAlgorithmName" />An entry.</returns>
+    public static HashAlgorithmName? GetHashAlgorithmName(Oid signature)
     {
-        if (hashs.TryGetValue(signunature.Value ?? "unknown", out var hashName))
+        if (hashes.TryGetValue(signature.Value ?? "unknown", out var hashName))
         {
             return hashName;
         }
 
         return null;
     }
+
 }
