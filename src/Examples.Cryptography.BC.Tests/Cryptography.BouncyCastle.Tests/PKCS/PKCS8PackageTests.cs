@@ -36,8 +36,8 @@ public class PKCS8PackageTests : IClassFixture<PKCSDataFixture>
         var keyPair = _fixture.KeyPair!;
         var password1 = "password";
 
-        var ramdom = new SecureRandom();
-        var salt = ramdom.GenerateSeed(20);
+        var random = new SecureRandom();
+        var salt = random.GenerateSeed(20);
         var iterationCount = 2048;
 
         var keyAlgorithm = NistObjectIdentifiers.IdAes256Cbc;
@@ -123,7 +123,7 @@ public class PKCS8PackageTests : IClassFixture<PKCSDataFixture>
         // https://github.com/bcgit/bc-csharp/blob/master/crypto/src/openssl/Pkcs8Generator.cs
 
         var keyPair = _fixture.KeyPair!;
-        var ramdom = new SecureRandom();
+        var random = new SecureRandom();
 
         PrivateKeyInfo keyInfo = PrivateKeyInfoFactory.CreatePrivateKeyInfo(keyPair.Private);
 
@@ -142,7 +142,7 @@ public class PKCS8PackageTests : IClassFixture<PKCSDataFixture>
         pkcs8pem.Is(x => x.StartsWith("-----BEGIN PRIVATE KEY-----")
                     && x.EndsWith("-----END PRIVATE KEY-----"));
 
-        // PKCS #8 encripption ???
+        // PKCS #8 encryption ???
         // version 1.x ???
         var password = "password";
         //var alg = BCObjectIdentifiers.bc_pbe_sha256_pkcs12_aes256_cbc;
@@ -150,7 +150,7 @@ public class PKCS8PackageTests : IClassFixture<PKCSDataFixture>
 
         var pkcs8enc = new Pkcs8Generator(keyPair.Private, alg.Id)
         {
-            SecureRandom = ramdom,
+            SecureRandom = random,
             Password = password.ToCharArray(),
         }
         .Generate();
@@ -230,7 +230,7 @@ public class PKCS8PackageTests : IClassFixture<PKCSDataFixture>
     }
 
     [Fact]
-    public void WhenImportingEncriptyPkcs8_WithPem()
+    public void WhenImportingEncryptPkcs8_WithPem()
     {
         var pem = """
                 -----BEGIN ENCRYPTED PRIVATE KEY-----

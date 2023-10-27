@@ -41,18 +41,4 @@ public static class TimeStampTokenGeneratorExtensions
         return response.TimeStampToken;
     }
 
-    /// <summary>
-    /// Call delegate to confine the settings to <see cref="TimeStampTokenGenerator" /> to the function scope.
-    /// </summary>
-    /// <param name="generator">The <see cref="TimeStampTokenGenerator" /> instance.</param>
-    /// <param name="configureAction">A delegate for setting.</param>
-    /// <returns>The <see cref="TimeStampTokenGenerator" /> Instances for daisy chaining</returns>
-    public static TimeStampTokenGenerator Configure(this TimeStampTokenGenerator generator,
-         Action<TimeStampTokenGenerator> configureAction)
-    {
-        configureAction.Invoke(generator);
-
-        return generator;
-    }
-
 }

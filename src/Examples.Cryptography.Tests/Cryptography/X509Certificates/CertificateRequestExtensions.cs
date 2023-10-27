@@ -29,7 +29,8 @@ public static class CertificateRequestExtensions
         {
             ECDsa ecdsa => X509SignatureGenerator.CreateForECDsa(ecdsa),
             RSA rsa => X509SignatureGenerator.CreateForRSA(rsa, RSASignaturePadding.Pkcs1),
-            _ => throw new NotSupportedException($"not supported {issuerKeyPair.GetType()}"),
+            _ => throw new NotSupportedException($"not supported {issuerKeyPair?.GetType().ToString()
+                ?? "issuerKeyPair is null"}."),
         };
 
         var newCertificate = request.Create(issuerName, generator,
@@ -57,7 +58,7 @@ public static class CertificateRequestExtensions
     /// </summary>
     /// <param name="request">The <see cref="CertificateRequest" /> instance.</param>
     /// <typeparam name="T">The derived class of <see cref="X509Extension" />.</typeparam>
-    /// <returns>An extention entry.</returns>
+    /// <returns>An extension entry.</returns>
     public static T? GetExtension<T>(this CertificateRequest request)
         where T : X509Extension
     {

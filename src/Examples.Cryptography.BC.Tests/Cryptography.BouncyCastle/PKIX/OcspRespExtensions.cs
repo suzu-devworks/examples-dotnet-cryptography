@@ -27,9 +27,9 @@ public static class OcspRespExtensions
 
         var basic = (BasicOcspResp)response.GetResponseObject();
 
-        var responeNonce = basic.GetExtensionValue(OcspObjectIdentifiers.PkixOcspNonce);
+        var respondNonce = basic.GetExtensionValue(OcspObjectIdentifiers.PkixOcspNonce);
         var requestNonce = request.GetExtensionValue(OcspObjectIdentifiers.PkixOcspNonce);
-        if (!responeNonce.Equals(requestNonce))
+        if (!respondNonce.Equals(requestNonce))
         {
             throw new OcspException("Bad nonce value.");
         }

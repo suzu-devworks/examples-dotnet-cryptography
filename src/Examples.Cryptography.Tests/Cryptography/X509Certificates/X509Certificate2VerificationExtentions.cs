@@ -7,7 +7,7 @@ namespace Examples.Cryptography.X509Certificates;
 /// <summary>
 /// Extension methods for <see cref="X509Certificate2" />.
 /// </summary>
-public static class X509Certificate2VerificationExtentions
+public static class X509Certificate2VerificationExtensions
 {
     /// <summary>
     /// Validates the certificate signature using the signer certificate,

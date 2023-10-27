@@ -1,5 +1,6 @@
 using Examples.Cryptography.BouncyCastle.Algorithms;
 using Examples.Cryptography.BouncyCastle.X509;
+using Examples.Cryptography.Generics;
 using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Math;
@@ -40,9 +41,9 @@ public class X509DataFixture : IDisposable
         {
             yield return RootCaSet.Item2;
 
-            foreach (var sers in IntermediateCaSets)
+            foreach (var set in IntermediateCaSets)
             {
-                yield return sers.Item2;
+                yield return set.Item2;
             }
 
             yield return EndEntitySet.Item2;
@@ -62,7 +63,7 @@ public class X509DataFixture : IDisposable
             .WithRootCA(
                 keyPair.Public,
                 new X509Name("C=JP,CN=Test CA root"))
-            .SetValidity(notBefore.UtcDateTime, days)
+            .SetValidityPeriod(notBefore.UtcDateTime, days)
             .Generate(keyPair.Private.CreateDefaultSignature());
 
         cert.Verify(keyPair.Public);
@@ -86,13 +87,13 @@ public class X509DataFixture : IDisposable
                .GenerateKeyPair();
 
             var cert = new X509V3CertificateGenerator()
-                .WithIntermidiateCA(
+                .WithIntermediateCA(
                     keyPair.Public,
                     new X509Name($"C=JP,CN=Test CA-{i:0000}"),
                     issuerCert,
                     serial: BigInteger.One,
                     pathLenConstraint: (numOfCerts - 2 - i))
-                .SetValidity(notBefore.UtcDateTime, days)
+                .SetValidityPeriod(notBefore.UtcDateTime, days)
                 .Generate(issuerKeyPair.Private.CreateDefaultSignature());
 
             cert.Verify(issuerKeyPair.Public);
@@ -122,7 +123,7 @@ public class X509DataFixture : IDisposable
                     subject: new X509Name("C=JP,CN=localhost"),
                     issuerCert,
                     serial: BigInteger.One)
-               .SetValidity(notBefore.UtcDateTime, days)
+               .SetValidityPeriod(notBefore.UtcDateTime, days)
                .Configure(gen => gen.AddExtension(X509Extensions.KeyUsage,
                    critical: true,
                    new KeyUsage(KeyUsage.DigitalSignature)))

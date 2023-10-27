@@ -59,8 +59,8 @@ public class PKCS12ECDSACertificateArchiveTests : IClassFixture<PKCSDataFixture>
 
         var loaded = new X509Certificate2(exported, password,
             X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable);
-        var logdedEcdsa = loaded.GetECDsaPrivateKey();
-        var logdedRsa = loaded.GetRSAPrivateKey(); ;
+        var loadedEcdsa = loaded.GetECDsaPrivateKey();
+        var loadedRsa = loaded.GetRSAPrivateKey(); ;
 
         // Assert.
         loaded.Is(cert);
@@ -68,12 +68,12 @@ public class PKCS12ECDSACertificateArchiveTests : IClassFixture<PKCSDataFixture>
 
         loaded.ValidateSignature(cert);
 
-        logdedEcdsa.IsNotNull();
-        logdedEcdsa!.KeySize.Is(ecdsa.KeySize);
-        logdedEcdsa.SignatureAlgorithm.Is(ecdsa.SignatureAlgorithm);
-        logdedEcdsa.ExportECPrivateKey().Is(ecdsa.ExportECPrivateKey());
+        loadedEcdsa.IsNotNull();
+        loadedEcdsa!.KeySize.Is(ecdsa.KeySize);
+        loadedEcdsa.SignatureAlgorithm.Is(ecdsa.SignatureAlgorithm);
+        loadedEcdsa.ExportECPrivateKey().Is(ecdsa.ExportECPrivateKey());
 
-        logdedRsa.IsNull();
+        loadedRsa.IsNull();
 
         return;
     }

@@ -208,7 +208,7 @@ EOF
         var requestPem = DoRequesterSide();
 
         // Act.
-        string DoSignnerSide(string requestPem)
+        string DoSignerSide(string requestPem)
         {
             var ecdsa = _fixture.ECKeyProvider;
 
@@ -239,7 +239,7 @@ EOF
                     })
                 .Create(caCert, notBefore, notAfter, serial);
 
-            // Asseret.
+            // Assert.
             cert.ValidateSignature(caCert);
 
             var pem = cert.ExportCertificatePem();
@@ -249,7 +249,7 @@ EOF
 
             return pem;
         }
-        var certPem = DoSignnerSide(requestPem);
+        var certPem = DoSignerSide(requestPem);
 
         // Assert.
         certPem.Is(x => x.StartsWith("-----BEGIN CERTIFICATE-----")

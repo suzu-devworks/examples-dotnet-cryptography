@@ -1,3 +1,4 @@
+using Examples.Cryptography.Generics;
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.X9;
 using Org.BouncyCastle.Crypto;
@@ -11,16 +12,6 @@ namespace Examples.Cryptography.BouncyCastle.Algorithms;
 
 public static class AsymmetricCipherKeyPairGeneratorExtensions
 {
-
-    public static IAsymmetricCipherKeyPairGenerator Configure(this IAsymmetricCipherKeyPairGenerator generator,
-        Action<IAsymmetricCipherKeyPairGenerator> action)
-    {
-        action?.Invoke(generator);
-
-        return generator;
-    }
-
-
     public static IAsymmetricCipherKeyPairGenerator ConfigureDefault(this IAsymmetricCipherKeyPairGenerator generator,
         SecureRandom? random = null)
     {
@@ -58,7 +49,7 @@ public static class AsymmetricCipherKeyPairGeneratorExtensions
          * probability of 1 - (1/2)**certainty.
          * <p>From Knuth Vol 2, pg 395.</p>
          *
-         * C.3.1 Miller-Rabin Probabilistic Primality Test.
+         * C.3.1 Miller-Rabin Probabilistic primality test.
          * https://csrc.nist.gov/files/pubs/fips/186-3/final/docs/fips_186-3.pdf
          */
 

@@ -73,7 +73,7 @@ public class PKCS10CertRequestTests : IClassFixture<PKCSDataFixture>
                 request.GetCertificationRequestInfo().Subject,
                 issuerCert,
                 serial)
-           .SetValidity(now.UtcDateTime, days: 365)
+           .SetValidityPeriod(now.UtcDateTime, days: 365)
            .Generate(new Asn1SignatureFactory("SHA256WithECDSA", issuerKeyPair.Private));
 
         // When receive your certificate, please verify that it is yours.

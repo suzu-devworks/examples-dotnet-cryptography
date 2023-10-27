@@ -27,14 +27,14 @@ public class AESAEADEncryptionTests
 
         // Act.
         var inputText = Encoding.UTF8.GetBytes(original);
-        var (cipherText, nonce, tag) = Encript(inputText, key, additionalAuthenticatedData);
+        var (cipherText, nonce, tag) = Encrypt(inputText, key, additionalAuthenticatedData);
 
         _output.WriteLine("AES-GCM:");
         _output.WriteLine($"\tcipherText: {cipherText.ToArray().ToBase64String()}, {cipherText.Length}");
         _output.WriteLine($"\tnonce: {nonce.ToArray().ToBase64String()}, {nonce.Length}");
         _output.WriteLine($"\ttag {tag.ToArray().ToBase64String()}, {tag.Length}");
 
-        var roundtrip = Decript(cipherText, nonce, tag, key, additionalAuthenticatedData);
+        var roundtrip = Decrypt(cipherText, nonce, tag, key, additionalAuthenticatedData);
         var outputText = Encoding.UTF8.GetString(roundtrip);
 
         // Assert.
@@ -42,7 +42,7 @@ public class AESAEADEncryptionTests
 
         return;
 
-        static (byte[] cipherText, byte[] nonce, byte[] tag) Encript(
+        static (byte[] cipherText, byte[] nonce, byte[] tag) Encrypt(
             ReadOnlySpan<byte> plainText,
             ReadOnlySpan<byte> key,
             ReadOnlySpan<byte> aad = default)
@@ -61,7 +61,7 @@ public class AESAEADEncryptionTests
             return (cipherText.ToArray(), nonce.ToArray(), tag.ToArray());
         }
 
-        static byte[] Decript(
+        static byte[] Decrypt(
             ReadOnlySpan<byte> cipherText,
             ReadOnlySpan<byte> nonce,
             ReadOnlySpan<byte> tag,
@@ -93,14 +93,14 @@ public class AESAEADEncryptionTests
 
         // Act.
         var inputText = Encoding.UTF8.GetBytes(original);
-        var (cipherText, nonce, tag) = Encript(inputText, key, additionalAuthenticatedData);
+        var (cipherText, nonce, tag) = Encrypt(inputText, key, additionalAuthenticatedData);
 
         _output.WriteLine("AES-CCM:");
         _output.WriteLine($"\tcipherText: {cipherText.ToArray().ToBase64String()}, {cipherText.Length}");
         _output.WriteLine($"\tnonce: {nonce.ToArray().ToBase64String()}, {nonce.Length}");
         _output.WriteLine($"\ttag {tag.ToArray().ToBase64String()}, {tag.Length}");
 
-        var roundtrip = Decript(cipherText, nonce, tag, key, additionalAuthenticatedData);
+        var roundtrip = Decrypt(cipherText, nonce, tag, key, additionalAuthenticatedData);
         var outputText = Encoding.UTF8.GetString(roundtrip);
 
         // Assert.
@@ -108,7 +108,7 @@ public class AESAEADEncryptionTests
 
         return;
 
-        static (byte[] cipherText, byte[] nonce, byte[] tag) Encript(
+        static (byte[] cipherText, byte[] nonce, byte[] tag) Encrypt(
             ReadOnlySpan<byte> plainText,
             ReadOnlySpan<byte> key,
             ReadOnlySpan<byte> aad = default)
@@ -127,7 +127,7 @@ public class AESAEADEncryptionTests
             return (cipherText.ToArray(), nonce.ToArray(), tag.ToArray());
         }
 
-        static byte[] Decript(
+        static byte[] Decrypt(
             ReadOnlySpan<byte> cipherText,
             ReadOnlySpan<byte> nonce,
             ReadOnlySpan<byte> tag,

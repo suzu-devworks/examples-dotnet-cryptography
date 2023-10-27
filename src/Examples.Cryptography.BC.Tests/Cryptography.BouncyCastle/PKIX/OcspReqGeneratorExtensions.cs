@@ -12,20 +12,6 @@ namespace Examples.Cryptography.BouncyCastle.PKIX;
 public static class OcspReqGeneratorExtensions
 {
     /// <summary>
-    /// Call delegate to confine the settings to <see cref="OcspReqGenerator" /> to the function scope.
-    /// </summary>
-    /// <param name="generator">The <see cref="OcspReqGenerator" /> instance.</param>
-    /// <param name="configureAction">A delegate for setting.</param>
-    /// <returns>The <see cref="OcspReqGenerator" /> Instances for daisy chaining</returns>
-    public static OcspReqGenerator Configure(this OcspReqGenerator generator,
-        Action<OcspReqGenerator> configureAction)
-    {
-        configureAction.Invoke(generator);
-
-        return generator;
-    }
-
-    /// <summary>
     /// Adds OCSP nonce extension value.
     /// </summary>
     /// <param name="generator">The <see cref="OcspReqGenerator" /> instance.</param>

@@ -12,9 +12,10 @@ using Org.BouncyCastle.OpenSsl;
 
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
-using Examples.Cryptography.BouncyCastle;
+using Examples.Cryptography.BouncyCastle.Logging;
 using Examples.Cryptography.BouncyCastle.PKIX;
 using Examples.Cryptography.BouncyCastle.X509;
+using Examples.Cryptography.Generics;
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.Nist;
 using Org.BouncyCastle.Asn1.Tsp;
@@ -26,7 +27,6 @@ using Org.BouncyCastle.Tsp;
 using Org.BouncyCastle.X509;
 using Org.BouncyCastle.X509.Extension;
 using Xunit.Sdk;
-using Examples.Cryptography.BouncyCastle.Logging;
 
 namespace Examples.Cryptography.BouncyCastle.Tests.PKIX;
 
@@ -89,7 +89,7 @@ public class TimeStampHttpClientTests : IClassFixture<TimeStampDataFixture>
         var genDate = tat.TimeStampInfo.GenTime;
 
         var tsaCert = tat.FindTSACertificate()
-            ?? throw new XunitException($"Illigal data in TimeStampInfo.");
+            ?? throw new XunitException($"Illegal data in TimeStampInfo.");
         _output.WriteLine($"# TSA Certificate({url}):");
         _output.WriteLine($"{tsaCert.DumpAsString()}");
 
@@ -147,7 +147,7 @@ public class TimeStampHttpClientTests : IClassFixture<TimeStampDataFixture>
                             X509ExtensionUtilities.FromExtensionValue(code.Value)));
                 }
 
-                throw new XunitException($"Certificate revo in CRL: {reason} at {time}.");
+                throw new XunitException($"Certificate revocation in CRL: {reason} at {time}.");
             }
         }
 
@@ -157,7 +157,7 @@ public class TimeStampHttpClientTests : IClassFixture<TimeStampDataFixture>
     private async Task<X509Certificate> DownloadIssuerCertificateAsync(X509Certificate tsaCert)
     {
         var issuerUri = tsaCert.GetAuthorityInfoAccessUri(AccessDescription.IdADCAIssuers)
-            ?? throw new XunitException($"Illigal data in TSA Certificate.");
+            ?? throw new XunitException($"Illegal data in TSA Certificate.");
 
         var httpClientFactory = _services.GetRequiredService<IHttpClientFactory>();
         var downloaded = await new HttpDownloader(httpClientFactory)

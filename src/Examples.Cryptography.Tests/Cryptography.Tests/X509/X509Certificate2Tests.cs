@@ -24,20 +24,20 @@ public class X509Certificate2Tests : IClassFixture<X509DataFixture>
     public void WhenImportingFromExport_ReturnsToBeforeExport()
     {
         // Arrange.
-        var (_, cert) = _fixture.RootCaSet;
+        var cert = _fixture.RootCACert;
 
         // Act.
         var exported = cert.Export(X509ContentType.Cert);
 
         using var loaded = new X509Certificate2(exported);
-        var logdedKey = loaded.GetRSAPrivateKey();
+        var loadedKey = loaded.GetRSAPrivateKey();
 
         // Assert.
         loaded.Is(cert);
         loaded.HasPrivateKey.IsFalse();
         cert.HasPrivateKey.IsTrue();
 
-        logdedKey.IsNull();
+        loadedKey.IsNull();
 
         return;
     }
@@ -47,7 +47,7 @@ public class X509Certificate2Tests : IClassFixture<X509DataFixture>
     public void WhenImportingFromExportCertificatePem_ReturnsToBeforeExport()
     {
         // Arrange.
-        var (_, cert) = _fixture.RootCaSet;
+        var cert = _fixture.RootCACert;
 
         // Act.
         var pem = cert.ExportCertificatePem();
@@ -56,14 +56,14 @@ public class X509Certificate2Tests : IClassFixture<X509DataFixture>
         _output.WriteLine($"\n{pem}");
 
         using var loaded = X509Certificate2.CreateFromPem(pem);
-        var logdedKey = loaded.GetRSAPrivateKey();
+        var loadedKey = loaded.GetRSAPrivateKey();
 
         // Assert.
         loaded.Is(cert);
         loaded.HasPrivateKey.IsFalse();
         cert.HasPrivateKey.IsTrue();
 
-        logdedKey.IsNull();
+        loadedKey.IsNull();
 
         pem.Is(x => x.StartsWith("-----BEGIN CERTIFICATE-----")
                     && x.EndsWith("-----END CERTIFICATE-----"));

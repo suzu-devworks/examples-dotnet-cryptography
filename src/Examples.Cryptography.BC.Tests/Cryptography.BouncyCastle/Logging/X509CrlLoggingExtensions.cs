@@ -23,10 +23,10 @@ public static class X509CrlLoggingExtensions
     {
         var builder = new StringBuilder();
 
-        builder.AppendLebelLine(indent, "issuer", $"{crl.IssuerDN}");
-        builder.AppendLebelLine(indent, "nextUpdate", $"{crl.NextUpdate}");
+        builder.AppendLevelLine(indent, "issuer", $"{crl.IssuerDN}");
+        builder.AppendLevelLine(indent, "nextUpdate", $"{crl.NextUpdate}");
 
-        builder.AppendLebelLine(indent, "revokedCertificates", $"[count={crl.GetRevokedCertificates().Count}]");
+        builder.AppendLevelLine(indent, "revokedCertificates", $"[count={crl.GetRevokedCertificates().Count}]");
 
         if (showEntries)
         {
@@ -40,7 +40,7 @@ public static class X509CrlLoggingExtensions
 
                 _ = entry.GetExtensionValue(X509Extensions.InvalidityDate);
 
-                builder.AppendLebelLine(indent + 1, $"[{index}]", $"[SerialNumber: {entry.SerialNumber}, RevocationDate: {entry.RevocationDate}, {reason}]");
+                builder.AppendLevelLine(indent + 1, $"[{index}]", $"[SerialNumber: {entry.SerialNumber}, RevocationDate: {entry.RevocationDate}, {reason}]");
             }
         }
 

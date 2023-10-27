@@ -132,7 +132,7 @@ public class RSAKeyPairTests : IDisposable
         var exported = keyPair.ExportRSAPublicKey();
 
         using var actual = RSA.Create();
-        actual.ImportRSAPublicKey(exported, out var readcount);
+        actual.ImportRSAPublicKey(exported, out var readCount);
 
         // ### Assert. ###
         // How to check equals?
@@ -141,7 +141,7 @@ public class RSAKeyPairTests : IDisposable
         // Is it a　success if the arrays are equal?.
         var other = actual.ExportRSAPublicKey();
         other.Is(exported);
-        other.Length.Is(readcount);
+        other.Length.Is(readCount);
 
         // Exporting the private key will fail
         // because only the public key has been restored.
