@@ -49,6 +49,7 @@ dotnet list package --outdated
 # Tools config
 dotnet new tool-manifest
 dotnet tool install coverlet.console
+dotnet tool install dotnet-xscgen
 
 dotnet tool restore
 
