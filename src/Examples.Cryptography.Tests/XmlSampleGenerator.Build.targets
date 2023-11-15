@@ -1,0 +1,27 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <ItemGroup>
+    <XmlSchemaClassGeneratorFiles Include="**/Resources/XAdES/*.xsd" />
+    <Generated Include="**/generated/*" />
+  </ItemGroup>
+
+  <Target Name="XmlSchemaClassGeneratorXAdES" BeforeTargets="BeforeBuild">
+    <Message Text="XmlSchemaClassGenerator: @(XmlSchemaClassGeneratorFiles)" />
+    <Exec
+      Condition="'@(XmlSchemaClassGeneratorFiles)' != ''"
+      WorkingDirectory="$(ProjectDir)"
+      Command="xscgen -o generated --netCore --nullable --verbose -p Examples.Cryptography.Xml -n http://www.w3.org/2000/09/xmldsig#=XAdES.XmlDsig -n http://uri.etsi.org/01903/v1.3.2#=XAdES.XAdES132 -n http://uri.etsi.org/01903/v1.4.1#=XAdES.XAdES141 %(XmlSchemaClassGeneratorFiles.Identity)"
+      />
+    <ItemGroup>
+      <Compile
+        Include="**/generated/**/*$(DefaultLanguageSourceExtension)"
+        Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);$(BaseIntermediateOutputPath)**;$(BaseOutputPath)**;@(Compile)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="XmlSchemaClassGeneratorClean" AfterTargets="Clean">
+    <Delete Files="@(Generated)" />
+  </Target>
+
+</Project>
+

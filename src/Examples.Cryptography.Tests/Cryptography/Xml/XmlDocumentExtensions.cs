@@ -1,3 +1,4 @@
+using System.Text;
 using System.Xml;
 
 namespace Examples.Cryptography.Xml;
@@ -11,22 +12,24 @@ public static class XmlDocumentExtensions
     /// Converts an <see cref="XmlNode" /> to a formatted XML string.
     /// </summary>
     /// <param name="xml">The <see cref="XmlNode" /> instance.</param>
-    /// <param name="actionWriterSettings">The delegate method for configuring writer.</param>
+    /// <param name="actionSettings">The delegate method for configuring writer.</param>
     /// <returns>A formatted XML string.</returns>
     public static string ToFormattedOuterXml(this XmlNode xml,
-        Action<XmlTextWriter>? actionWriterSettings = null)
+        Action<XmlWriterSettings>? actionSettings = null)
     {
-        using StringWriter innerWriter = new();
-        using XmlTextWriter writer = new(innerWriter);
+        XmlWriterSettings settings = new()
+        {
+            Indent = true,
+        };
+        actionSettings?.Invoke(settings);
 
-        writer.Formatting = Formatting.Indented;
+        StringBuilder builder = new();
+        using (var writer = XmlWriter.Create(builder, settings))
+        {
+            xml.WriteTo(writer);
+        }
 
-        actionWriterSettings?.Invoke(writer);
-
-        xml.WriteTo(writer);
-        writer.Flush();
-
-        var output = innerWriter.ToString();
+        var output = builder.ToString();
 
         return output;
     }

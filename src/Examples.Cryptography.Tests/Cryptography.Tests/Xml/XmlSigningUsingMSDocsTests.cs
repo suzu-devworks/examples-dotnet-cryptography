@@ -251,10 +251,10 @@ public class XmlSigningUsingMSDocsTests : IClassFixture<XmlDataFixture>
             // Append the element to the XML document.
             doc.DocumentElement!.AppendChild(doc.ImportNode(xmlDigitalSignature, true));
 
-            if (doc.FirstChild is XmlDeclaration)
-            {
-                doc.RemoveChild(doc.FirstChild);
-            }
+            // if (doc.FirstChild is XmlDeclaration)
+            // {
+            //     doc.RemoveChild(doc.FirstChild);
+            // }
 
             // Save the signed XML document to a file specified
             // using the passed string.
@@ -374,17 +374,40 @@ public class XmlSigningUsingMSDocsTests : IClassFixture<XmlDataFixture>
         signedXml.AddReference(reference);
 
         // Add a KeyInfo.
-        var keyInfo = new KeyInfo();
+        var keyInfo = new KeyInfo() { Id = "MyKeyInfoId" };
         keyInfo.AddClause(new RSAKeyValue(key));
         signedXml.KeyInfo = keyInfo;
 
         // Compute the signature.
         signedXml.ComputeSignature();
 
+        // Get the XML representation of the signature and save
+        // it to an XmlElement object.
+        XmlElement xmlDigitalSignature = signedXml.GetXml();
+
         _output.WriteLine("The data was signed.");
-        _output.WriteLine($"xml:{Environment.NewLine}{signedXml.GetXml().ToFormattedOuterXml()}");
+        _output.WriteLine($"xml:{Environment.NewLine}{xmlDigitalSignature.ToFormattedOuterXml()}");
+
+        bool result = Verify(xmlDigitalSignature);
+        result.IsTrue("The XML signature is not valid.");
 
         return;
+
+        static bool Verify(XmlNode xml)
+        {
+            var xmlDocument = new XmlDocument
+            {
+                PreserveWhitespace = true
+            };
+            xmlDocument.LoadXml(xml.OuterXml);
+
+            var nodeList = xmlDocument.GetElementsByTagName("Signature");
+
+            var signedXml = new SignedXml(xmlDocument);
+            signedXml.LoadXml((XmlElement)nodeList[0]!);
+
+            return signedXml.CheckSignature();
+        }
 
         static XmlDocument CreateSomeXml()
         {

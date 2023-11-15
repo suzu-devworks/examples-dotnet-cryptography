@@ -30,4 +30,5 @@
     <ProjectReference Include="..\Examples.Cryptography\Examples.Cryptography.csproj" />
   </ItemGroup>
 
+  <Import Project="XmlSampleGenerator.Build.targets" />
 </Project>
