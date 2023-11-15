@@ -26,6 +26,9 @@ jobs:
       - name: Auth Github
         run: dotnet nuget update source github --username suzu-devworks --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
 
+      - name: Install Tools
+        run: dotnet tool restore
+                
       - name: Restore dependencies
         run: dotnet restore
 
