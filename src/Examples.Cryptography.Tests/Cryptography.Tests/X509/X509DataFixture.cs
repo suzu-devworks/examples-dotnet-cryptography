@@ -1,16 +1,14 @@
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using Examples.Cryptography.Generics;
 using Examples.Cryptography.X509Certificates;
 
 namespace Examples.Cryptography.Tests.X509;
-
-using CertSets = ValueTuple<AsymmetricAlgorithm, X509Certificate2>;
 
 public class X509DataFixture : IDisposable
 {
     public X509DataFixture()
     {
-        // ... lazy initialize data ...
         var notBefore = DateTimeOffset.Now.AddSeconds(-50);
 
         _rootCaSet = new(() => InitializeRootCaSets(notBefore));
@@ -18,35 +16,38 @@ public class X509DataFixture : IDisposable
         _endEntitySet = new(() => InitializeEESets(notBefore));
     }
 
-    public CertSets RootCaSet => _rootCaSet.Value;
-    private readonly Lazy<CertSets> _rootCaSet;
+    public X509Certificate2 RootCACert => _rootCaSet.Value;
+    private readonly Lazy<X509Certificate2> _rootCaSet;
 
-    public IEnumerable<CertSets> IntermediateCaSets => _interCaSets.Value;
-    private readonly Lazy<IEnumerable<CertSets>> _interCaSets;
+    public IEnumerable<X509Certificate2> IntermediateCACert => _interCaSets.Value;
+    private readonly Lazy<IEnumerable<X509Certificate2>> _interCaSets;
 
-    public CertSets EndEntitySet => _endEntitySet.Value;
-    private readonly Lazy<CertSets> _endEntitySet;
+    public X509Certificate2 EndEntityCert => _endEntitySet.Value;
+    private readonly Lazy<X509Certificate2> _endEntitySet;
 
     public IEnumerable<X509Certificate> Certificates
-        => Enumerable.Empty<CertSets>()
-                .Append(RootCaSet)
-                .Concat(IntermediateCaSets)
-                .Append(EndEntitySet)
-                .Select(x => x.Item2);
+        => Enumerable.Empty<X509Certificate2>()
+                .Append(RootCACert)
+                .Concat(IntermediateCACert)
+                .Append(EndEntityCert);
 
     public void Dispose()
     {
+        _rootCaSet.DisposeIfValueCreated();
+        _interCaSets.DisposeIfValueCreated();
+        _endEntitySet.DisposeIfValueCreated();
         GC.SuppressFinalize(this);
     }
 
 
-    private static CertSets InitializeRootCaSets(
+    private static X509Certificate2 InitializeRootCaSets(
         DateTimeOffset notBefore,
         int days = 365)
     {
         var notAfter = notBefore.AddDays(days);
 
-        var keyPair = RSA.Create(2048);
+        // X509Certificate2 has a private key.
+        using var keyPair = RSA.Create(2048);
 
         var subject = new X500DistinguishedName("C=JP,CN=Test CA-root");
         var cert = new CertificateRequest(
@@ -61,23 +62,24 @@ public class X509DataFixture : IDisposable
 
         //File.WriteAllText($"CAroot.crt", rootCert.ExportCertificatePem());
 
-        return (keyPair, cert);
+        return cert;
     }
 
 
-    private IEnumerable<CertSets> InitializeIntermediateCaSets(
+    private IEnumerable<X509Certificate2> InitializeIntermediateCaSets(
         DateTimeOffset notBefore,
         int days = 365,
         int numOfCerts = 3)
     {
         var notAfter = notBefore.AddDays(days);
-        var (issuerKeyPair, issuerCert) = RootCaSet;
+        var issuerCert = RootCACert;
+        var issuerKeyPair = (AsymmetricAlgorithm?)issuerCert.GetRSAPrivateKey();
 
-        var results = new List<CertSets>();
+        var results = new List<X509Certificate2>();
 
         foreach (var i in Enumerable.Range(1, numOfCerts - 2))
         {
-            var keyPair = ECDsa.Create(ECCurve.NamedCurves.nistP256);
+            using var keyPair = ECDsa.Create(ECCurve.NamedCurves.nistP256);
 
             var subject = new X500DistinguishedName($"C=JP,CN=Test CA-{255 + i}");
             var request = new CertificateRequest(
@@ -89,28 +91,33 @@ public class X509DataFixture : IDisposable
                 .AddExtension(X509BasicConstraintsExtension.CreateForCertificateAuthority(numOfCerts - 2 - i));
 
             var serial = new CertificateSerialNumber(255L + i).ToBytes();
-            var cert = request.CreateCertificate(issuerCert.SubjectName, issuerKeyPair, notBefore, notAfter, serial);
+            var cert = request.CreateCertificate(issuerCert.SubjectName, issuerKeyPair!, notBefore, notAfter, serial);
+
+            // Append a private key.
+            cert = X509Certificate2.CreateFromPem(cert.ExportCertificatePem(), keyPair.ExportECPrivateKeyPem());
 
             //File.WriteAllText($"CA-{255 + i}.crt", intermediateCert.ExportCertificatePem());
 
-            results.Add((keyPair, cert));
+            results.Add(cert);
 
-            issuerKeyPair = keyPair;
             issuerCert = cert;
+            issuerKeyPair = issuerCert.GetECDsaPrivateKey();
         }
 
         return results;
     }
 
 
-    private CertSets InitializeEESets(
+    private X509Certificate2 InitializeEESets(
         DateTimeOffset notBefore,
          int days = 365)
     {
         var notAfter = notBefore.AddDays(days);
-        var (issuerKeyPair, issuerCert) = IntermediateCaSets.Last();
+        var issuerCert = IntermediateCACert.Last();
+        var issuerKeyPair = (AsymmetricAlgorithm?)issuerCert.GetECDsaPrivateKey();
 
-        var keyPair = ECDsa.Create(ECCurve.NamedCurves.nistP521);
+        // X509Certificate2 has a private key.
+        using var keyPair = ECDsa.Create(ECCurve.NamedCurves.nistP521);
 
         var subject = new X500DistinguishedName("C=JP,CN=localhost");
         var request = new CertificateRequest(
@@ -122,11 +129,14 @@ public class X509DataFixture : IDisposable
             .AddExtension(X509BasicConstraintsExtension.CreateForEndEntity());
 
         var serial = new CertificateSerialNumber(100, new Random()).ToBytes();
-        var cert = request.CreateCertificate(issuerCert.SubjectName, issuerKeyPair, notBefore, notAfter, serial);
+        var cert = request.CreateCertificate(issuerCert.SubjectName, issuerKeyPair!, notBefore, notAfter, serial);
+
+        // Append a private key.
+        cert = X509Certificate2.CreateFromPem(cert.ExportCertificatePem(), keyPair.ExportECPrivateKeyPem());
 
         //File.WriteAllText($"EE.crt", intermediateCert.ExportCertificatePem());
 
-        return (keyPair, cert);
+        return cert;
     }
 
 }

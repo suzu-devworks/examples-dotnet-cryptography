@@ -29,7 +29,8 @@ public static class CertificateRequestExtensions
         {
             ECDsa ecdsa => X509SignatureGenerator.CreateForECDsa(ecdsa),
             RSA rsa => X509SignatureGenerator.CreateForRSA(rsa, RSASignaturePadding.Pkcs1),
-            _ => throw new NotSupportedException($"not supported {issuerKeyPair.GetType()}"),
+            _ => throw new NotSupportedException($"not supported {issuerKeyPair?.GetType().ToString()
+                ?? "issuerKeyPair is null"}."),
         };
 
         var newCertificate = request.Create(issuerName, generator,

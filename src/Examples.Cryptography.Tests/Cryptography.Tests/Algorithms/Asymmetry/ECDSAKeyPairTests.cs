@@ -65,7 +65,7 @@ public class ECDSAKeyPairTests : IDisposable
         var exported = keyPair.ExportECPrivateKey();
 
         using var actual = ECDsa.Create();
-        actual.ImportECPrivateKey(exported, out var readcount);
+        actual.ImportECPrivateKey(exported, out var readCount);
 
         // ### Assert. ###
         // How to check equals?
@@ -74,7 +74,7 @@ public class ECDSAKeyPairTests : IDisposable
         // Is it a　success if the arrays are equal?.
         var other = actual.ExportECPrivateKey();
         other.Is(exported);
-        other.Length.Is(readcount);
+        other.Length.Is(readCount);
 
         return;
     }

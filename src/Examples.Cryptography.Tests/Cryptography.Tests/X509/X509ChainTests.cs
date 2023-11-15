@@ -26,8 +26,8 @@ public class X509ChainTests : IClassFixture<X509DataFixture>
         // Arrange.
         var certs = _fixture.Certificates;
 
-        var (_, root) = _fixture.RootCaSet;
-        var (_, ee) = _fixture.EndEntitySet;
+        var root = _fixture.RootCACert;
+        var ee = _fixture.EndEntityCert;
 
         //Output chain information of the selected certificate.
         using var chain = X509Chain.Create();

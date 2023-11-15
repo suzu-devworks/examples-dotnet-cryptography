@@ -137,7 +137,7 @@ public class AESEncryptionTests
         return encrypted;
     }
 
-    private static string DecryptWithTransform(byte[] ciphertext, byte[] key, byte[] iv)
+    private static string DecryptWithTransform(byte[] cipherText, byte[] key, byte[] iv)
     {
         using var aes = Aes.Create();
         aes.Key = key;
@@ -145,7 +145,7 @@ public class AESEncryptionTests
 
         using var decryptor = aes.CreateDecryptor();
 
-        var bytes = decryptor.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
+        var bytes = decryptor.TransformFinalBlock(cipherText, 0, cipherText.Length);
         var plaintext = Encoding.UTF8.GetString(bytes);
 
         return plaintext;
