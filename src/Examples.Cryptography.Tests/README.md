@@ -20,9 +20,9 @@ dotnet add package SWX.Examples.Shared --prerelease
 cd ../../
 
 ## Examples.Cryptography.Tests
-dotnet new xunit -o tests/Examples.Cryptography.Tests
-dotnet sln add tests/Examples.Cryptography.Tests/
-cd tests/Examples.Cryptography.Tests
+dotnet new xunit -o src/Examples.Cryptography.Tests
+dotnet sln add src/Examples.Cryptography.Tests/
+cd src/Examples.Cryptography.Tests
 dotnet add reference ../../src/Examples.Cryptography/
 dotnet add package Microsoft.NET.Test.Sdk
 dotnet add package xunit
