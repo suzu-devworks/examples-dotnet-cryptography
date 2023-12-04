@@ -33,13 +33,13 @@ public class PrefixedSignedXml : SignedXml
         AsymmetricAlgorithm signingKey = this.SigningKey
              ?? throw new CryptographicException("@:Signing key is not loaded.");
 
-        if (SignedInfo.SignatureMethod is null)
+        if (SignedInfo?.SignatureMethod is null)
         {
-            if (signingKey is DSA)
+            if ((SignedInfo is not null) && (signingKey is DSA))
             {
-                SignedInfo.SignatureMethod = SignedXml.XmlDsigDSAUrl;
+                SignedInfo!.SignatureMethod = SignedXml.XmlDsigDSAUrl;
             }
-            else if (signingKey is RSA)
+            else if ((SignedInfo is not null) && (signingKey is RSA))
             {
                 SignedInfo.SignatureMethod ??= SignedXml.XmlDsigRSASHA256Url;
             }
@@ -84,6 +84,7 @@ public class PrefixedSignedXml : SignedXml
     {
         //bool isKeyedHashAlgorithm = hash is KeyedHashAlgorithm;
         // if (isKeyedHashAlgorithm || !_bCacheValid || !SignedInfo!.CacheValid)
+        if (SignedInfo is not null)
         {
             // string? baseUri = _containingDocument?.BaseURI;
             // XmlResolver? resolver = (baseResolverSet ? _xmlResolver : XmlResolverHelper.GetThrowingResolver());

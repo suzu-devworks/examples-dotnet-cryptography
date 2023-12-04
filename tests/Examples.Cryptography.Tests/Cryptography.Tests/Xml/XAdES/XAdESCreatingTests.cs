@@ -303,7 +303,7 @@ public class XAdESCreatingTests : IClassFixture<XmlDataFixture>
             var dataObject = new DataObject
             {
                 // remove XmlDeclaration
-                Data = qpElem?.SelectNodes("."),
+                Data = qpElem?.SelectNodes(".")!,
             };
 
             signedXml.AddObject(dataObject);

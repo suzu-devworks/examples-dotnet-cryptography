@@ -35,8 +35,8 @@ public class XmlSigningUsingScottBradyTests : IClassFixture<XmlDataFixture>
         cert.HasPrivateKey.IsTrue();
 
         // set your signing key, signing algorithm, and canonicalization method
-        var signedXml = new SignedXml(xml.DocumentElement) { SigningKey = cert.GetECDsaPrivateKey() };
-        signedXml.SignedInfo.SignatureMethod = "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256";
+        var signedXml = new SignedXml(xml.DocumentElement!) { SigningKey = cert.GetECDsaPrivateKey() };
+        signedXml.SignedInfo!.SignatureMethod = "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256";
         // signedXml.SignedInfo.CanonicalizationMethod = "http://www.w3.org/2001/10/xml-exc-c14n#";
         signedXml.SignedInfo.CanonicalizationMethod = SignedXml.XmlDsigExcC14NTransformUrl;
 
@@ -83,9 +83,9 @@ public class XmlSigningUsingScottBradyTests : IClassFixture<XmlDataFixture>
         cert.HasPrivateKey.IsTrue();
 
         // set key, signing algorithm, and canonicalization method
-        var signedXml = new SignedXml(xml.DocumentElement) { SigningKey = cert.GetRSAPrivateKey() };
+        var signedXml = new SignedXml(xml.DocumentElement!) { SigningKey = cert.GetRSAPrivateKey() };
         // signedXml.SignedInfo.SignatureMethod = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256";
-        signedXml.SignedInfo.SignatureMethod = SignedXml.XmlDsigRSASHA256Url;
+        signedXml.SignedInfo!.SignatureMethod = SignedXml.XmlDsigRSASHA256Url;
         // signedXml.SignedInfo.CanonicalizationMethod = "http://www.w3.org/2001/10/xml-exc-c14n#";
         signedXml.SignedInfo.CanonicalizationMethod = SignedXml.XmlDsigExcC14NTransformUrl;
 
@@ -127,7 +127,7 @@ public class XmlSigningUsingScottBradyTests : IClassFixture<XmlDataFixture>
         signedXml.LoadXml((XmlElement)signatureElement[0]!);
 
         // validate references here!
-        if ((signedXml.SignedInfo.References[0] as Reference)?.Uri != "")
+        if ((signedXml.SignedInfo!.References[0] as Reference)?.Uri != "")
             throw new InvalidOperationException("Check your references!");
 
         bool isValid = signedXml.CheckSignature(key);
