@@ -8,7 +8,7 @@ cd examples-dotnet-cryptography
 
 dotnet new sln -o .
 
-#dotnet nuget update source github --username suzu-devworks --password "{parsonal access token}" --store-password-in-clear-text
+# dotnet nuget update source github --username suzu-devworks --password "{parsonal access token}" --store-password-in-clear-text
 
 ## Examples.Cryptography
 dotnet new classlib -o src/Examples.Cryptography
