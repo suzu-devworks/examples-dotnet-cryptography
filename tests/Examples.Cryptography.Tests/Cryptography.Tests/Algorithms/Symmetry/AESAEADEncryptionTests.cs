@@ -47,7 +47,7 @@ public class AESAEADEncryptionTests
             ReadOnlySpan<byte> key,
             ReadOnlySpan<byte> aad = default)
         {
-            using var aes = new AesGcm(key);
+            using var aes = new AesGcm(key, tagSizeInBytes: AesGcm.TagByteSizes.MaxSize);
 
             Span<byte> nonce = new byte[AesGcm.NonceByteSizes.MaxSize]; // 13 byte.
             RandomNumberGenerator.Fill(nonce);
@@ -68,7 +68,7 @@ public class AESAEADEncryptionTests
             ReadOnlySpan<byte> key,
             ReadOnlySpan<byte> aad = default)
         {
-            using var aes = new AesGcm(key);
+            using var aes = new AesGcm(key, tagSizeInBytes: AesGcm.TagByteSizes.MaxSize);
 
             Span<byte> plainText = new byte[cipherText.Length];
 

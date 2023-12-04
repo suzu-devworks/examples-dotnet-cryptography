@@ -1,1 +1,2 @@
-FROM mcr.microsoft.com/devcontainers/dotnet:0-7.0-jammy as develop-stage
+ARG VARIANT=8.0-bookworm-slim
+FROM mcr.microsoft.com/devcontainers/dotnet:${VARIANT} as develop-stage
