@@ -9,11 +9,17 @@
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591;xUnit1004</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
+    <PackageReference Include="BouncyCastle.Cryptography" Version="2.2.1" />
     <PackageReference Include="ChainingAssertion.Core.Xunit" Version="1.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="Moq" Version="4.20.70" />
-    <PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.0" />
     <PackageReference Include="xunit" Version="2.6.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.5.4">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -26,8 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Examples.Cryptography\Examples.Cryptography.csproj" />
+    <ProjectReference Include="..\Examples.Cryptography\Examples.Cryptography.csproj" />
   </ItemGroup>
 
-  <Import Project="XmlSampleGenerator.Build.targets" />
 </Project>
