@@ -356,6 +356,14 @@ MigrationBackup/
 ## Visual studio for Mac
 ##
 
+# VS Code files for those working on multiple tools
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/cspell.json
+*.code-workspace
 
 # globs
 Makefile.in
@@ -431,17 +439,7 @@ $RECYCLE.BIN/
 .idea/
 *.sln.iml
 
-##
-## Visual Studio Code
-##
-.vscode/*
-!.vscode/settings.json
-##!.vscode/tasks.json
-##!.vscode/launch.json
-##!.vscode/extensions.json
-
 ## User Define
 [Tt]emp/
-*.db
-*.db-shm
-*.db-wal
+.mono/
+.DS_Store

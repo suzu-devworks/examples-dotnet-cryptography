@@ -1,14 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>$(OwnTargetFramework)</TargetFrameworks>
+    <TargetFrameworks>$(LTSFrameworks)</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RootNamespace>Examples</RootNamespace>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Suzu.Examples.Shared" Version="1.0.0-alpha.1" />
-  </ItemGroup>
 
 </Project>
