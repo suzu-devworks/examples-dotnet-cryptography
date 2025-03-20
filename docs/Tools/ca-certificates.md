@@ -1,9 +1,9 @@
 # ca-certificates (on Ubuntu)
 
 ```shell
-$ sudo apt install -y ca-certificates
-$ sudo cp local-ca.crt /usr/local/share/ca-certificates
-$ sudo update-ca-certificates
+sudo apt install -y ca-certificates
+sudo cp local-ca.crt /usr/local/share/ca-certificates
+sudo update-ca-certificates
 ```
 
 ## X509 Store

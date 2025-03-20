@@ -9,17 +9,18 @@ charset = utf-8
 end_of_line = lf
 insert_final_newline = true
 
-# Configuration files
-[*.{yaml,yml,json}]
+# Markdown files
+[*.md]
+indent_size = 2
+indent_style = space
+trim_trailing_whitespace = false
+
+# Web development files
+[*.{js,jsx,ts,tsx,css,html,yml,yaml,json}]
 indent_size = 2
 indent_style = space
 
-# XML files
-[*.xml]
-indent_size = 2
-indent_style = space
-
-# XML project files
+# Project files
 [*.{sln,csproj,proj}]
 charset = utf-8-bom
 indent_size = 2

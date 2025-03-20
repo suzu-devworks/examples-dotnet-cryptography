@@ -29,7 +29,7 @@ public class X509Certificate2Tests : IClassFixture<X509DataFixture>
         // Act.
         var exported = cert.Export(X509ContentType.Cert);
 
-        using var loaded = new X509Certificate2(exported);
+        using var loaded = X509CertificateLoader.LoadCertificate(exported);
         var loadedKey = loaded.GetRSAPrivateKey();
 
         // Assert.
@@ -77,7 +77,9 @@ public class X509Certificate2Tests : IClassFixture<X509DataFixture>
     {
         /// <seealso href="https://learn.microsoft.com/ja-jp/dotnet/core/additional-tools/self-signed-certificates-guide#with-openssl" />
 
-        /* ```sh
+        /*
+        spell-checker:disable
+        ```sh
         PARENT="contoso.com"
         openssl req \
         -x509 \
@@ -109,8 +111,11 @@ public class X509Certificate2Tests : IClassFixture<X509DataFixture>
         echo 'basicConstraints = critical, CA:TRUE, pathlen:0'; \
         echo 'keyUsage = critical, cRLSign, keyCertSign'; \
         echo 'extendedKeyUsage = serverAuth, clientAuth')
-        ```*/
+        ```
+        spell-checker:enable
+        */
 
+        // spell-checker: words contoso.com
         var parent = "contoso.com";
         using var rsa = RSA.Create(2048 /* 4096 */);
 

@@ -184,7 +184,7 @@ public class TimeStampDataFixture : IDisposable
         var crl = new X509V2CrlGenerator()
             .Configure(gen =>
             {
-                gen.SetIssuerDN(PrincipalUtilities.GetSubjectX509Principal(issuerCert));
+                gen.SetIssuerDN(issuerCert.IssuerDN);
                 gen.SetThisUpdate(updateAt.UtcDateTime);
                 gen.SetNextUpdate(nextUpdateAt.UtcDateTime);
 
@@ -221,7 +221,7 @@ public class TimeStampDataFixture : IDisposable
         var (_, tsaCert) = TsaSet;
         var (signerKeyPair, signerCert) = OcspSignerSet;
 
-        var id = new CertificateID(CertificateID.HashSha1, caCert, tsaCert.SerialNumber);
+        var id = new CertificateID(CertificateID.DigestSha1, caCert, tsaCert.SerialNumber);
         var nonceValue = new DerOctetString(
             new DerOctetString(BigInteger.One.ToByteArray()));
         var values = new Dictionary<DerObjectIdentifier, X509Extension>
