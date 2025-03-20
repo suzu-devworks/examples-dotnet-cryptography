@@ -13,11 +13,19 @@ name: "CodeQL Advanced"
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "develop" ]
+    paths:
+      - "src/**"
   pull_request:
     branches: [ "main" ]
+    paths:
+      - "src/**"
   schedule:
     - cron: '20 8 * * 4'
+  workflow_dispatch:
+
+env:
+  DOTNET_VERSION: "9.0.x"
 
 jobs:
   analyze:
@@ -64,6 +72,14 @@ jobs:
     # or others). This is typically only required for manual builds.
     # - name: Setup runtime (example)
     #   uses: actions/setup-example@v1
+
+    # =======================
+    - if: matrix.language == 'csharp'
+      name: Setup .NET ${{ env.DOTNET_VERSION }}
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+    # =======================
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
