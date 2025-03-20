@@ -23,7 +23,9 @@ public class PKCS12ECDSACertificateArchiveTests : IClassFixture<PKCSDataFixture>
     [Fact]
     public void WhenExportAndLoad()
     {
-        /* ```sh
+        /*
+        spell-checker:disable
+        ```sh
         $ openssl ecparam -genkey -name prime256v1 -noout -out ecdsa-private.key
         $ openssl req -new -x509 \
             -key ecdsa-private.key \
@@ -33,7 +35,9 @@ public class PKCS12ECDSACertificateArchiveTests : IClassFixture<PKCSDataFixture>
         $ openssl pkcs12 -export \
             -inkey ecdsa-private.key -in ecdsa-localhost.crt \
             -out ecdsa-localhost.pfx
-        ``` */
+        ```
+        spell-checker:enable
+         */
 
         // Arrange.
         var ecdsa = _fixture.ECKeyProvider;
@@ -56,8 +60,7 @@ public class PKCS12ECDSACertificateArchiveTests : IClassFixture<PKCSDataFixture>
         // TODO Shrouded Keybag: pbeWithSHA1And3-KeyTripleDES-CBC, Iteration 2000
         var exported = cert.Export(X509ContentType.Pkcs12, password);
         //File.WriteAllBytes("ecdsa-localhost.pfx", exported);
-
-        var loaded = new X509Certificate2(exported, password,
+        var loaded = X509CertificateLoader.LoadPkcs12(exported, password,
             X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable);
         var loadedEcdsa = loaded.GetECDsaPrivateKey();
         var loadedRsa = loaded.GetRSAPrivateKey(); ;
