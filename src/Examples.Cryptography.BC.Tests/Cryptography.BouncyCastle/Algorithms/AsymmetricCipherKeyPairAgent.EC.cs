@@ -58,7 +58,7 @@ public static partial class AsymmetricCipherKeyPairAgent
         // Version::= INTEGER { v1(0)} (v1, ...)
         // PrivateKey::= OCTET STRING
         // Attributes ::= SET OF Attribute
-        var algId = new AlgorithmIdentifier(X9ObjectIdentifiers.IdECPublicKey, structure.GetParameters());
+        var algId = new AlgorithmIdentifier(X9ObjectIdentifiers.IdECPublicKey, structure.Parameters?.ToAsn1Object());
         var privateKeyInfo = new PrivateKeyInfo(algId, structure.ToAsn1Object());
         var privateKey = PrivateKeyFactory.CreateKey(privateKeyInfo);
 
@@ -71,7 +71,7 @@ public static partial class AsymmetricCipherKeyPairAgent
         //      algorithm           AlgorithmIdentifier,
         //      subjectPublicKey    BIT STRING
         // }
-        var publicKeyData = structure.GetPublicKey()
+        var publicKeyData = structure.PublicKey
             ?? throw new NotSupportedException("publicKey is null.");
         var publicKeyInfo = new SubjectPublicKeyInfo(algId, publicKeyData.GetBytes());
         var publicKey = PublicKeyFactory.CreateKey(publicKeyInfo);

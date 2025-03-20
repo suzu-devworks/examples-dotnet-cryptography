@@ -11,11 +11,11 @@ using Org.BouncyCastle.OpenSsl;
 #endif
 
 using System.Text;
-using Microsoft.Extensions.DependencyInjection;
 using Examples.Cryptography.BouncyCastle.Logging;
 using Examples.Cryptography.BouncyCastle.PKIX;
 using Examples.Cryptography.BouncyCastle.X509;
 using Examples.Cryptography.Generics;
+using Microsoft.Extensions.DependencyInjection;
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.Nist;
 using Org.BouncyCastle.Asn1.Tsp;
@@ -181,7 +181,7 @@ public class TimeStampHttpClientTests : IClassFixture<TimeStampDataFixture>
             .Configure(gen =>
             {
                 gen.AddRequest(new CertificateID(
-                    CertificateID.HashSha1, issuerCert, tsaCert!.SerialNumber));
+                    CertificateID.DigestSha1, issuerCert, tsaCert!.SerialNumber));
 
 #if USE_HTTP_CLIENT
                 gen.AddNonce(BigInteger.ValueOf(DateTime.Now.Ticks));
