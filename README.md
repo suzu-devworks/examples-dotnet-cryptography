@@ -1,6 +1,7 @@
 # examples-dotnet-cryptography
 
 [![build](https://github.com/suzu-devworks/examples-dotnet-cryptography/actions/workflows/dotnet-build.yml/badge.svg)](https://github.com/suzu-devworks/examples-dotnet-cryptography/actions/workflows/dotnet-build.yml)
+[![CodeQL Advanced](https://github.com/suzu-devworks/examples-dotnet-cryptography/actions/workflows/codeql.yml/badge.svg)](https://github.com/suzu-devworks/examples-dotnet-cryptography/actions/workflows/codeql.yml)
 
 A workspace for learning cryptography programming with dotnet.
 
