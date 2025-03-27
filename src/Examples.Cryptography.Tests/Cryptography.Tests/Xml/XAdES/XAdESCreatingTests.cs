@@ -51,7 +51,7 @@ public class XAdESCreatingTests : IClassFixture<XmlDataFixture>
         var result = VerifySignature(signed, signer);
         result.IsTrue("The XML signature is not valid.");
 
-        return;
+
     }
 
 
@@ -75,7 +75,7 @@ public class XAdESCreatingTests : IClassFixture<XmlDataFixture>
         var result = VerifySignature(signed, signer);
         result.IsTrue("The XML signature is not valid.");
 
-        return;
+
     }
 
 
@@ -101,7 +101,7 @@ public class XAdESCreatingTests : IClassFixture<XmlDataFixture>
         var result = VerifySignature(signed, signer);
         result.IsTrue("The XML signature is not valid.");
 
-        return;
+
     }
 
 
@@ -127,7 +127,7 @@ public class XAdESCreatingTests : IClassFixture<XmlDataFixture>
         var result = VerifySignature(signed, signer);
         result.IsTrue("The XML signature is not valid.");
 
-        return;
+
 
 
     }

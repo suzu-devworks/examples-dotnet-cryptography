@@ -34,14 +34,18 @@ public static partial class AsymmetricCipherKeyPairAgent
         // RFC 5915 - Elliptic Curve Private Key Structure
         // https://datatracker.ietf.org/doc/html/rfc5915#appendix-A
 
+
         // Appendix A.  ASN.1 Module
         //
+        // ```asn.1
         // ECPrivateKey::= SEQUENCE {
         //      version         INTEGER { ecPrivkeyVer1(1) } (ecPrivkeyVer1),
         //      privateKey      OCTET STRING,
         //      parameters  [0] ECParameters { { NamedCurve } } OPTIONAL,
         //      publicKey   [1] BIT STRING OPTIONAL
         // }
+        // ```
+        /* spell-checker: words Privkey */
         var structure = ECPrivateKeyStructure.GetInstance(seq);
 
         // RFC 5208 - Public-Key Cryptography Standards (PKCS) #8
@@ -49,15 +53,18 @@ public static partial class AsymmetricCipherKeyPairAgent
 
         // Appendix A.  ASN.1 Syntax
         //
+        // ```asn.1
         // PrivateKeyInfo::= SEQUENCE {
         //      version             Version,
         //      privateKeyAlgorithm AlgorithmIdentifier { { PrivateKeyAlgorithms} },
         //      privateKey          PrivateKey,
         //      attributes[0]       Attributes OPTIONAL
         // }
+        //
         // Version::= INTEGER { v1(0)} (v1, ...)
         // PrivateKey::= OCTET STRING
         // Attributes ::= SET OF Attribute
+        // ```
         var algId = new AlgorithmIdentifier(X9ObjectIdentifiers.IdECPublicKey, structure.Parameters?.ToAsn1Object());
         var privateKeyInfo = new PrivateKeyInfo(algId, structure.ToAsn1Object());
         var privateKey = PrivateKeyFactory.CreateKey(privateKeyInfo);
@@ -67,10 +74,12 @@ public static partial class AsymmetricCipherKeyPairAgent
 
         // 2.  Subject Public Key Information Fields
         //
+        // ```asn.1
         // SubjectPublicKeyInfo::= SEQUENCE  {
         //      algorithm           AlgorithmIdentifier,
         //      subjectPublicKey    BIT STRING
         // }
+        // ```
         var publicKeyData = structure.PublicKey
             ?? throw new NotSupportedException("publicKey is null.");
         var publicKeyInfo = new SubjectPublicKeyInfo(algId, publicKeyData.GetBytes());

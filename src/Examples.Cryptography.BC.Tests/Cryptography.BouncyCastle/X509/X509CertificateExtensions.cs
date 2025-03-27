@@ -68,8 +68,8 @@ public static class X509CertificateExtensions
         }
 
         var asn1 = X509ExtensionUtilities.FromExtensionValue(value);
-        var crldp = CrlDistPoint.GetInstance(asn1);
-        var dsp = crldp.GetDistributionPoints();
+        var crlDp = CrlDistPoint.GetInstance(asn1);
+        var dsp = crlDp.GetDistributionPoints();
 
         return dsp;
     }
@@ -81,18 +81,18 @@ public static class X509CertificateExtensions
     /// <returns>An access location <see cref="Uri" />.</returns>
     public static Uri? GetCrlDistributionPointsUri(this X509Certificate certificate)
     {
-        var gname = certificate.GetCrlDistributionPoints()
+        var gName = certificate.GetCrlDistributionPoints()
             .Where(x => x.DistributionPointName.Type == DistributionPointName.FullName)
             .SelectMany(x => GeneralNames.GetInstance(x.DistributionPointName.Name).GetNames())
             .Where(x => x.TagNo == GeneralName.UniformResourceIdentifier)
             .FirstOrDefault();
 
-        if (gname is null)
+        if (gName is null)
         {
             return null;
         }
 
-        return new Uri($"{gname.Name}");
+        return new Uri($"{gName.Name}");
     }
 
 }

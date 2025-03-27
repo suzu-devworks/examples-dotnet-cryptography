@@ -44,7 +44,6 @@ public class Sha3DigestTests : IClassFixture<HashingDataFixture>
         digest.GetDigestSize().Is(size);
         output.ToBase64String().Is(expected);
 
-        return;
     }
 
     [Theory]
@@ -72,7 +71,6 @@ public class Sha3DigestTests : IClassFixture<HashingDataFixture>
         digest.DoFinal(output2, 0);
         output2.Is(output);
 
-        return;
     }
 
 }

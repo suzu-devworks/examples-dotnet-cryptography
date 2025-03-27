@@ -22,7 +22,7 @@ public class TimeStampTokenTests : IClassFixture<TimeStampDataFixture>
     {
         _fixture = fixture;
 
-        // ```
+        // ```shell
         // dotnet test --logger "console;verbosity=detailed"
         // ```
         _output = output;
@@ -76,7 +76,6 @@ public class TimeStampTokenTests : IClassFixture<TimeStampDataFixture>
         //_output.WriteLine(Asn1Dump.DumpAsString(Asn1Sequence.GetInstance(token.GetEncoded())));
         _output.WriteLine(token.DumpAsString());
 
-        return;
     }
 
 }

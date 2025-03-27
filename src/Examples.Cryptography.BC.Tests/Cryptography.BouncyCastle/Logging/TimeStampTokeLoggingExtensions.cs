@@ -27,10 +27,11 @@ public static class TimeStampTokeLoggingExtensions
         // RFC 3161 Internet X.509 Public Key Infrastructure Time - Stamp Protocol(TSP)
         // https://datatracker.ietf.org/doc/html/rfc3161#section-2.4.2
 
+        // ```asn.1
         // TimeStampToken ::= ContentInfo
         //      -- contentType is id - signedData([CMS])
         //      -- content is SignedData([CMS])
-        //
+        // ```
 
         builder.AppendLevelLine(indent, "TimeStampToken");
         builder.AppendLevelLine(indent + 1, "contentType", "id-signedData(1.2.840.113549.1.7.2)");
@@ -39,6 +40,7 @@ public static class TimeStampTokeLoggingExtensions
         // RFC 5652 Cryptographic Message Syntax (CMS)
         // https://datatracker.ietf.org/doc/html/rfc5652#section-12.1
 
+        // ```asn.1
         // SignedData ::= SEQUENCE {
         //      version             CMSVersion,
         //      digestAlgorithms    DigestAlgorithmIdentifiers,
@@ -46,27 +48,33 @@ public static class TimeStampTokeLoggingExtensions
         //      certificates    [0] IMPLICIT CertificateSet OPTIONAL,
         //      crls[1]             IMPLICIT RevocationInfoChoices OPTIONAL,
         //      signerInfos         SignerInfos }
+        // ```
+        /* spell-checker: words crls encap */
 
         var cms = tat.ToCmsSignedData();
-        var signeddata = SignedData.GetInstance(cms.ContentInfo.Content);
+        var signedData = SignedData.GetInstance(cms.ContentInfo.Content);
 
         builder.AppendLevelLine(indent + 2, "version", $"{cms.Version}");
 
+        // ```asn.1
         // DigestAlgorithmIdentifiers ::= SET OF DigestAlgorithmIdentifier
         // DigestAlgorithmIdentifier ::= AlgorithmIdentifier
+        // ```
 
         builder.AppendLevelLine(indent + 2, "digestAlgorithms");
-        foreach (var (algolysm, index) in signeddata.DigestAlgorithms.AsEnumerable<Asn1Encodable>()
+        foreach (var (algorism, index) in signedData.DigestAlgorithms.AsEnumerable<Asn1Encodable>()
             .Select(x => AlgorithmIdentifier.GetInstance(x))
             .Select((x, i) => (x, i)))
         {
             builder.AppendLevelLine(indent + 3, $"[{index}]");
-            builder.Append(algolysm.DumpAsString(indent + 4));
+            builder.Append(algorism.DumpAsString(indent + 4));
         }
 
+        // ```asn.1
         // EncapsulatedContentInfo ::= SEQUENCE {
         //      eContentType        ContentType,
         //      eContent        [0] EXPLICIT OCTET STRING OPTIONAL }
+        // ```
 
         builder.AppendLevelLine(indent + 2, "encapContentInfo");
         builder.AppendLevelLine(indent + 3, "eContentType", $"id-ct-TSTInfo({cms?.SignedContentType})");
@@ -74,7 +82,9 @@ public static class TimeStampTokeLoggingExtensions
         builder.AppendLevelLine(indent + 3, "eContent is TSTInfo ");
         builder.Append(tat.TimeStampInfo.TstInfo.DumpAsString(indent: indent + 4));
 
+        // ```asn.1
         // CertificateSet ::= SET OF CertificateChoices
+        // ```
 
         var certs = tat.GetCertificates().EnumerateMatches(null);
         if (certs.Any())
@@ -88,7 +98,10 @@ public static class TimeStampTokeLoggingExtensions
             }
         }
 
+        // ```asn.1
         // RevocationInfoChoices ::= SET OF RevocationInfoChoice
+        // ```
+
         var crls = tat.GetCrls().EnumerateMatches(null);
         if (crls.Any())
         {
@@ -101,7 +114,9 @@ public static class TimeStampTokeLoggingExtensions
             }
         }
 
+        // ```asn.1
         // SignerInfos ::= SET OF SignerInfo
+        // ```
 
         builder.AppendLevelLine(indent + 2, "signerInfos");
         foreach (var (signerInfo, index) in cms!.GetSignerInfos().GetSigners()
@@ -119,6 +134,7 @@ public static class TimeStampTokeLoggingExtensions
         // RFC 3161 Internet X.509 Public Key Infrastructure Time - Stamp Protocol(TSP)
         // https://datatracker.ietf.org/doc/html/rfc3161#section-2.4.2
 
+        // ```asn.1
         // TSTInfo ::= SEQUENCE  {
         //      version             INTEGER  { v1(1) },
         //      policy              TSAPolicyId,
@@ -130,8 +146,9 @@ public static class TimeStampTokeLoggingExtensions
         //      nonce               INTEGER OPTIONAL,
         //      tsa             [0] GeneralName OPTIONAL,
         //      extensions      [1] IMPLICIT Extensions  OPTIONAL   }
-
+        //
         // TSAPolicyId ::= OBJECT IDENTIFIER
+        // ```
 
         var builder = new StringBuilder();
 
@@ -179,9 +196,11 @@ public static class TimeStampTokeLoggingExtensions
         // RFC 3161 Internet X.509 Public Key Infrastructure Time - Stamp Protocol(TSP)
         // https://datatracker.ietf.org/doc/html/rfc3161#section-2.4.1
 
+        // ```asn.1
         // MessageImprint ::= SEQUENCE  {
         //      hashAlgorithm       AlgorithmIdentifier,
         //      hashedMessage       OCTET STRING  }
+        // ```
 
         var builder = new StringBuilder();
 
@@ -198,10 +217,13 @@ public static class TimeStampTokeLoggingExtensions
         // RFC 3161 Internet X.509 Public Key Infrastructure Time - Stamp Protocol(TSP)
         // https://datatracker.ietf.org/doc/html/rfc3161#section-2.4.2
 
+        // ```asn.1
         // Accuracy ::= SEQUENCE {
         //      seconds         INTEGER         OPTIONAL,
         //      millis      [0] INTEGER(1..999) OPTIONAL,
         //      micros      [1] INTEGER(1..999) OPTIONAL  }
+        // ```
+        /* spell-checker: words millis */
 
         var builder = new StringBuilder();
 
@@ -231,9 +253,11 @@ public static class TimeStampTokeLoggingExtensions
         // RFC 3161 Internet X.509 Public Key Infrastructure Time - Stamp Protocol(TSP)
         // https://datatracker.ietf.org/doc/html/rfc3161#section-2.4.2
 
+        // ```asn.1
         // AlgorithmIdentifier ::= SEQUENCE  {
         //      algorithm           OBJECT IDENTIFIER,
         //      parameters          ANY DEFINED BY algorithm OPTIONAL  }
+        // ```
 
         var builder = new StringBuilder();
 
@@ -253,6 +277,7 @@ public static class TimeStampTokeLoggingExtensions
         // RFC 5652 Cryptographic Message Syntax (CMS)
         // https://datatracker.ietf.org/doc/html/rfc5652#section-12.1
 
+        // ```asn.1
         // SignerInfo   ::= SEQUENCE {
         //      version             CMSVersion,
         //      sid                 SignerIdentifier,
@@ -261,6 +286,7 @@ public static class TimeStampTokeLoggingExtensions
         //      signatureAlgorithm  SignatureAlgorithmIdentifier,
         //      signature           SignatureValue,
         //      unsignedAttrs   [1] IMPLICIT UnsignedAttributes OPTIONAL }
+        // ```
 
         var builder = new StringBuilder();
 
@@ -269,12 +295,16 @@ public static class TimeStampTokeLoggingExtensions
         builder.AppendLevelLine(indent, "sid");
         builder.Append(signerInfo.SignerID.DumpAsString(indent + 1));
 
+        // ```asn.1
         // DigestAlgorithmIdentifier ::= AlgorithmIdentifier
+        // ```
 
         builder.AppendLevelLine(indent, "digestAlgorithm");
         builder.Append(signerInfo.DigestAlgorithmID.DumpAsString(indent + 1));
 
+        // ```asn.1
         // SignedAttributes ::= SET SIZE(1..MAX) OF Attribute
+        // ```
 
         if (signerInfo.SignedAttributes is not null)
         {
@@ -288,14 +318,18 @@ public static class TimeStampTokeLoggingExtensions
             }
         }
 
+        // ```asn.1
         // SignatureAlgorithmIdentifier ::= AlgorithmIdentifier
+        // ```
 
         builder.AppendLevelLine(indent, "signatureAlgorithm");
         builder.Append(signerInfo.EncryptionAlgorithmID.DumpAsString(indent + 1));
 
         builder.AppendLevelLine(indent, "signature", $"{signerInfo.GetSignature().ToBase64String()}");
 
+        // ```asn.1
         // UnsignedAttributes ::= SET SIZE(1..MAX) OF Attribute
+        // ```
 
         if (signerInfo.UnsignedAttributes is not null)
         {
@@ -317,22 +351,29 @@ public static class TimeStampTokeLoggingExtensions
         // RFC 5652 Cryptographic Message Syntax (CMS)
         // https://datatracker.ietf.org/doc/html/rfc5652#section-12.1
 
+        // ```asn.1
         // SignerIdentifier ::= CHOICE {
         //      issuerAndSerialNumber       IssuerAndSerialNumber,
         //      subjectKeyIdentifier    [0] SubjectKeyIdentifier }
+        // ```
 
         var builder = new StringBuilder();
 
         builder.AppendLevelLine(indent, "issuerAndSerialNumber");
 
+        // ```asn.1
         // IssuerAndSerialNumber ::= SEQUENCE {
         //      issuer              Name,
         //      serialNumber        CertificateSerialNumber }
+        // ```
 
         builder.AppendLevelLine(indent + 1, "issuer", $"{signerId.Issuer}");
         builder.AppendLevelLine(indent + 1, "serialNumber", $"{signerId.SerialNumber}");
 
+        // ```asn.1
         // SubjectKeyIdentifier ::= OCTET STRING
+        // ```
+
         builder.AppendLevelLine(indent + 1, "subjectKeyIdentifier",
             $"{signerId.SubjectKeyIdentifier?.ToBase64String()}");
 
@@ -344,9 +385,11 @@ public static class TimeStampTokeLoggingExtensions
         // RFC 5652 Cryptographic Message Syntax (CMS)
         // https://datatracker.ietf.org/doc/html/rfc5652#section-12.1
 
+        // ```asn.1
         // Attribute ::= SEQUENCE {
         //      attrType            OBJECT IDENTIFIER,
         //      attrValues          SET OF AttributeValue }
+        // ```
 
         var builder = new StringBuilder();
 

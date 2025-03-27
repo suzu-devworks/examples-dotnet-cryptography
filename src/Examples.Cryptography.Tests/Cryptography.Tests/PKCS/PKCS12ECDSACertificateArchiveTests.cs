@@ -23,9 +23,8 @@ public class PKCS12ECDSACertificateArchiveTests : IClassFixture<PKCSDataFixture>
     [Fact]
     public void WhenExportAndLoad()
     {
-        /*
-        spell-checker:disable
-        ```sh
+        // spell-checker: disable
+        /* ```shell
         $ openssl ecparam -genkey -name prime256v1 -noout -out ecdsa-private.key
         $ openssl req -new -x509 \
             -key ecdsa-private.key \
@@ -35,9 +34,8 @@ public class PKCS12ECDSACertificateArchiveTests : IClassFixture<PKCSDataFixture>
         $ openssl pkcs12 -export \
             -inkey ecdsa-private.key -in ecdsa-localhost.crt \
             -out ecdsa-localhost.pfx
-        ```
-        spell-checker:enable
-         */
+        ``` */
+        // spell-checker: disable
 
         // Arrange.
         var ecdsa = _fixture.ECKeyProvider;
@@ -78,7 +76,7 @@ public class PKCS12ECDSACertificateArchiveTests : IClassFixture<PKCSDataFixture>
 
         loadedRsa.IsNull();
 
-        return;
+
     }
 
 }

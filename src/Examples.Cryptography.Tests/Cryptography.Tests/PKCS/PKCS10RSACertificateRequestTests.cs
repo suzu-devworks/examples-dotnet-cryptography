@@ -25,12 +25,14 @@ public class PKCS10RSACertificateRequestTests : IClassFixture<PKCSDataFixture>
     [Fact]
     public void WhenLoadingFromCreateSigningRequest_ReturnsToBeforeRequest()
     {
-        /* ```sh
+        // spell-checker: disable
+        /* ```shell
         $ openssl req -new  \
             -newkey rsa:4096 -keyout private.key -nodes \
             -sha256 -subj "/C=JP/O=suzu-devworks/CN=localhost" \
             -out request-der.csr -outform der
         ``` */
+        // spell-checker: eenable
 
         // Arrange.
         var rsa = _fixture.RSAKeyProvider;
@@ -57,14 +59,14 @@ public class PKCS10RSACertificateRequestTests : IClassFixture<PKCSDataFixture>
         loaded.PublicKey.EncodedParameters.RawData.Is(req.PublicKey.EncodedParameters.RawData);
         loaded.HashAlgorithm.Name.Is(req.HashAlgorithm.Name);
 
-        return;
+
     }
 
 
     [Fact]
     public void WhenLoadingFromCreateSigningRequestPem_ReturnsToBeforeRequest()
     {
-        /* ```sh
+        /* ```shell
         $ openssl req -new  \
             -newkey rsa:4096 -keyout private.key -nodes \
             -sha256 -subj "/C=JP/O=suzu-devworks/CN=localhost" \
@@ -111,14 +113,14 @@ public class PKCS10RSACertificateRequestTests : IClassFixture<PKCSDataFixture>
         pem.Is(x => x.StartsWith("-----BEGIN CERTIFICATE REQUEST-----")
                     && x.EndsWith("-----END CERTIFICATE REQUEST-----"));
 
-        return;
+
     }
 
 
     [Fact]
     public void WhenCallingCreateSelfSigned_WorkAsExpected()
     {
-        /* ```sh
+        /* ```shell
         $ openssl req -new -x509 \
             -newkey rsa:4096 -keyout private.key -nodes \
              -sha256 -subj "/C=JP/O=suzu-devworks/CN=localhost" \
@@ -164,7 +166,7 @@ public class PKCS10RSACertificateRequestTests : IClassFixture<PKCSDataFixture>
         pem.Is(x => x.StartsWith("-----BEGIN CERTIFICATE-----")
                     && x.EndsWith("-----END CERTIFICATE-----"));
 
-        return;
+
     }
 
 }

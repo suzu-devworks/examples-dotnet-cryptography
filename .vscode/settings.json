@@ -1,4 +1,28 @@
 {
+  "[aspnetcorerazor]": {
+    "editor.defaultFormatter": "ms-dotnettools.csharp"
+  },
+  "[csharp]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    },
+    "editor.defaultFormatter": "ms-dotnettools.csharp"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[markdown]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.markdownlint": "explicit"
+    },
+    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
+  },
+  "[razor]": {
+    "editor.defaultFormatter": "ms-dotnettools.csharp"
+  },
   "csharpOrganizeUsings.removeUnnecessaryUsings": true,
   "csharpOrganizeUsings.sortOrder": "System",
   "csharpOrganizeUsings.splitGroups": false,
@@ -11,30 +35,5 @@
   },
   "omnisharp.enableAsyncCompletion": true,
   "omnisharp.enableEditorConfigSupport": true,
-  "omnisharp.enableMsBuildLoadProjectsOnDemand": true,
-  "[aspnetcorerazor]": {
-    "editor.defaultFormatter": "ms-dotnettools.csharp"
-  },
-  "[csharp]": {
-    "editor.codeActionsOnSave": {
-      "source.organizeImports": "explicit",
-    },
-    "editor.defaultFormatter": "ms-dotnettools.csharp"
-  },
-  "[razor]": {
-    "editor.defaultFormatter": "ms-dotnettools.csharp"
-  },
-  "[jsonc]": {
-    "editor.defaultFormatter": "vscode.json-language-features"
-  },
-  "[json]": {
-    "editor.defaultFormatter": "vscode.json-language-features"
-  },
-  "[markdown]": {
-    "editor.codeActionsOnSave": {
-      "source.fixAll.markdownlint": "explicit"
-    },
-    "editor.formatOnPaste": true,
-    "editor.formatOnSave": true,
-  },
+  "omnisharp.enableMsBuildLoadProjectsOnDemand": true
 }

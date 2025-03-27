@@ -33,7 +33,7 @@ public class XmlNamespacesExtensionsTests
         names.ElementAt(5).Is(prefix => (prefix == "xa141")
             && (manager.LookupNamespace(prefix) == "http://uri.etsi.org/01903/v1.4.1#"));
 
-        return;
+
     }
 
     [Fact]
@@ -79,6 +79,6 @@ public class XmlNamespacesExtensionsTests
                 && (x.Namespace == "http://uri.etsi.org/01903/v1.4.1#"));
         }
 
-        return;
+
     }
 }

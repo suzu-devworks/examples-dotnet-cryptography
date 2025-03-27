@@ -61,7 +61,7 @@ public class XmlSigningUsingScottBradyTests : IClassFixture<XmlDataFixture>
 
         Verify(xml, cert.GetECDsaPublicKey()!).IsTrue();
 
-        return;
+
     }
 
 
@@ -112,7 +112,7 @@ public class XmlSigningUsingScottBradyTests : IClassFixture<XmlDataFixture>
 
         Verify(xml, cert.GetRSAPublicKey()!).IsTrue();
 
-        return;
+
     }
 
     private static bool Verify(XmlDocument xml, AsymmetricAlgorithm key)

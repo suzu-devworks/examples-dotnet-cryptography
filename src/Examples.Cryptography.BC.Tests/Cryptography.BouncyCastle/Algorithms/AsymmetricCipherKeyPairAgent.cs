@@ -42,6 +42,7 @@ public static partial class AsymmetricCipherKeyPairAgent
 
         // Appendix A.  ASN.1 Syntax
         //
+        // ```asn.1
         // PrivateKeyInfo::= SEQUENCE {
         //      version             Version,
         //      privateKeyAlgorithm AlgorithmIdentifier { { PrivateKeyAlgorithms} },
@@ -51,6 +52,7 @@ public static partial class AsymmetricCipherKeyPairAgent
         // Version::= INTEGER { v1(0)} (v1, ...)
         // PrivateKey::= OCTET STRING
         // Attributes ::= SET OF Attribute
+        // ```
         var privateKeyInfo = PrivateKeyInfo.GetInstance(seq);
         var privateKey = PrivateKeyFactory.CreateKey(privateKeyInfo);
 
@@ -59,10 +61,12 @@ public static partial class AsymmetricCipherKeyPairAgent
 
         // 2.  Subject Public Key Information Fields
         //
+        // ```asn.1
         // SubjectPublicKeyInfo::= SEQUENCE  {
         //      algorithm           AlgorithmIdentifier,
         //      subjectPublicKey    BIT STRING
         // }
+        //```
         var publicKey = GetPublicKey(privateKey);
 
         return new AsymmetricCipherKeyPair(publicKey, privateKey);

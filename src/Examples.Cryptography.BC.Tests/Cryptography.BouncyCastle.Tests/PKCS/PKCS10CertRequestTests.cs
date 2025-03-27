@@ -40,24 +40,25 @@ public class PKCS10CertRequestTests : IClassFixture<PKCSDataFixture>
         pem.Is(x => x.StartsWith("-----BEGIN CERTIFICATE REQUEST-----")
             && x.EndsWith("-----END CERTIFICATE REQUEST-----"));
 
-        return;
     }
 
     [Fact]
     public void WhenImportAndSign()
     {
-        var pem = @"""-----BEGIN CERTIFICATE REQUEST-----
-                MIIB0DCCAXUCAQAwITELMAkGA1UEBhMCSlAxEjAQBgNVBAMMCWxvY2FsaG9zdDCC
-                AUswggEDBgcqhkjOPQIBMIH3AgEBMCwGByqGSM49AQECIQD/////AAAAAQAAAAAA
-                AAAAAAAAAP///////////////zBbBCD/////AAAAAQAAAAAAAAAAAAAAAP//////
-                /////////AQgWsY12Ko6k+ez671VdpiGvGUdBrDMU7D2O848PifSYEsDFQDEnTYI
-                hucEk2pmeOETnSa3gZ9+kARBBGsX0fLhLEJH+Lzm5WOkQPJ3A32BLeszoPShOUXY
-                mMKWT+NC4v4af5uO5+tKfA+eFivOM1drMV7Oy7ZAaDe/UfUCIQD/////AAAAAP//
-                ////////vOb6racXnoTzucrC/GMlUQIBAQNCAAR10QJ4nNqJy8L0/6udQ6sZmj+D
-                Xmf5SKMS/DtYMJcRvufLaO+90tdNlzAQXC6k1qm/wMrZXhiG7IRBnDGIFDGKMAoG
-                CCqGSM49BAMEA0kAMEYCIQCRberErtkl4QevFUoOyP2LRZ/gfaEVCQwGAAWKOngI
-                ZQIhAPpglB8ojoxJJ3lDNqHOSmKVoN7x59lLcBVcxMgiI+xw
-                -----END CERTIFICATE REQUEST-----""";
+        var pem = @"""
+            -----BEGIN CERTIFICATE REQUEST-----
+            MIIB0DCCAXUCAQAwITELMAkGA1UEBhMCSlAxEjAQBgNVBAMMCWxvY2FsaG9zdDCC
+            AUswggEDBgcqhkjOPQIBMIH3AgEBMCwGByqGSM49AQECIQD/////AAAAAQAAAAAA
+            AAAAAAAAAP///////////////zBbBCD/////AAAAAQAAAAAAAAAAAAAAAP//////
+            /////////AQgWsY12Ko6k+ez671VdpiGvGUdBrDMU7D2O848PifSYEsDFQDEnTYI
+            hucEk2pmeOETnSa3gZ9+kARBBGsX0fLhLEJH+Lzm5WOkQPJ3A32BLeszoPShOUXY
+            mMKWT+NC4v4af5uO5+tKfA+eFivOM1drMV7Oy7ZAaDe/UfUCIQD/////AAAAAP//
+            ////////vOb6racXnoTzucrC/GMlUQIBAQNCAAR10QJ4nNqJy8L0/6udQ6sZmj+D
+            Xmf5SKMS/DtYMJcRvufLaO+90tdNlzAQXC6k1qm/wMrZXhiG7IRBnDGIFDGKMAoG
+            CCqGSM49BAMEA0kAMEYCIQCRberErtkl4QevFUoOyP2LRZ/gfaEVCQwGAAWKOngI
+            ZQIhAPpglB8ojoxJJ3lDNqHOSmKVoN7x59lLcBVcxMgiI+xw
+            -----END CERTIFICATE REQUEST-----
+            """;
 
         var (issuerKeyPair, issuerCert) = _fixture.RootCaSet;
         var now = DateTimeOffset.Now;
@@ -83,7 +84,6 @@ public class PKCS10CertRequestTests : IClassFixture<PKCSDataFixture>
         certPem.Is(x => x.StartsWith("-----BEGIN CERTIFICATE-----")
                  && x.EndsWith("-----END CERTIFICATE-----"));
 
-        return;
     }
 
 }

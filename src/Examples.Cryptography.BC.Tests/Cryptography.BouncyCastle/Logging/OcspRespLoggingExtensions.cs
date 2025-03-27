@@ -22,10 +22,11 @@ public static class OcspRespLoggingExtensions
         // RFC 6960 X.509 Internet Public Key Infrastructure Online Certificate Status Protocol -OCSP
         // https://datatracker.ietf.org/doc/html/rfc6960#appendix-B.2
 
+        // ```asn.1
         // OCSPResponse::= SEQUENCE {
         //      responseStatus      OCSPResponseStatus,
         //      responseBytes   [0] EXPLICIT ResponseBytes OPTIONAL }
-
+        //
         // OCSPResponseStatus ::= ENUMERATED {
         //      successful          (0),    -- Response has valid confirmations
         //      malformedRequest    (1),    -- Illegal confirmation request
@@ -35,19 +36,20 @@ public static class OcspRespLoggingExtensions
         //      sigRequired         (5),    -- Must sign the request
         //      unauthorized        (6)     -- Request unauthorized
         //  }
-
+        //
         // RESPONSE ::= TYPE-IDENTIFIER
-
+        //
         // ResponseSet RESPONSE ::= {basicResponse, ...}
-
+        //
         // ResponseBytes ::= SEQUENCE {
         //     responseType        RESPONSE.
         //                             &id ({ResponseSet}),
         //     response            OCTET STRING (CONTAINING RESPONSE.
         //                             &Type({ResponseSet}{@responseType}))}
-
+        //
         // basicResponse RESPONSE ::=
         //     { BasicOCSPResponse IDENTIFIED BY id-pkix-ocsp-basic }
+        // ```
 
         var basic = (BasicOcspResp)response.GetResponseObject();
 
@@ -68,6 +70,7 @@ public static class OcspRespLoggingExtensions
         // RFC 6960 X.509 Internet Public Key Infrastructure Online Certificate Status Protocol -OCSP
         // https://datatracker.ietf.org/doc/html/rfc6960#appendix-B.2
 
+        // ```asn.1
         // BasicOCSPResponse ::= SEQUENCE {
         //      tbsResponseData         ResponseData,
         //      signatureAlgorithm      AlgorithmIdentifier{
@@ -77,7 +80,7 @@ public static class OcspRespLoggingExtensions
         //                                  },
         //      signature               BIT STRING,
         //      certs               [0] EXPLICIT SEQUENCE OF Certificate OPTIONAL }
-
+        //
         // ResponseData ::= SEQUENCE {
         //      version             [0] EXPLICIT Version DEFAULT v1,
         //      responderID             ResponderID,
@@ -86,6 +89,7 @@ public static class OcspRespLoggingExtensions
         //      responseExtensions  [1] EXPLICIT Extensions
         //                              {{re-ocsp-nonce, ...,
         //                                  re-ocsp-extended-revoke}} OPTIONAL }
+        // ```
 
         var tbs = ResponseData.GetInstance(Asn1Sequence.GetInstance(basic.GetTbsResponseData()));
 
@@ -106,7 +110,8 @@ public static class OcspRespLoggingExtensions
             builder.Append(single.DumpAsString(indent + 3));
         }
 
-        if (basic.ResponseExtensions?.GetExtensionOids().Any() ?? false)
+        /* spell-checker: words Oids */
+        if (basic.ResponseExtensions.GetExtensionOids().Length != 0)
         {
             // OPTIONS
             builder.AppendLevelLine(indent + 1, "responseExtensions");
@@ -117,7 +122,7 @@ public static class OcspRespLoggingExtensions
         builder.AppendLevelLine(indent + 1, "algorithm", basic.SignatureAlgOid);
         builder.AppendLevelLine(indent, "signature", basic.GetSignature().ToBase64String());
 
-        if (basic.GetCerts().Any())
+        if (basic.GetCerts().Length != 0)
         {
             // OPTIONS
             builder.AppendLevelLine(indent, "certs");
@@ -138,9 +143,11 @@ public static class OcspRespLoggingExtensions
         // RFC 6960 X.509 Internet Public Key Infrastructure Online Certificate Status Protocol -OCSP
         // https://datatracker.ietf.org/doc/html/rfc6960#appendix-B.2
 
+        // ```asn.1
         // ResponderID ::= CHOICE {
         //    byName   [1] Name,
         //    byKey    [2] KeyHash }
+        // ```
 
         var asn1 = responder.ToAsn1Object();
 
@@ -163,6 +170,7 @@ public static class OcspRespLoggingExtensions
         // RFC 6960 X.509 Internet Public Key Infrastructure Online Certificate Status Protocol -OCSP
         // https://datatracker.ietf.org/doc/html/rfc6960#appendix-B.2
 
+        // ```asn.1
         // SingleResponse ::= SEQUENCE {
         //      certID                      CertID,
         //      certStatus                  CertStatus,
@@ -172,15 +180,16 @@ public static class OcspRespLoggingExtensions
         //                                              re-ocsp-archive-cutoff |
         //                                              CrlEntryExtensions, ...}
         //                                              } OPTIONAL }
-
+        //
         // CertStatus ::= CHOICE {
         //      good                [0]     IMPLICIT NULL,
         //      revoked             [1]     IMPLICIT RevokedInfo,
         //      unknown             [2]     IMPLICIT UnknownInfo }
-
+        //
         // RevokedInfo ::= SEQUENCE {
         //      revocationTime              GeneralizedTime,
         //      revocationReason    [0]     EXPLICIT CRLReason OPTIONAL }
+        // ```
 
         var status = single.GetCertStatus() switch
         {
@@ -224,11 +233,13 @@ public static class OcspRespLoggingExtensions
         // RFC 6960 X.509 Internet Public Key Infrastructure Online Certificate Status Protocol -OCSP
         // https://datatracker.ietf.org/doc/html/rfc6960#appendix-B.2
 
+        // ```asn.1
         // CertID ::= SEQUENCE {
         //    hashAlgorithm           AlgorithmIdentifier,
         //    issuerNameHash          OCTET STRING, -- Hash of issuer's DN
         //    issuerKeyHash           OCTET STRING, -- Hash of issuer's public key
         //    serialNumber            CertificateSerialNumber }
+        // ```
 
         var builder = new StringBuilder();
 

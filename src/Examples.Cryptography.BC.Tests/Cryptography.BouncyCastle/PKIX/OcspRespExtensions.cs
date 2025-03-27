@@ -34,7 +34,7 @@ public static class OcspRespExtensions
             throw new OcspException("Bad nonce value.");
         }
 
-        return;
+
     }
 
     /// <summary>
@@ -104,7 +104,7 @@ public static class OcspRespExtensions
             throw new OcspException("Not the latest status.");
         }
 
-        return;
+
     }
 
 }

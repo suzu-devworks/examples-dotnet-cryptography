@@ -39,7 +39,7 @@ public class X509Certificate2Tests : IClassFixture<X509DataFixture>
 
         loadedKey.IsNull();
 
-        return;
+
     }
 
 
@@ -68,7 +68,7 @@ public class X509Certificate2Tests : IClassFixture<X509DataFixture>
         pem.Is(x => x.StartsWith("-----BEGIN CERTIFICATE-----")
                     && x.EndsWith("-----END CERTIFICATE-----"));
 
-        return;
+
     }
 
 
@@ -77,9 +77,8 @@ public class X509Certificate2Tests : IClassFixture<X509DataFixture>
     {
         /// <seealso href="https://learn.microsoft.com/ja-jp/dotnet/core/additional-tools/self-signed-certificates-guide#with-openssl" />
 
-        /*
-        spell-checker:disable
-        ```sh
+        // spell-checker:disable
+        /* ```shell
         PARENT="contoso.com"
         openssl req \
         -x509 \
@@ -111,11 +110,10 @@ public class X509Certificate2Tests : IClassFixture<X509DataFixture>
         echo 'basicConstraints = critical, CA:TRUE, pathlen:0'; \
         echo 'keyUsage = critical, cRLSign, keyCertSign'; \
         echo 'extendedKeyUsage = serverAuth, clientAuth')
-        ```
-        spell-checker:enable
-        */
+        ```*/
+        // spell-checker:enable
 
-        // spell-checker: words contoso.com
+        // spell-checker: disable-next-line
         var parent = "contoso.com";
         using var rsa = RSA.Create(2048 /* 4096 */);
 
@@ -153,7 +151,7 @@ public class X509Certificate2Tests : IClassFixture<X509DataFixture>
         pem.Is(x => x.StartsWith("-----BEGIN CERTIFICATE-----")
                     && x.EndsWith("-----END CERTIFICATE-----"));
 
-        return;
+
     }
 
 }

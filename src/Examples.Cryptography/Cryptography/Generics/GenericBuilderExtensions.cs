@@ -15,8 +15,8 @@ public static class GenericBuilderExtensions
     /// <exception cref="ArgumentNullException">If the argument is null.</exception>
     public static T Configure<T>(this T builder, Action<T> configureAction)
     {
-        if (builder is null) { throw new ArgumentNullException(nameof(builder)); }
-        if (configureAction is null) { throw new ArgumentNullException(nameof(configureAction)); }
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(configureAction);
 
         configureAction.Invoke(builder);
 

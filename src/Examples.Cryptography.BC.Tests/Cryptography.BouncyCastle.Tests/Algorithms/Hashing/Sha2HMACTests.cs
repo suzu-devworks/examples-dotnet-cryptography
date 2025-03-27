@@ -37,7 +37,6 @@ namespace Examples.Cryptography.BouncyCastle.Tests.Algorithms.Hashing
             hmac.GetMacSize().Is(size);
             output.ToBase64String().Is(expected);
 
-            return;
         }
     }
 }
