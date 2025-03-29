@@ -22,7 +22,7 @@ public class X509StoreTests
             _output.WriteLine(message);
         }
 
-        return;
+
     }
 
     private static IEnumerable<string> EnumerateStoreStatus()
@@ -69,21 +69,21 @@ public class X509StoreTests
         store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
 
         var collection = store.Certificates;
-        var fcollection = collection.Find(X509FindType.FindByTimeValid, DateTime.Now, false);
-        var scollection = fcollection.Find(X509FindType.FindByIssuerDistinguishedName,
+        var fCollection = collection.Find(X509FindType.FindByTimeValid, DateTime.Now, false);
+        var sCollection = fCollection.Find(X509FindType.FindByIssuerDistinguishedName,
             findValue: "CN=Microsoft RSA Root Certificate Authority 2017, O=Microsoft Corporation, C=US",
             validOnly: true);
 
         _output.WriteLine("");
-        _output.WriteLine("Number of certificates: {0}", scollection.Count);
+        _output.WriteLine("Number of certificates: {0}", sCollection.Count);
         _output.WriteLine("");
 
-        foreach (var x509 in scollection)
+        foreach (var x509 in sCollection)
         {
             try
             {
-                byte[] rawdata = x509.RawData;
-                _output.WriteLine("Content Type: {0}{1}", X509Certificate2.GetCertContentType(rawdata), Environment.NewLine);
+                byte[] rawData = x509.RawData;
+                _output.WriteLine("Content Type: {0}{1}", X509Certificate2.GetCertContentType(rawData), Environment.NewLine);
                 _output.WriteLine("Friendly Name: {0}{1}", x509.FriendlyName, Environment.NewLine);
                 _output.WriteLine("Certificate Verified?: {0}{1}", x509.Verify(), Environment.NewLine);
                 _output.WriteLine("Simple Name: {0}{1}", x509.GetNameInfo(X509NameType.SimpleName, true), Environment.NewLine);
@@ -101,7 +101,7 @@ public class X509StoreTests
 
         store.Close();
 
-        return;
+
     }
 
 }

@@ -12,7 +12,7 @@ public class DSAKeyPairTests
 
     public DSAKeyPairTests(ITestOutputHelper output)
     {
-        // ```
+        // ```shell
         // dotnet test --logger "console;verbosity=detailed"
         // ```
         _output = output;
@@ -55,8 +55,6 @@ public class DSAKeyPairTests
         // It's back to normal.
         actual.Private.Is(keyPair.Private);
         actual.Public.Is(keyPair.Public);
-
-        return;
     }
 
     [Fact]
@@ -80,8 +78,6 @@ public class DSAKeyPairTests
         _output.WriteLine($"{pem}");
         pem.Is(x => x.StartsWith("-----BEGIN DSA PRIVATE KEY-----")
             && x.EndsWith("-----END DSA PRIVATE KEY-----"));
-
-        return;
     }
 
 }

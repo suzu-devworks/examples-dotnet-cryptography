@@ -107,7 +107,7 @@ public class RSAEncryptionTests : IDisposable
             using (var rsaProvider = RSA.Create())
             {
                 //Import the RSA Key information. This only needs
-                //toinclude the public key information.
+                //to include the public key information.
                 //公開鍵をインポートします。
                 rsaProvider.ImportParameters(rsaKeyInfo);
 

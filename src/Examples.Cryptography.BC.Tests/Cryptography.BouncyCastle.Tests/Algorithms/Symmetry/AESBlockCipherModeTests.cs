@@ -19,14 +19,13 @@ public class AESBlockCipherModeTests
 
         // Encrypts or decrypts data in a single-part operation.
         var input = Encoding.UTF8.GetBytes(inputText);
-        var encripted = Encrypt(keyParam, input);
+        var encrypted = Encrypt(keyParam, input);
 
-        byte[] decripted = Decrypt(keyParam, encripted);
-        var outputText = Encoding.UTF8.GetString(decripted);
+        byte[] decrypted = Decrypt(keyParam, encrypted);
+        var outputText = Encoding.UTF8.GetString(decrypted);
 
         outputText.Is(inputText, "failed");
 
-        return;
 
         static byte[] Encrypt(ICipherParameters keyParam, byte[] plainTextData)
         {
@@ -104,14 +103,13 @@ public class AESBlockCipherModeTests
 
         // Encrypts or decrypts data in a single-part operation.
         var input = Encoding.UTF8.GetBytes(inputText);
-        var encripted = Encrypt(keyParam, input);
+        var encrypted = Encrypt(keyParam, input);
 
-        byte[] decripted = Decrypt(keyParam, encripted);
-        var outputText = Encoding.UTF8.GetString(decripted);
+        byte[] decrypted = Decrypt(keyParam, encrypted);
+        var outputText = Encoding.UTF8.GetString(decrypted);
 
         outputText.Is(inputText, "failed");
 
-        return;
 
         static byte[] Encrypt(ICipherParameters keyParamWithIV, byte[] plainTextData)
         {
@@ -169,14 +167,13 @@ public class AESBlockCipherModeTests
 
         // Encrypts or decrypts data in a single-part operation.
         var input = Encoding.UTF8.GetBytes(inputText);
-        var encripted = Encrypt(keyParam, input);
+        var encrypted = Encrypt(keyParam, input);
 
-        byte[] decripted = Decrypt(keyParam, encripted);
-        var outputText = Encoding.UTF8.GetString(decripted);
+        byte[] decrypted = Decrypt(keyParam, encrypted);
+        var outputText = Encoding.UTF8.GetString(decrypted);
 
         outputText.Is(inputText, "failed");
 
-        return;
 
         static byte[] Encrypt(ICipherParameters keyParamWithIV, byte[] plainTextData)
         {
@@ -232,14 +229,13 @@ public class AESBlockCipherModeTests
 
         // Encrypts or decrypts data in a single-part operation.
         var input = Encoding.UTF8.GetBytes(inputText);
-        var encripted = Encrypt(keyParam, input);
+        var encrypted = Encrypt(keyParam, input);
 
-        byte[] decripted = Decrypt(keyParam, encripted);
-        var outputText = Encoding.UTF8.GetString(decripted);
+        byte[] decrypted = Decrypt(keyParam, encrypted);
+        var outputText = Encoding.UTF8.GetString(decrypted);
 
         outputText.Is(inputText, "failed");
 
-        return;
 
         static byte[] Encrypt(ICipherParameters keyParamWithIV, byte[] plainTextData)
         {
@@ -284,7 +280,7 @@ public class AESBlockCipherModeTests
 
 
     [Fact]
-    public void WhenEncrypting_WithCCMAEADWithoutPadding()
+    public void WhenEncrypting_WithCCM_AEADWithoutPadding()
     {
         var inputText = "Here is some data to encrypt!";
 
@@ -296,14 +292,13 @@ public class AESBlockCipherModeTests
 
         // Encrypts or decrypts data in a single-part operation.
         var input = Encoding.UTF8.GetBytes(inputText);
-        var encripted = Encrypt(keyParam, input);
+        var encrypted = Encrypt(keyParam, input);
 
-        byte[] decripted = Decrypt(keyParam, encripted);
-        var outputText = Encoding.UTF8.GetString(decripted);
+        byte[] decrypted = Decrypt(keyParam, encrypted);
+        var outputText = Encoding.UTF8.GetString(decrypted);
 
         outputText.Is(inputText, "failed");
 
-        return;
 
         byte[] Encrypt(KeyParameter keyParam, byte[] plainTextData)
         {
@@ -356,7 +351,7 @@ public class AESBlockCipherModeTests
 
 
     [Fact]
-    public void WhenEncrypting_WithGCMAEAD()
+    public void WhenEncrypting_WithGCM_AEAD()
     {
         var inputText = "Here is some data to encrypt!";
 
@@ -368,14 +363,13 @@ public class AESBlockCipherModeTests
 
         // Encrypts or decrypts data in a single-part operation.
         var input = Encoding.UTF8.GetBytes(inputText);
-        var encripted = Encrypt(keyParam, input);
+        var encrypted = Encrypt(keyParam, input);
 
-        byte[] decripted = Decrypt(keyParam, encripted);
-        var outputText = Encoding.UTF8.GetString(decripted);
+        byte[] decrypted = Decrypt(keyParam, encrypted);
+        var outputText = Encoding.UTF8.GetString(decrypted);
 
         outputText.Is(inputText, "failed");
 
-        return;
 
         byte[] Encrypt(KeyParameter keyParam, byte[] plainTextData)
         {

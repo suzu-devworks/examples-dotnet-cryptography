@@ -33,7 +33,7 @@ public class AESEncryptionTests
     [MemberData(nameof(GenerateAlgorithmData))]
     public void WhenDecryptingAfterEncrypting_UsingAnyUtilities(
         DerObjectIdentifier algorithm,
-        int keysize)
+        int keySize)
     {
         // https://github.com/bcgit/bc-csharp/blob/master/crypto/test/src/test/BaseBlockCipherTest.cs#L27
 
@@ -43,11 +43,11 @@ public class AESEncryptionTests
         KeyParameter keyParam = generator.GenerateKeyParameter();
         {
             byte[] encryptionKey = keyParam.GetKey();
-            encryptionKey.Length.Is(keysize);
+            encryptionKey.Length.Is(keySize);
 
             // When generating only the key.
             byte[] otherKey = generator.GenerateKey();
-            otherKey.Length.Is(keysize);
+            otherKey.Length.Is(keySize);
             otherKey.IsNot(encryptionKey); // key are different.
 
             // When specifying a key.
@@ -60,14 +60,13 @@ public class AESEncryptionTests
 
         // Encrypts or decrypts data in a single-part operation.
         var input = Encoding.UTF8.GetBytes(inputText);
-        var encripted = Encrypt(algorithm, cipherParam, input);
+        var encrypted = Encrypt(algorithm, cipherParam, input);
 
-        byte[] decripted = Decrypt(algorithm, cipherParam, encripted);
-        var outputText = Encoding.UTF8.GetString(decripted);
+        byte[] decrypted = Decrypt(algorithm, cipherParam, encrypted);
+        var outputText = Encoding.UTF8.GetString(decrypted);
 
         outputText.Is(inputText, "failed");
 
-        return;
 
         static byte[] Encrypt(DerObjectIdentifier algorithm, ICipherParameters keyParam, byte[] plainTextData)
         {
@@ -175,14 +174,13 @@ public class AESEncryptionTests
 
         // Encrypts or decrypts data in a single-part operation.
         var input = Encoding.UTF8.GetBytes(inputText);
-        var encripted = c1.DoFinal(input);
+        var encrypted = c1.DoFinal(input);
 
-        byte[] decripted = c2.DoFinal(encripted);
-        var outputText = Encoding.UTF8.GetString(decripted);
+        byte[] decrypted = c2.DoFinal(encrypted);
+        var outputText = Encoding.UTF8.GetString(decrypted);
 
         outputText.Is(inputText, "failed");
 
-        return;
     }
 
 
@@ -209,7 +207,6 @@ public class AESEncryptionTests
             Convert.FromHexString("8ea2b7ca516745bfeafc49904b496089")
             );
 
-        return;
 
         static void DoCipherTest(int strength, byte[] keyBytes, byte[] input, byte[] output)
         {
@@ -227,7 +224,7 @@ public class AESEncryptionTests
             }
             catch (Exception e)
             {
-                throw new XunitException("AES failed initialisation - " + e, e);
+                throw new XunitException("AES failed initialization - " + e, e);
             }
 
             try
@@ -237,7 +234,7 @@ public class AESEncryptionTests
             }
             catch (Exception e)
             {
-                throw new XunitException("AES failed initialisation - " + e, e);
+                throw new XunitException("AES failed initialization - " + e, e);
             }
 
             //
@@ -299,7 +296,7 @@ public class AESEncryptionTests
 
 
     [Fact]
-    public void WhenDecryptingAfterEncrypting_UsingStackoverflow()
+    public void WhenDecryptingAfterEncrypting_UsingStackOverflow()
     {
         //https://stackoverflow.com/questions/41005321/unable-to-exchange-aes-256-cbc-pkcs7-between-c-sharp-bouncycastle-and-php-openss
 
@@ -312,15 +309,14 @@ public class AESEncryptionTests
         byte[] encryptionKey = random.GenerateSeed(length: 32);
 
         var input = Encoding.UTF8.GetBytes(inputText);
-        var encripted = Encrypt(input, encryptionKey, iv);
+        var encrypted = Encrypt(input, encryptionKey, iv);
 
-        var decripted = Decrypt(encripted, encryptionKey, iv);
-        var outputText = Encoding.UTF8.GetString(decripted);
+        var decrypted = Decrypt(encrypted, encryptionKey, iv);
+        var outputText = Encoding.UTF8.GetString(decrypted);
 
         outputText.Is(inputText);
-        Encoding.UTF8.GetString(encripted).IsNot(inputText);
+        Encoding.UTF8.GetString(encrypted).IsNot(inputText);
 
-        return;
 
         byte[] Encrypt(byte[] input, byte[] encryptionKey, byte[] iv)
         {

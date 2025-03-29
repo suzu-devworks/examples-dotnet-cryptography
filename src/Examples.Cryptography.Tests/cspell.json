@@ -1,0 +1,23 @@
+{
+  "version": "0.2",
+  "ignorePaths": [
+    "generated"
+  ],
+  "dictionaryDefinitions": [],
+  "dictionaries": [],
+  "words": [
+    "AESAEAD",
+    "decryptor",
+    "Deformatter",
+    "Dsig",
+    "encryptor",
+    "OAEP",
+    "OCSP",
+    "RSA",
+    "RSASHA"
+  ],
+  "ignoreWords": [],
+  "import": [
+    "../../.vscode/cspell.json"
+  ]
+}

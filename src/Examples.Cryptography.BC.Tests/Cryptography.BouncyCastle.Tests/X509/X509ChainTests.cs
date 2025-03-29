@@ -1,7 +1,6 @@
 using Org.BouncyCastle.Pkix;
 using Org.BouncyCastle.Utilities.Collections;
 using Org.BouncyCastle.X509.Store;
-
 using X509Certificate = Org.BouncyCastle.X509.X509Certificate;
 
 namespace Examples.Cryptography.BouncyCastle.Tests.X509;
@@ -15,7 +14,7 @@ public class X509ChainTests : IClassFixture<X509DataFixture>
     {
         _fixture = fixture;
 
-        // ```
+        // ```shell
         // dotnet test --logger "console;verbosity=detailed"
         // ```
         _output = output;
@@ -76,7 +75,6 @@ public class X509ChainTests : IClassFixture<X509DataFixture>
             _output.WriteLine(cert.ToString());
         }
 
-        return;
     }
 
 

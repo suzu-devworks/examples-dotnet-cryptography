@@ -3,15 +3,19 @@
 [![build](https://github.com/suzu-devworks/examples-dotnet-cryptography/actions/workflows/dotnet-build.yml/badge.svg)](https://github.com/suzu-devworks/examples-dotnet-cryptography/actions/workflows/dotnet-build.yml)
 [![CodeQL](https://github.com/suzu-devworks/examples-dotnet-cryptography/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/suzu-devworks/examples-dotnet-cryptography/actions/workflows/github-code-scanning/codeql)
 
-A workspace for learning cryptography programming with dotnet.
+## What is the purpose of this repository?
 
-## What is this?
+This repository is the author's personal playground for learning cryptography programming with .NET.
 
-This repository is a personal playground for the author to learn .NET programming and try out its features.
-This might be helpful to other developers having the same problem.
+It might be useful for developers who have the same problem.
 
-However, please note that the code described here is based on my personal opinion and may contain many inaccuracies.
+However, please note that the code discussed here is based on my personal opinion and may contain many inaccuracies.
+
+## Project Index
+
+- [Examples.Cryptography.Tests](./src/Examples.Cryptography.Tests/README.md)
+- [Examples.Cryptography.BC.Tests (use Bouncy Castle)](./src/Examples.Cryptography.BC.Tests/README.md)
 
 ## More documents
 
-- [doc](./docs/README.md)
+- [See here ...](./docs/README.md)

@@ -18,7 +18,6 @@ public static class LazyOfDisposableExtensions
             lazyInstance.Value.Dispose();
         }
 
-        return;
     }
 
     /// <summary>
@@ -37,6 +36,5 @@ public static class LazyOfDisposableExtensions
             }
         }
 
-        return;
     }
 }

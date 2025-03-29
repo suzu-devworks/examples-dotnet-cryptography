@@ -22,7 +22,10 @@ public class PKCS12StoreTests : IClassFixture<PKCSDataFixture>
     {
         var password = "BadP@ssw0rd";
 
+        // ```shell
         // openssl pkcs12 -export -out my-store.p12 -inkey ee.key -in ee.crt -CAfile chai.pem -chain -legacy
+        // ```
+        /* spell-checker: words inkey */
 
         var (_, rootCert) = _fixture.RootCaSet;
         var (_, caCert) = _fixture.IntermediateCaSet;
@@ -93,7 +96,6 @@ public class PKCS12StoreTests : IClassFixture<PKCSDataFixture>
         importedCert.Certificate.Is(entityCert);
         importedChain.Is(chain);
 
-        return;
     }
 
 }

@@ -50,7 +50,7 @@ public class X509ChainTests : IClassFixture<X509DataFixture>
         chain.ChainElements[2].Certificate.SubjectName.Name.Is("C=JP, CN=Test CA-256");
         chain.ChainElements[3].Certificate.SubjectName.Name.Is("C=JP, CN=Test CA-root");
 
-        return;
+
     }
 
     private void Dump(X509Chain chain)

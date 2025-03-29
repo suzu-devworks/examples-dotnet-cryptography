@@ -26,7 +26,7 @@ public class Sha2DigestTests : IClassFixture<HashingDataFixture>
                 .Is("5ZA+o2oN4eFwbgzi36FFbP9skakPqy8nDB1YkoJMBgAyMZ832MsdmVIe08I3OJHS9J80Xakf5wm49K+SNybBuw==");
         }
 
-        return;
+
     }
 
     [Fact]
@@ -44,7 +44,7 @@ public class Sha2DigestTests : IClassFixture<HashingDataFixture>
                 .Is("5ZA+o2oN4eFwbgzi36FFbP9skakPqy8nDB1YkoJMBgAyMZ832MsdmVIe08I3OJHS9J80Xakf5wm49K+SNybBuw==");
         }
 
-        return;
+
     }
 
     [Fact]
@@ -79,7 +79,7 @@ public class Sha2DigestTests : IClassFixture<HashingDataFixture>
                 .Is("5ZA+o2oN4eFwbgzi36FFbP9skakPqy8nDB1YkoJMBgAyMZ832MsdmVIe08I3OJHS9J80Xakf5wm49K+SNybBuw==");
         }
 
-        return;
+
     }
 
 }

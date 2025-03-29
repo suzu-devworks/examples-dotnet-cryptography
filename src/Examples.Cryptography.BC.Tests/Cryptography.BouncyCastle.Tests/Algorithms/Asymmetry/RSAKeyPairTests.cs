@@ -12,7 +12,7 @@ public class RSAKeyPairTests
 
     public RSAKeyPairTests(ITestOutputHelper output)
     {
-        // ```
+        // ```shell
         // dotnet test --logger "console;verbosity=detailed"
         // ```
         _output = output;
@@ -62,7 +62,6 @@ public class RSAKeyPairTests
         actual.Private.Is(keyPair.Private);
         actual.Public.Is(keyPair.Public);
 
-        return;
     }
 
 
@@ -87,7 +86,6 @@ public class RSAKeyPairTests
         _output.WriteLine($"{pem}");
         pem.Is(x => x.StartsWith("-----BEGIN RSA PRIVATE KEY-----")
                     && x.EndsWith("-----END RSA PRIVATE KEY-----"));
-        return;
     }
 
 
@@ -111,6 +109,5 @@ public class RSAKeyPairTests
         var bcPem = bcKeyPair.ExportPrivateKeyPem();
         msPem.Is(bcPem);
 
-        return;
     }
 }

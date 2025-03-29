@@ -1,6 +1,6 @@
 using Org.BouncyCastle.Tsp;
 
-namespace Examples.Cryptography.BouncyCastle.PKIX;
+namespace Examples.Cryptography.BouncyCastle.X509;
 
 /// <summary>
 /// Extension methods for <see cref="TimeStampRequestGenerator" />.

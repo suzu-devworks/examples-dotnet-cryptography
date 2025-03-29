@@ -30,9 +30,11 @@ public class RSAKeyPairTests : IDisposable
     [Fact]
     public void WhenImportingFromExportRSAPrivateKey_ReturnsToBeforeExport()
     {
+        // spell-checker: disable
         // ```shell
         // $ openssl rsa -in private.key -inform pem -out private.der -outform der
         // ```
+        // spell-checker: enable
 
         // ### Arrange. ###
         var keyPair = _keyPair!;
@@ -41,6 +43,7 @@ public class RSAKeyPairTests : IDisposable
         var exported = keyPair.ExportRSAPrivateKey();
 
         using var actual = RSA.Create();
+        // spell-checker: words readcount
         actual.ImportRSAPrivateKey(exported, out var readcount);
 
         // ### Assert. ###
@@ -52,16 +55,18 @@ public class RSAKeyPairTests : IDisposable
         other.Is(exported);
         other.Length.Is(readcount);
 
-        return;
+
     }
 
 
     [Fact]
     public void WhenImportingFromExportPrivateKeyPem_ReturnsToBeforeExport()
     {
+        // spell-checker: disable
         // ```shell
         // $ openssl rsa -in private.der -inform der -out private.key -outform pem
         // ```
+        // spell-checker: enable
 
         // ### Arrange. ###
         var keyPair = _keyPair!;
@@ -86,8 +91,6 @@ public class RSAKeyPairTests : IDisposable
 
         _output.WriteLine($"{pem}");
         //File.WriteAllText(@"rsa-private.key", pem);
-
-        return;
     }
 
 
@@ -113,17 +116,17 @@ public class RSAKeyPairTests : IDisposable
 
         _output.WriteLine($"{xml}");
         //File.WriteAllText(@"rsa-private.xml", xml);
-
-        return;
     }
 
 
     [Fact]
     public void WhenImportingFromExportRSAPublicKey_ReturnsOnlyPublicKey()
     {
-        //```shell
-        // $ openssl rsa -pubout -in private.key -inform pem -out public.key -outform der
-        //```
+        // spell-checker: disable
+        // ```shell
+        // openssl rsa -pubout -in private.key -inform pem -out public.key -outform der
+        // ```
+        // spell-checker: enable
 
         // ### Arrange. ###
         var keyPair = (RSA)_keyPair;
@@ -148,16 +151,18 @@ public class RSAKeyPairTests : IDisposable
         Assert.Throws<CryptographicException>(() =>
             actual.ExportRSAPrivateKey());
 
-        return;
+
     }
 
 
     [Fact]
     public void WhenImportingFromExportRSAPublicKeyPem_ReturnsOnlyPublicKey()
     {
-        //```shell
-        // $ openssl rsa -pubout -in private.key -out public.key
-        //```
+        // spell-checker: disable
+        // ```shell
+        // openssl rsa -pubout -in private.key -out public.key
+        // ```
+        // spell-checker: enable
 
         // ### Arrange. ###
         var keyPair = (RSA)_keyPair;
@@ -188,7 +193,7 @@ public class RSAKeyPairTests : IDisposable
         Assert.Throws<CryptographicException>(() =>
             actual.ExportRSAPrivateKeyPem());
 
-        return;
+
     }
 
 
@@ -220,7 +225,7 @@ public class RSAKeyPairTests : IDisposable
         Assert.Throws<CryptographicException>(() =>
             actual.ToXmlString(includePrivateParameters: true));
 
-        return;
+
     }
 
 }

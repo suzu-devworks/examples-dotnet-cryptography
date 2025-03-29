@@ -12,7 +12,6 @@ using Org.BouncyCastle.OpenSsl;
 
 using System.Text;
 using Examples.Cryptography.BouncyCastle.Logging;
-using Examples.Cryptography.BouncyCastle.PKIX;
 using Examples.Cryptography.BouncyCastle.X509;
 using Examples.Cryptography.Generics;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,7 +27,7 @@ using Org.BouncyCastle.X509;
 using Org.BouncyCastle.X509.Extension;
 using Xunit.Sdk;
 
-namespace Examples.Cryptography.BouncyCastle.Tests.PKIX;
+namespace Examples.Cryptography.BouncyCastle.Tests.X509;
 
 public class TimeStampHttpClientTests : IClassFixture<TimeStampDataFixture>
 {
@@ -43,7 +42,7 @@ public class TimeStampHttpClientTests : IClassFixture<TimeStampDataFixture>
         _fixture = fixture;
         _services = InitializeServiceProvider();
 
-        // ```
+        // ```shell
         // dotnet test --logger "console;verbosity=detailed"
         // ```
         _output = output;
@@ -57,9 +56,10 @@ public class TimeStampHttpClientTests : IClassFixture<TimeStampDataFixture>
         // ### Arrange. ###
         var data = Encoding.UTF8.GetBytes("TEST MESSAGE PHRASE");
 
+        //```shell
+        // openssl ts -query -data file.png -no_nonce -sha512 -cert -out file.tsq
         //```
-        // $ openssl ts -query -data file.png -no_nonce -sha512 -cert -out file.tsq
-        //```
+
         // Make a request as above.
         var algorithm = new AlgorithmIdentifier(NistObjectIdentifiers.IdSha512);
         var digest = DigestUtilities.CalculateDigest(algorithm.Algorithm, data);
@@ -151,7 +151,6 @@ public class TimeStampHttpClientTests : IClassFixture<TimeStampDataFixture>
             }
         }
 
-        return;
     }
 
     private async Task<X509Certificate> DownloadIssuerCertificateAsync(X509Certificate tsaCert)

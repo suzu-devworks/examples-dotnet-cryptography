@@ -11,8 +11,10 @@ namespace Examples.Cryptography.BouncyCastle.Tests.Algorithms.Hashing
     {
         public static IEnumerable<object[]> GenerateDigestData()
         {
+            // spell-checker: disable
             yield return new object[] { new Sha256Digest(), "SHA-256/HMAC", 32,
-            "eNotB427jx8dqeX6oqRAJenDdufDpSzszoDwfarD9+E=" };
+                "eNotB427jx8dqeX6oqRAJenDdufDpSzszoDwfarD9+E=" };
+            // spell-checker: enable
         }
 
         [Theory]
@@ -37,7 +39,6 @@ namespace Examples.Cryptography.BouncyCastle.Tests.Algorithms.Hashing
             hmac.GetMacSize().Is(size);
             output.ToBase64String().Is(expected);
 
-            return;
         }
     }
 }

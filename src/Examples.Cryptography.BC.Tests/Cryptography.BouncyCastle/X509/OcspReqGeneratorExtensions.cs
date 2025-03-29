@@ -4,7 +4,7 @@ using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Ocsp;
 
-namespace Examples.Cryptography.BouncyCastle.PKIX;
+namespace Examples.Cryptography.BouncyCastle.X509;
 
 /// <summary>
 /// Extension methods for <see cref="OcspReqGenerator" />.

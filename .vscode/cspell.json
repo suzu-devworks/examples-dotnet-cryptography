@@ -9,12 +9,14 @@
     ".editorconfig",
     ".gitignore",
     "*.csproj",
-    "*.sln"
+    "*.sln",
+    "*.xsd"
   ],
   "dictionaryDefinitions": [],
   "dictionaries": [],
   "words": [
     "PKCS",
+    "xscgen",
     "xunit"
   ],
   "ignoreWords": [],

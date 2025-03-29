@@ -84,6 +84,7 @@ public static class CertificateRequestExtensions
         // ```openssl.conf
         // authorityKeyIdentifier   = keyid, issuer
         // ```
+        // spell-checker: words keyid
 
         if (issuer is null)
         {
@@ -156,6 +157,7 @@ public static class CertificateRequestExtensions
         // DNS.1 = www.local-server.jp
         // DNS.2 = localserver.jp
         // ```
+        // spell-checker: words localserver
 
         var builder = new SubjectAlternativeNameBuilder();
         action?.Invoke(builder);

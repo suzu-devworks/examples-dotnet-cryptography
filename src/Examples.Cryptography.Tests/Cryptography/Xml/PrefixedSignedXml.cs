@@ -60,7 +60,7 @@ public class PrefixedSignedXml : SignedXml
         AsymmetricSignatureFormatter asymmetricSignatureFormatter = signatureDescription.CreateFormatter(signingKey);
         m_signature.SignatureValue = asymmetricSignatureFormatter.CreateSignature(hashAlg);
 
-        return;
+
     }
 
     public new XmlElement GetXml()

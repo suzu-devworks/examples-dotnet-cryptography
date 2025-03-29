@@ -28,7 +28,5 @@ public class PemEncodingTests
         //field.Base64Data.End.Is(3212);
 
         bytes.Is(der);
-
-        return;
     }
 }

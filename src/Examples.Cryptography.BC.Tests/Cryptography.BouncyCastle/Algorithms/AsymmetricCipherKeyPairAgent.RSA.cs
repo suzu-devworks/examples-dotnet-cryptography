@@ -33,6 +33,7 @@ public static partial class AsymmetricCipherKeyPairAgent
 
         // A.1.2.  RSA Private Key Syntax
         //
+        // ```asn.1
         // RSAPrivateKey::= SEQUENCE {
         //      version         Version,
         //      modulus         INTEGER,    -- n
@@ -45,6 +46,7 @@ public static partial class AsymmetricCipherKeyPairAgent
         //      coefficient     INTEGER,    -- (inverse of q) mod p
         //      otherPrimeInfos OtherPrimeInfos OPTIONAL
         // }
+        //
         // Version::= INTEGER { two - prime(0), multi(1) }
         //        (CONSTRAINED BY
         //        { --version must be multi if otherPrimeInfos present--})
@@ -54,15 +56,18 @@ public static partial class AsymmetricCipherKeyPairAgent
         //      exponent        INTEGER,    -- di
         //      coefficient     INTEGER     -- ti
         // }
+        // ```
         var structure = RsaPrivateKeyStructure.GetInstance(seq);
         var privateKey = new RsaPrivateCrtKeyParameters(structure);
 
         // A.1.1.  RSA Public Key Syntax
         //
+        // ```asn.1
         // RSAPublicKey::= SEQUENCE {
         //      modulus         INTEGER,    -- n
         //      publicExponent  INTEGER     -- e
         // }
+        // ```
         var publicKey = new RsaKeyParameters(false,
             structure.Modulus, structure.PublicExponent);
 
