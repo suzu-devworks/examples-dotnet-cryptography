@@ -6,7 +6,7 @@
   - [System.Security.Cryptography](#systemsecuritycryptography)
     - [Algorithms](#algorithms)
     - [PKCS](#pkcs)
-    - [X509](#x509)
+    - [X.509](#x509)
     - [XML](#xml)
   - [Development](#development)
     - [How the project was initialized](#how-the-project-was-initialized)
@@ -18,30 +18,32 @@
 ### Algorithms
 
 - [Symmetry](./Cryptography.Tests/Algorithms/Symmetry/)
+  - AES(Advanced Encryption Standard)
 - [Asymmetry](./Cryptography.Tests/Algorithms/Asymmetry/)
+  <!-- spell-checker: disable-next-line -->
+  - RSA(Rivest-Shamir-Adleman cryptosystem)
+  - ECDSA(Elliptic Curve Digital Signature Algorithm)
 - [Hashing](./Cryptography.Tests/Algorithms/Hashing/)
+  - SHA-2(Secure Hash Algorithm 2)
 
 ### PKCS
 
 - [PKCS](./Cryptography.Tests/PKCS/)
+  - PKCS #8 Private-Key Information Syntax Standard
+  - PKCS #10 Certification Request Standard
+  - PKCS #12 Personal Information Exchange Syntax Standard
 
-### X509
+### X.509
 
-- [X509](./Cryptography.Tests/X509/)
+- [X.509](./Cryptography.Tests/X509/)
+  - X.509 Certificate
+  - X.509 Store
 
 ### XML
 
-- [XML](./Cryptography.Tests/Xml/)
-- [XAdES](./Cryptography.Tests/Xml/XAdES/)
-
-The package provides Xml wrapper classes related to SignedXml, but does not provide classes related to XAdES.
-However, having wrapper classes would make implementation easier.
-
-I downloaded the XAdES schema file from the link below and ran `dotnet-xscgen` to create the classes.
-
-- <https://uri.etsi.org/01903/v1.4.1/>
-
-[XmlSampleGenerator.Build.targets](./XmlSampleGenerator.Build.targets) for information on how to generate it.
+- [XML](./Cryptography.Tests/Xml/XmlSignures/)
+  - XML signature
+  - [XAdES](./Cryptography.Tests/Xml/XAdES/README.md)
 
 ## Development
 

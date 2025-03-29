@@ -6,12 +6,12 @@ using Examples.Cryptography.Xml;
 
 namespace Examples.Cryptography.Tests.Xml;
 
-public class XmlSigningUsingMSDocsTests : IClassFixture<XmlDataFixture>
+public class XmlSigningUsingMsDocsTests : IClassFixture<XmlFixture>
 {
     private readonly ITestOutputHelper _output;
-    private readonly XmlDataFixture _fixture;
+    private readonly XmlFixture _fixture;
 
-    public XmlSigningUsingMSDocsTests(XmlDataFixture fixture, ITestOutputHelper output)
+    public XmlSigningUsingMsDocsTests(XmlFixture fixture, ITestOutputHelper output)
     {
         /// ```shell
         /// dotnet test --logger "console;verbosity=detailed"
@@ -46,8 +46,6 @@ public class XmlSigningUsingMSDocsTests : IClassFixture<XmlDataFixture>
 
         bool result = VerifyXmlFile("SignedExample.xml", key, signed);
         result.IsTrue("The XML signature is not valid.");
-
-
 
         // Sign an XML file and save the signature in a new file. This method does not
         // save the public key within the XML file.  This file cannot be verified unless
@@ -183,8 +181,6 @@ public class XmlSigningUsingMSDocsTests : IClassFixture<XmlDataFixture>
 
         bool result = VerifyXmlFile("SignedExample.xml", signed);
         result.IsTrue("The XML signature is not valid.");
-
-
 
         // Sign an XML file and save the signature in a new file.
         static XmlDocument SignXmlFile(string fileName, string signedFileName, RSA key, string[] elementsToSign, XmlDocument xml)
@@ -332,7 +328,6 @@ public class XmlSigningUsingMSDocsTests : IClassFixture<XmlDataFixture>
 
             return document;
         }
-
     }
 
 
@@ -390,8 +385,6 @@ public class XmlSigningUsingMSDocsTests : IClassFixture<XmlDataFixture>
 
         bool result = Verify(xmlDigitalSignature);
         result.IsTrue("The XML signature is not valid.");
-
-
 
         static bool Verify(XmlNode xml)
         {

@@ -6,12 +6,12 @@ using Examples.Cryptography.Xml;
 
 namespace Examples.Cryptography.Tests.Xml;
 
-public class XmlSigningUsingScottBradyTests : IClassFixture<XmlDataFixture>
+public class XmlSigningUsingScottBradyTests : IClassFixture<XmlFixture>
 {
     private readonly ITestOutputHelper _output;
-    private readonly XmlDataFixture _fixture;
+    private readonly XmlFixture _fixture;
 
-    public XmlSigningUsingScottBradyTests(XmlDataFixture fixture, ITestOutputHelper output)
+    public XmlSigningUsingScottBradyTests(XmlFixture fixture, ITestOutputHelper output)
     {
         /// ```shell
         /// dotnet test --logger "console;verbosity=detailed"
@@ -60,8 +60,6 @@ public class XmlSigningUsingScottBradyTests : IClassFixture<XmlDataFixture>
         _output.WriteLine($"xml:{Environment.NewLine}{xml.ToFormattedOuterXml()}");
 
         Verify(xml, cert.GetECDsaPublicKey()!).IsTrue();
-
-
     }
 
 
@@ -111,8 +109,6 @@ public class XmlSigningUsingScottBradyTests : IClassFixture<XmlDataFixture>
         _output.WriteLine($"xml:{Environment.NewLine}{xml.ToFormattedOuterXml()}");
 
         Verify(xml, cert.GetRSAPublicKey()!).IsTrue();
-
-
     }
 
     private static bool Verify(XmlDocument xml, AsymmetricAlgorithm key)

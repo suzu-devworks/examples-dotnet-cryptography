@@ -4,9 +4,9 @@ using Examples.Cryptography.Generics;
 
 namespace Examples.Cryptography.Tests.Xml;
 
-public class XmlDataFixture : IDisposable
+public class XmlFixture : IDisposable
 {
-    public XmlDataFixture()
+    public XmlFixture()
     {
         var notBefore = DateTimeOffset.Now.AddDays(-2);
 

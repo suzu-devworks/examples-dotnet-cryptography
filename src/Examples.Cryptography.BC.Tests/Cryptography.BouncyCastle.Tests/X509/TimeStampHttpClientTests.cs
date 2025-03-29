@@ -12,7 +12,6 @@ using Org.BouncyCastle.OpenSsl;
 
 using System.Text;
 using Examples.Cryptography.BouncyCastle.Logging;
-using Examples.Cryptography.BouncyCastle.PKIX;
 using Examples.Cryptography.BouncyCastle.X509;
 using Examples.Cryptography.Generics;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,7 +27,7 @@ using Org.BouncyCastle.X509;
 using Org.BouncyCastle.X509.Extension;
 using Xunit.Sdk;
 
-namespace Examples.Cryptography.BouncyCastle.Tests.PKIX;
+namespace Examples.Cryptography.BouncyCastle.Tests.X509;
 
 public class TimeStampHttpClientTests : IClassFixture<TimeStampDataFixture>
 {
