@@ -1,4 +1,4 @@
-# Examples.Cryptography.Tests
+# Examples.Cryptography.BouncyCastle.Tests
 
 ## Table of Contents <!-- omit in toc -->
 
@@ -21,17 +21,12 @@ dotnet add package xunit3
 dotnet add package xunit.runner.visualstudio
 dotnet add package coverlet.collector
 dotnet add package Moq
-dotnet add package System.Security.Cryptography.Xml
+dotnet add package Microsoft.Extensions.Http
+dotnet add package BouncyCastle.Cryptography
 
 dotnet add reference ../../src/Examples.Cryptography/
 cd ../../
 
 # Update outdated package
 dotnet list package --outdated
-
-# Tools config
-dotnet new tool-manifest
-dotnet tool install dotnet-xscgen
-
-dotnet tool restore
 ```
