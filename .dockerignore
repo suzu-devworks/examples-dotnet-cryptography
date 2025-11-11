@@ -1,6 +1,0 @@
-# ADD/COPY ignore
-.git/
-.github/
-.config/
-.vscode/
-docs/
