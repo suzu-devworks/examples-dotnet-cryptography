@@ -1,6 +1,4 @@
-using System;
-
-namespace Examples.Fluency;
+namespace Examples.Cryptography;
 
 /// <summary>
 /// Extension methods for <see cref="DateTime" /> and <see cref="DateTimeOffset" />.

@@ -1,7 +1,7 @@
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace Examples.Fluency.Xml;
+namespace Examples.Cryptography.Xml;
 
 /// <summary>
 /// Extension methods for XML namespace.
@@ -14,7 +14,7 @@ public static class XmlNamespacesExtensions
     /// <param name="manager">The <see cref="XmlNamespaceManager" /> instance.</param>
     /// <param name="includeDefault">If true, include the default namespace that <see cref="XmlNamespaceManager" /> has.</param>
     /// <returns>An <see cref="XmlSerializerNamespaces" /> instance.</returns>
-    public static XmlSerializerNamespaces ToSerializer(this XmlNamespaceManager manager,
+    public static XmlSerializerNamespaces ToSerializerNamespaces(this XmlNamespaceManager manager,
         bool includeDefault = false)
     {
         var qualifiedNames = manager.Cast<string>()
@@ -37,7 +37,7 @@ public static class XmlNamespacesExtensions
     /// <param name="serializer">The <see cref="XmlSerializerNamespaces" /> instance.</param>
     /// <param name="nameTable">The <see cref="XmlNameTable" /> instance from <see cref="XmlDocument" />.</param>
     /// <returns>An <see cref="XmlNamespaceManager" /> instance.</returns>
-    public static XmlNamespaceManager ToManager(this XmlSerializerNamespaces serializer,
+    public static XmlNamespaceManager ToNamespaceManager(this XmlSerializerNamespaces serializer,
         XmlNameTable? nameTable = null)
     {
         var manager = new XmlNamespaceManager(nameTable ?? new NameTable());

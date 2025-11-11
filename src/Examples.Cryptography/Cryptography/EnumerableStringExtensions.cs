@@ -1,6 +1,4 @@
-using System.Collections.Generic;
-
-namespace Examples.Fluency;
+namespace Examples.Cryptography;
 
 /// <summary>
 /// Extension methods for <see cref="IEnumerable{T}" /> collection of type <see cref="string" />.

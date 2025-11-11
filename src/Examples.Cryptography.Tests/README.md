@@ -2,6 +2,14 @@
 
 ## Table of Contents <!-- omit in toc -->
 
+- [Examples.Cryptography's Tests](#examplescryptographys-tests)
+- [Development](#development)
+  - [How the project was initialized](#how-the-project-was-initialized)
+
+## Examples.Cryptography's Tests
+
+- [`XmlNamespacesExtensionsTests`](./Cryptography.Tests/Xml/XmlNamespacesExtensionsTests)
+
 ## Development
 
 ### How the project was initialized
