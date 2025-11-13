@@ -28,7 +28,6 @@ dotnet add package Microsoft.NET.Test.Sdk
 dotnet add package xunit3
 dotnet add package xunit.runner.visualstudio
 dotnet add package coverlet.collector
-dotnet add package Moq
 dotnet add package System.Security.Cryptography.Xml
 
 dotnet add reference ../../src/Examples.Cryptography/
