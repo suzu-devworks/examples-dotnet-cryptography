@@ -8,7 +8,7 @@ namespace Examples.Cryptography.Tests.Xml;
 public class XmlNamespacesExtensionsTests
 {
     [Fact]
-    public void ToNamespaceManager_ReturnsAsExpected()
+    public void ToNamespaceManager_WithMultipleNamespacesAdded_ReturnsConfiguredManager()
     {
         var ns = new XmlSerializerNamespaces();
         ns.Add("ds", SignedXml.XmlDsigNamespaceUrl);
@@ -53,7 +53,7 @@ public class XmlNamespacesExtensionsTests
     }
 
     [Fact]
-    public void ToSerializerNamespaces_WithExcludeDefault_ReturnsAsExpected()
+    public void ToSerializerNamespaces_WithMultipleNamespacesAdded_ReturnsConfiguredSerializer()
     {
         var manager = new XmlNamespaceManager(new NameTable());
         manager.AddNamespace("ds", SignedXml.XmlDsigNamespaceUrl);
@@ -83,7 +83,7 @@ public class XmlNamespacesExtensionsTests
     }
 
     [Fact]
-    public void ToSerializerNamespaces_WithIncludeDefault_ReturnsAsExpected()
+    public void ToSerializerNamespaces_WithIncludeDefault_ReturnsSerializerWithDefaultNamespaces()
     {
         var manager = new XmlNamespaceManager(new NameTable());
         manager.AddNamespace("ds", SignedXml.XmlDsigNamespaceUrl);
@@ -91,7 +91,6 @@ public class XmlNamespacesExtensionsTests
         manager.AddNamespace("xa141", "http://uri.etsi.org/01903/v1.4.1#");
 
         var serializer = manager.ToSerializerNamespaces(includeDefault: true);
-
 
         var qualifiedNames = serializer.ToArray();
         Assert.Equal(6, qualifiedNames.Length);
