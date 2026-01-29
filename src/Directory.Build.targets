@@ -1,0 +1,10 @@
+<Project>
+  <PropertyGroup>
+    <ObjectDirectory>obj/</ObjectDirectory>
+    <BinDirectory>bin/</BinDirectory>
+  </PropertyGroup>
+
+  <Target Name="RemoveDirectories">
+    <RemoveDir Directories="$(ObjectDirectory);$(BinDirectory);" />
+  </Target>
+</Project>
