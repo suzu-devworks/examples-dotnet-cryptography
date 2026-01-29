@@ -1,6 +1,6 @@
 using System.Text;
 using Examples.Cryptography.BouncyCastle.Logging;
-using Examples.Cryptography.BouncyCastle.PKIX;
+using Examples.Cryptography.BouncyCastle.X509;
 using Examples.Cryptography.Generics;
 using Org.BouncyCastle.Asn1.Nist;
 using Org.BouncyCastle.Asn1.Tsp;
@@ -11,7 +11,7 @@ using Org.BouncyCastle.Tsp;
 using Org.BouncyCastle.Utilities.Collections;
 using Org.BouncyCastle.X509;
 
-namespace Examples.Cryptography.BouncyCastle.Tests.PKIX;
+namespace Examples.Cryptography.BouncyCastle.Tests.X509;
 
 public class TimeStampTokenTests : IClassFixture<TimeStampDataFixture>
 {
@@ -22,7 +22,7 @@ public class TimeStampTokenTests : IClassFixture<TimeStampDataFixture>
     {
         _fixture = fixture;
 
-        // ```
+        // ```shell
         // dotnet test --logger "console;verbosity=detailed"
         // ```
         _output = output;
@@ -76,7 +76,6 @@ public class TimeStampTokenTests : IClassFixture<TimeStampDataFixture>
         //_output.WriteLine(Asn1Dump.DumpAsString(Asn1Sequence.GetInstance(token.GetEncoded())));
         _output.WriteLine(token.DumpAsString());
 
-        return;
     }
 
 }

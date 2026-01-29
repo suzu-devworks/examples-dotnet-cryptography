@@ -27,18 +27,22 @@ public class ECDSAKeyPairTests : IDisposable
 
     private ECDsa GenerateKeyPair()
     {
+        // spell-checker: disable
         // ```shell
-        // $ openssl ecparam -genkey -name prime256v1 -noout -out ecdsa-p256-private.key
+        // openssl ecparam -genkey -name prime256v1 -noout -out ecdsa-p256-private.key
         // ```
+        // spell-checker: enable
 
         // Naming elliptic curves used in cryptography
 
+        // spell-checker: disable
         // | Curve name | Bits in p | SECG      | ANSI X9.62 |
         // |------------|-----------|-----------|------------|
         // | NIST P-224 | 224       | secp224r1 |            |
         // | NIST P-256 | 256       | secp256r1 | prime256v1 |
         // | NIST P-384 | 384       | secp384r1 |            |
         // | NIST P-521 | 521       | secp521r1 |            |
+        // spell-checker: enable
 
         var sw = Stopwatch.StartNew();
 
@@ -54,9 +58,11 @@ public class ECDSAKeyPairTests : IDisposable
     [Fact]
     public void WhenImportingFromExportECPrivateKey_ReturnsToBeforeExport()
     {
+        // spell-checker: disable
         // ```shell
         // $ openssl ecparam -genkey -name prime256v1 -noout -out ecdsa-p256-private.key
         // ```
+        // spell-checker: enable
 
         // ### Arrange. ###
         var keyPair = _keyPair!;
@@ -76,7 +82,7 @@ public class ECDSAKeyPairTests : IDisposable
         other.Is(exported);
         other.Length.Is(readCount);
 
-        return;
+
     }
 
 
@@ -109,8 +115,6 @@ public class ECDSAKeyPairTests : IDisposable
 
         _output.WriteLine($"{pem}");
         //File.WriteAllText(@"ecdsa-p256-private.key", pem);
-
-        return;
     }
 
 }

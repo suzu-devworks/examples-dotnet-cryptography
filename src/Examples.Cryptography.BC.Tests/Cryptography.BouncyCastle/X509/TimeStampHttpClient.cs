@@ -1,7 +1,7 @@
 using System.Net.Http.Headers;
 using Org.BouncyCastle.Tsp;
 
-namespace Examples.Cryptography.BouncyCastle.PKIX;
+namespace Examples.Cryptography.BouncyCastle.X509;
 
 /// <summary>
 /// The <see cref="HttpClient" /> for Time stamp request.

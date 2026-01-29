@@ -52,6 +52,7 @@ public static class AsymmetricCipherKeyPairGeneratorExtensions
          * C.3.1 Miller-Rabin Probabilistic primality test.
          * https://csrc.nist.gov/files/pubs/fips/186-3/final/docs/fips_186-3.pdf
          */
+        /* spell-checker: words primality */
 
         var publicExponent = BigInteger.ValueOf(0x10001);
         var param = new RsaKeyGenerationParameters(publicExponent, random, strength, certainty);

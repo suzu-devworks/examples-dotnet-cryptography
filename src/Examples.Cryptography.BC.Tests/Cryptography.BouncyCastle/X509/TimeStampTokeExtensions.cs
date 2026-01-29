@@ -3,7 +3,7 @@ using Org.BouncyCastle.Tsp;
 using Org.BouncyCastle.X509;
 using Org.BouncyCastle.X509.Store;
 
-namespace Examples.Cryptography.BouncyCastle.PKIX;
+namespace Examples.Cryptography.BouncyCastle.X509;
 
 /// <summary>
 /// Extension methods for <see cref="TimeStampToken" />.

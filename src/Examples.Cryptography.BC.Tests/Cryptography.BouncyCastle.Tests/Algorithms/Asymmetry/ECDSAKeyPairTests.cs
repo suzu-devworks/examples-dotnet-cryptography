@@ -12,7 +12,7 @@ public class ECDSAKeyPairTests
 
     public ECDSAKeyPairTests(ITestOutputHelper output)
     {
-        // ```
+        // ```shell
         // dotnet test --logger "console;verbosity=detailed"
         // ```
         _output = output;
@@ -64,7 +64,6 @@ public class ECDSAKeyPairTests
         actual.Private.Is(keyPair.Private);
         actual.Public.Is(keyPair.Public);
 
-        return;
     }
 
     [Fact]
@@ -89,7 +88,6 @@ public class ECDSAKeyPairTests
         pem.Is(x => x.StartsWith("-----BEGIN EC PRIVATE KEY-----")
                     && x.EndsWith("-----END EC PRIVATE KEY-----"));
 
-        return;
     }
 
     [Fact]
@@ -118,7 +116,6 @@ public class ECDSAKeyPairTests
         //msPem.Is(bcPem);
         msPem.IsNot(bcPem);
 
-        return;
     }
 
 }

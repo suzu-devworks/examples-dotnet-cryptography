@@ -3,7 +3,7 @@ using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Ocsp;
 using Org.BouncyCastle.X509;
 
-namespace Examples.Cryptography.BouncyCastle.PKIX;
+namespace Examples.Cryptography.BouncyCastle.X509;
 
 /// <summary>
 /// Extension methods for <see cref="OcspResp" />.
@@ -34,7 +34,7 @@ public static class OcspRespExtensions
             throw new OcspException("Bad nonce value.");
         }
 
-        return;
+
     }
 
     /// <summary>
@@ -104,7 +104,7 @@ public static class OcspRespExtensions
             throw new OcspException("Not the latest status.");
         }
 
-        return;
+
     }
 
 }

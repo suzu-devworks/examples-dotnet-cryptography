@@ -40,7 +40,7 @@ public class AESAEADEncryptionTests
         // Assert.
         outputText.Is(original);
 
-        return;
+
 
         static (byte[] cipherText, byte[] nonce, byte[] tag) Encrypt(
             ReadOnlySpan<byte> plainText,
@@ -106,7 +106,7 @@ public class AESAEADEncryptionTests
         // Assert.
         outputText.Is(original);
 
-        return;
+
 
         static (byte[] cipherText, byte[] nonce, byte[] tag) Encrypt(
             ReadOnlySpan<byte> plainText,

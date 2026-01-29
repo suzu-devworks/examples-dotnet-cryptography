@@ -4,9 +4,13 @@
     <TargetFramework>$(LatestFramework)</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <RootNamespace>Examples</RootNamespace>
+    <NoWarn>$(NoWarn);IDE0290</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

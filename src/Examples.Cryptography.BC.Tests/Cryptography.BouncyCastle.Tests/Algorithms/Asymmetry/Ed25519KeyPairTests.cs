@@ -12,7 +12,7 @@ public class Ed25519KeyPairTests
 
     public Ed25519KeyPairTests(ITestOutputHelper output)
     {
-        // ```
+        // ```shell
         // dotnet test --logger "console;verbosity=detailed"
         // ```
         _output = output;
@@ -50,7 +50,6 @@ public class Ed25519KeyPairTests
         actual.Private.Is(keyPair.Private);
         actual.Public.Is(keyPair.Public);
 
-        return;
     }
 
     [Fact]
@@ -75,7 +74,6 @@ public class Ed25519KeyPairTests
         pem.Is(x => x.StartsWith("-----BEGIN PRIVATE KEY-----")
             && x.EndsWith("-----END PRIVATE KEY-----"));
 
-        return;
     }
 
 }

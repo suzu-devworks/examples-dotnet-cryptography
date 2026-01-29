@@ -13,9 +13,11 @@ public class PKCS10ECDSACertificateRequestTests : IClassFixture<PKCSDataFixture>
 
     public PKCS10ECDSACertificateRequestTests(PKCSDataFixture fixture, ITestOutputHelper output)
     {
+        // spell-checker: disable
         /// ```shell
         /// dotnet test --logger "console;verbosity=detailed"
         /// ```
+        // spell-checker: enable
         _output = output;
 
         _fixture = fixture;
@@ -25,13 +27,15 @@ public class PKCS10ECDSACertificateRequestTests : IClassFixture<PKCSDataFixture>
     [Fact]
     public void WhenLoadingFromCreateSigningRequestPem_ReturnsToBeforeRequest()
     {
-        /* ```sh
+        // spell-checker: disable
+        /* ```shell
         $ openssl ecparam -genkey -name secp384r1 -noout -out ecdsa-private.key
         $ openssl req -new \
             -key ecdsa-private.key \
             -sha256 -subj "/C=JP/O=suzu-devworks/CN=localhost" \
             -out server-ec.csr
         ``` */
+        // spell-checker: enable
 
         // Arrange.
         var ecdsa = _fixture.ECKeyProvider;
@@ -41,6 +45,7 @@ public class PKCS10ECDSACertificateRequestTests : IClassFixture<PKCSDataFixture>
             .Configure(builder =>
             {
                 builder.AddCountryOrRegion("JP");
+                // spell-checker: disable-next-line
                 builder.AddOrganizationName("suzu-devworks");
                 builder.AddCommonName("localhost");
             })
@@ -71,14 +76,15 @@ public class PKCS10ECDSACertificateRequestTests : IClassFixture<PKCSDataFixture>
         pem.Is(x => x.StartsWith("-----BEGIN CERTIFICATE REQUEST-----")
                     && x.EndsWith("-----END CERTIFICATE REQUEST-----"));
 
-        return;
+
     }
 
 
     [Fact]
     public void WhenCallingCreateSelfSigned_WorkAsExpected()
     {
-        /* ```sh
+        // spell-checker: disable
+        /* ```shell
         $ openssl ecparam -genkey -name secp384r1 -noout -out ecdsa-private.key
         $ openssl req -new -x509 \
             -key ecdsa-private.key \
@@ -86,6 +92,7 @@ public class PKCS10ECDSACertificateRequestTests : IClassFixture<PKCSDataFixture>
             -days 365 \
             -out server-ec.crt
         ``` */
+        // spell-checker: enable
 
         // Arrange.
         var ecdsa = _fixture.ECKeyProvider;
@@ -94,6 +101,7 @@ public class PKCS10ECDSACertificateRequestTests : IClassFixture<PKCSDataFixture>
         var notAfter = notBefore.AddDays(365);
 
         // Act.
+        // spell-checker: disable-next-line
         var subject = new X500DistinguishedName("C=JP,O=suzu-devworks,CN=localhost");
         var req = new CertificateRequest(
              subject,
@@ -123,14 +131,15 @@ public class PKCS10ECDSACertificateRequestTests : IClassFixture<PKCSDataFixture>
         pem.Is(x => x.StartsWith("-----BEGIN CERTIFICATE-----")
                     && x.EndsWith("-----END CERTIFICATE-----"));
 
-        return;
+
     }
 
 
     [Fact]
     public void WhenFollowingTheFlow_WorkAsExpected()
     {
-        /* ```sh
+        // spell-checker: disable
+        /* ```shell
          $ cat > test.conf << EOF
 [ req ]
 distinguished_name = req
@@ -171,9 +180,12 @@ EOF
             -sha256 -days 365 \
             -out ecdsa-localhost.crt
         ``` */
+        // spell-checker: enable
 
         // Arrange.
+        // spell-checker: disable-next-line
         var subject = new X500DistinguishedName("C=JP,O=suzu-devworks,CN=localhost");
+        // spell-checker: disable-next-line
         var issuer = new X500DistinguishedName("C=JP,O=suzu-devworks CA,CN=Test CA");
 
         var notBefore = DateTimeOffset.UtcNow.AddSeconds(-50);
@@ -195,6 +207,7 @@ EOF
                 .AddSubjectAlternativeName(san =>
                 {
                     san.AddDnsName("www.local-server.jp");
+                    // spell-checker: disable-next-line
                     san.AddDnsName("localserver.jp");
                 });
 
@@ -264,6 +277,6 @@ EOF
         cert.NotAfter.Is(notAfter.Truncate(TimeSpan.TicksPerSecond).LocalDateTime);
         cert.SignatureAlgorithm.FriendlyName.Is("sha256ECDSA");
 
-        return;
+
     }
 }

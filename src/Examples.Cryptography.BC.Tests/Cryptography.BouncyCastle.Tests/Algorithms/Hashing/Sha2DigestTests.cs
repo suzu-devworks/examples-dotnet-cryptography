@@ -18,12 +18,14 @@ public class Sha2DigestTests : IClassFixture<HashingDataFixture>
 
     public static IEnumerable<object[]> GenerateDigestData()
     {
+        // spell-checker: disable
         yield return new object[] { new Sha256Digest(), "SHA-256", 32,
             "RBDc0q3nQ5ys+xmRvtn1h8gj7BhrVBHa5cizWcPSEU4=" };
         yield return new object[] { new Sha384Digest(), "SHA-384", 48,
             "Wr8/YJpm79bM8/RI3dsSHGOYjyv7wAlKcWukPnNenvQHha79Uiv7ZLKPwCClh6Og" };
         yield return new object[] { new Sha512Digest(), "SHA-512", 64,
             "5ZA+o2oN4eFwbgzi36FFbP9skakPqy8nDB1YkoJMBgAyMZ832MsdmVIe08I3OJHS9J80Xakf5wm49K+SNybBuw==" };
+        // spell-checker: enable
     }
 
     [Theory]
@@ -44,7 +46,6 @@ public class Sha2DigestTests : IClassFixture<HashingDataFixture>
         digest.GetDigestSize().Is(size);
         output.ToBase64String().Is(expected);
 
-        return;
     }
 
     [Theory]
@@ -72,7 +73,6 @@ public class Sha2DigestTests : IClassFixture<HashingDataFixture>
         digest.DoFinal(output2, 0);
         output2.Is(output);
 
-        return;
     }
 
 }

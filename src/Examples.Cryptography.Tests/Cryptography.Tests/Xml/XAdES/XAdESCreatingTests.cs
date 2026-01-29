@@ -12,14 +12,14 @@ using Xunit.Sdk;
 
 namespace Examples.Cryptography.Tests.Xml.XAdES;
 
-public class XAdESCreatingTests : IClassFixture<XmlDataFixture>
+public class XAdESCreatingTests : IClassFixture<XmlFixture>
 {
     private readonly ITestOutputHelper _output;
-    private readonly XmlDataFixture _fixture;
+    private readonly XmlFixture _fixture;
 
     private readonly DateTime _signedTime;
 
-    public XAdESCreatingTests(XmlDataFixture fixture, ITestOutputHelper output)
+    public XAdESCreatingTests(XmlFixture fixture, ITestOutputHelper output)
     {
         /// ```shell
         /// dotnet test --logger "console;verbosity=detailed"
@@ -50,8 +50,6 @@ public class XAdESCreatingTests : IClassFixture<XmlDataFixture>
 
         var result = VerifySignature(signed, signer);
         result.IsTrue("The XML signature is not valid.");
-
-        return;
     }
 
 
@@ -74,8 +72,6 @@ public class XAdESCreatingTests : IClassFixture<XmlDataFixture>
 
         var result = VerifySignature(signed, signer);
         result.IsTrue("The XML signature is not valid.");
-
-        return;
     }
 
 
@@ -100,8 +96,6 @@ public class XAdESCreatingTests : IClassFixture<XmlDataFixture>
 
         var result = VerifySignature(signed, signer);
         result.IsTrue("The XML signature is not valid.");
-
-        return;
     }
 
 
@@ -126,10 +120,6 @@ public class XAdESCreatingTests : IClassFixture<XmlDataFixture>
 
         var result = VerifySignature(signed, signer);
         result.IsTrue("The XML signature is not valid.");
-
-        return;
-
-
     }
 
 
@@ -487,7 +477,6 @@ public class XAdESCreatingTests : IClassFixture<XmlDataFixture>
         }
         private bool _useGenerateClasses;
     }
-
 
 }
 

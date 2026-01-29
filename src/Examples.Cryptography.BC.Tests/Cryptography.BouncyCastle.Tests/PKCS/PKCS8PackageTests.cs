@@ -21,7 +21,7 @@ public class PKCS8PackageTests : IClassFixture<PKCSDataFixture>
     {
         _fixture = fixture;
 
-        // ```
+        // ```shell
         // dotnet test --logger "console;verbosity=detailed"
         // ```
         _output = output;
@@ -60,6 +60,7 @@ public class PKCS8PackageTests : IClassFixture<PKCSDataFixture>
 
         // https://datatracker.ietf.org/doc/html/rfc5958#appendix-A
 
+        // ```asn.1
         // EncryptedPrivateKeyInfo ::= SEQUENCE {
         //      encryptionAlgorithm  EncryptionAlgorithmIdentifier,
         //      encryptedData        EncryptedData }
@@ -69,13 +70,17 @@ public class PKCS8PackageTests : IClassFixture<PKCSDataFixture>
         //                                  { KeyEncryptionAlgorithms } }
         //
         //   EncryptedData ::= OCTET STRING -- Encrypted PrivateKeyInfo
+        // ```
 
         var info = pkcs8enc.ToAsn1Structure();
         info.EncryptionAlgorithm.Algorithm.Is(PkcsObjectIdentifiers.IdPbeS2);
 
         // https://datatracker.ietf.org/doc/html/rfc8018#appendix-A.4
-        var pbes2 = info.EncryptionAlgorithm.Parameters.IsInstanceOf<PbeS2Parameters>();
 
+        var pbes2 = info.EncryptionAlgorithm.Parameters.IsInstanceOf<PbeS2Parameters>();
+        /* spell-checker: words pbes */
+
+        // ```asn.1
         // PBES2-params ::= SEQUENCE {
         //     keyDerivationFunc AlgorithmIdentifier { { PBES2-KDFs } },
         //     encryptionScheme AlgorithmIdentifier { { PBES2-Encs } }
@@ -84,12 +89,16 @@ public class PKCS8PackageTests : IClassFixture<PKCSDataFixture>
         // PBES2-KDFs ALGORITHM-IDENTIFIER ::=
         //       { {PBKDF2-params IDENTIFIED BY id-PBKDF2}, ... }
         // PBES2-Encs ALGORITHM-IDENTIFIER ::= { ... }
+        // ```
+        /* spell-checker: words Encs */
 
         pbes2.KeyDerivationFunc.Algorithm.Is(PkcsObjectIdentifiers.IdPbkdf2);
 
         // https://datatracker.ietf.org/doc/html/rfc8018#appendix-A.2
+
         var pbkdf2 = pbes2.KeyDerivationFunc.Parameters.IsInstanceOf<Pbkdf2Params>();
 
+        // ```asn.1
         // PBKDF2-params ::= SEQUENCE {
         //      salt CHOICE {
         //          specified OCTET STRING,
@@ -99,6 +108,7 @@ public class PKCS8PackageTests : IClassFixture<PKCSDataFixture>
         //      keyLength INTEGER (1..MAX) OPTIONAL,
         //      prf AlgorithmIdentifier {{PBKDF2-PRFs}} DEFAULT
         //          algid-hmacWithSHA1 }
+        // ```
 
         pbkdf2.IsDefaultPrf.IsFalse();
         pbkdf2.GetSalt().Is(salt);
@@ -108,12 +118,11 @@ public class PKCS8PackageTests : IClassFixture<PKCSDataFixture>
         pbkdf2.Prf.Parameters.Is(DerNull.Instance);
 
         pbes2.EncryptionScheme.Algorithm.Is(keyAlgorithm);
-        var ocstr = pbes2.EncryptionScheme.Parameters.IsInstanceOf<DerOctetString>();
-        ocstr.GetEncoded().Length.Is(16 + 2);
+        var octet = pbes2.EncryptionScheme.Parameters.IsInstanceOf<DerOctetString>();
+        octet.GetEncoded().Length.Is(16 + 2);
 
         //info.GetEncryptedData().Length.Is(1232);
 
-        return;
     }
 
 
@@ -164,12 +173,14 @@ public class PKCS8PackageTests : IClassFixture<PKCSDataFixture>
         // write PKCS #8 for PKCS #12 ... v1.5?
         //File.AppendAllText("pkcs8-enc-2.p8e", pkcs8encPem);
 
-        // ```
+        // ```shell
         // openssl pkcs8 -in rsa-4096-private.key -out rsa-4096-private.pkcs8 -topk8 -v1 PBE-SHA1-3DES
         // ```
+        /* spell-checker: words topk */
 
         // https://datatracker.ietf.org/doc/html/rfc5958#appendix-A
 
+        // ```asn.1
         // EncryptedPrivateKeyInfo ::= SEQUENCE {
         //      encryptionAlgorithm  EncryptionAlgorithmIdentifier,
         //      encryptedData        EncryptedData }
@@ -179,6 +190,7 @@ public class PKCS8PackageTests : IClassFixture<PKCSDataFixture>
         //                                  { KeyEncryptionAlgorithms } }
         //
         //   EncryptedData ::= OCTET STRING -- Encrypted PrivateKeyInfo
+        // ```
 
         var info = EncryptedPrivateKeyInfo.GetInstance(pkcs8enc.Content);
         info.EncryptionAlgorithm.Algorithm.Is(alg);
@@ -189,7 +201,6 @@ public class PKCS8PackageTests : IClassFixture<PKCSDataFixture>
 
         // info.GetEncryptedData().Length.Is(1224);
 
-        return;
     }
 
 
@@ -226,21 +237,20 @@ public class PKCS8PackageTests : IClassFixture<PKCSDataFixture>
         AsymmetricKeyParameter key = PrivateKeyFactory.CreateKey(info);
         key.Equals(keyPair.Private).IsTrue();
 
-        return;
     }
 
     [Fact]
     public void WhenImportingEncryptPkcs8_WithPem()
     {
         var pem = """
-                -----BEGIN ENCRYPTED PRIVATE KEY-----
-                MIHsMFcGCSqGSIb3DQEFDTBKMCkGCSqGSIb3DQEFDDAcBAhDwEJAoDjVNQICCAAw
-                DAYIKoZIhvcNAgkFADAdBglghkgBZQMEASoEEERGEzQp4YoqMP8jz3/ZAH0EgZAu
-                u7PgwcB8D8vMHr5lZ9+JUOHX4geGkbH+OKbn6/AmdsmkVdVmMWYgOVj22dTsIIXQ
-                yGuURcHhD0NebpY6U7CODNUgIixO/q69b9CTO6GHJdjxa7RWqiwu3gWe3e5SlYbq
-                V6hQB2/eS2vIvQfOEzbX3sgsK4qbv0Bk888rZFBYjz5aQTTLO64Urb5KFEz7Fjo=
-                -----END ENCRYPTED PRIVATE KEY-----
-                """;
+            -----BEGIN ENCRYPTED PRIVATE KEY-----
+            MIHsMFcGCSqGSIb3DQEFDTBKMCkGCSqGSIb3DQEFDDAcBAhDwEJAoDjVNQICCAAw
+            DAYIKoZIhvcNAgkFADAdBglghkgBZQMEASoEEERGEzQp4YoqMP8jz3/ZAH0EgZAu
+            u7PgwcB8D8vMHr5lZ9+JUOHX4geGkbH+OKbn6/AmdsmkVdVmMWYgOVj22dTsIIXQ
+            yGuURcHhD0NebpY6U7CODNUgIixO/q69b9CTO6GHJdjxa7RWqiwu3gWe3e5SlYbq
+            V6hQB2/eS2vIvQfOEzbX3sgsK4qbv0Bk888rZFBYjz5aQTTLO64Urb5KFEz7Fjo=
+            -----END ENCRYPTED PRIVATE KEY-----
+            """;
 
         var password1 = "password";
 
@@ -265,7 +275,6 @@ public class PKCS8PackageTests : IClassFixture<PKCSDataFixture>
 
         keyPair.IsNotNull();
 
-        return;
     }
 
     private class Password : IPasswordFinder

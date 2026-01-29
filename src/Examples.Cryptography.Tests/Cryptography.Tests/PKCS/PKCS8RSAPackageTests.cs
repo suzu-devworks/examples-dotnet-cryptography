@@ -22,10 +22,12 @@ public class PKCS8RSAPackageTests : IClassFixture<PKCSDataFixture>
     [Fact]
     public void WhenImportingFromExportPkcs8PrivateKeyPem_ReturnsToBeforeExport()
     {
-        //```sh
-        // $ openssl genrsa -out private.key 2048
-        // $ openssl pkcs8 -topk8 -nocrypt -in private.key -out private.pk8
-        //```
+        // spell-checker: disable
+        // ```shell
+        // openssl genrsa -out private.key 2048
+        // openssl pkcs8 -topk8 -nocrypt -in private.key -out private.pk8
+        // ```
+        // spell-checker: enable
 
         // Arrange.
         var provider = _fixture.RSAKeyProvider;
@@ -45,17 +47,19 @@ public class PKCS8RSAPackageTests : IClassFixture<PKCSDataFixture>
         pem.Is(x => x.StartsWith("-----BEGIN PRIVATE KEY-----")
                     && x.EndsWith("-----END PRIVATE KEY-----"));
 
-        return;
+
     }
 
 
     [Fact]
     public void WhenImportingFromExportEncryptedPkcs8PrivateKeyPem_ReturnsToBeforeExport()
     {
-        //```sh
-        // $ openssl genrsa -out private.key 2048
-        // $ openssl pkcs8 -topk8 -in private.key -out private.pk8e
-        //```
+        // spell-checker: disable
+        // ```shell
+        // openssl genrsa -out private.key 2048
+        // openssl pkcs8 -topk8 -in private.key -out private.pk8e
+        // ```
+        // spell-checker: enable
 
         // Arrange.
         var provider = _fixture.RSAKeyProvider;
@@ -81,7 +85,7 @@ public class PKCS8RSAPackageTests : IClassFixture<PKCSDataFixture>
         pem.Is(x => x.StartsWith("-----BEGIN ENCRYPTED PRIVATE KEY-----")
                     && x.EndsWith("-----END ENCRYPTED PRIVATE KEY-----"));
 
-        return;
+
     }
 
 }
