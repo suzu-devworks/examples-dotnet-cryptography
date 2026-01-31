@@ -3,7 +3,11 @@
   "ignorePaths": [],
   "dictionaryDefinitions": [],
   "dictionaries": [],
-  "words": [],
+  "words": [
+    "decryptor",
+    "encryptor",
+    "OAEP"
+  ],
   "ignoreWords": [],
   "import": [
     "../../.vscode/cspell.json"
