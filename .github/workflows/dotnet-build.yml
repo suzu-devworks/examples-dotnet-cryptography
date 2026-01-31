@@ -43,4 +43,6 @@ jobs:
       - name: Build
         run: dotnet build --configuration Release --no-restore
       - name: Test
-        run: dotnet test --configuration Release --no-build --verbosity normal
+        run: |
+          ./scripts/openssl-generate.sh ./assets
+          dotnet test --configuration Release --no-build --verbosity normal
