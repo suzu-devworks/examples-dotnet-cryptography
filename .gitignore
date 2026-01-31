@@ -356,7 +356,6 @@ MigrationBackup/
 ## Visual studio for Mac
 ##
 
-
 # globs
 Makefile.in
 *.userprefs
