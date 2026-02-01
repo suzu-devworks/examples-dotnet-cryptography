@@ -35,6 +35,10 @@ public class RSAKeyPemEncodingTests(
         var fields = PemEncoding.Find(pem);
 
         // Assert:
+        output.WriteLine("DecodedDataLength:", fields.DecodedDataLength);
+        output.WriteLine("Location:", fields.Location);
+        output.WriteLine("Label:", fields.Label);
+        output.WriteLine("Base64Data:", fields.Base64Data);
 
         // Gets the size of the decoded base-64 data, in bytes.
         Assert.True(2348 <= fields.DecodedDataLength && fields.DecodedDataLength <= 2400);
