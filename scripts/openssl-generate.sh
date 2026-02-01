@@ -18,6 +18,7 @@ echo "Certificate valid for ${DAYS} days"
 head -c 500 /dev/urandom | LC_CTYPE=C tr -dc 'a-zA-Z0-9!@#\$%&/:;\^()_+\-=<>?' | head -c 24 > ${OUT_DIR}/.password
 chmod 600 "${OUT_DIR}/.password"
 wc -c < ${OUT_DIR}/.password | awk '{print "Password length: " $1}'
+echo ""
 
 # Self signed CA (ECDSA)
 openssl ecparam -genkey -name prime256v1 -noout -out ${OUT_DIR}/localhost.ca.key
@@ -60,9 +61,6 @@ openssl ec -in ${OUT_DIR}/localhost.ecdsa.pk8 -pubout -out ${OUT_DIR}/localhost.
 # PKCS 12
 openssl pkcs12 -export -in ${OUT_DIR}/localhost.ecdsa.crt -inkey ${OUT_DIR}/localhost.ecdsa.key \
     -out ${OUT_DIR}/localhost.ecdsa.p12 -passout file:${OUT_DIR}/.password
-
-# Set environment variable for test assets path
-export TEST_ASSETS_PATH=${OUT_DIR}
 
 echo ""
 echo "OpenSSL files generated."
