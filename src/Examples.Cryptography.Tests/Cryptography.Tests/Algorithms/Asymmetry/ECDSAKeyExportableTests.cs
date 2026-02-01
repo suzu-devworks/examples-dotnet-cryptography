@@ -47,7 +47,7 @@ public class ECDSAKeyExportableTests(
         // openssl ec -in private-ecdsa.key -out private-ecdsa.out.pem -outform PEM
         // ```
 
-        using ECDsa original = fixture.KeyPair;
+        ECDsa original = fixture.KeyPair;
 
         var pem = original.ExportECPrivateKeyPem();
         output.WriteLine($"{pem}");

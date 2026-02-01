@@ -30,7 +30,7 @@ public class RSAKeySignDataTests(
             // Create a new instance of the RSACryptoServiceProvider class
             // and automatically create a new key-pair.
             //# var rsa = new RSACryptoServiceProvider();
-            using var rsa = fixture.KeyPair;
+            var rsa = fixture.KeyPair;
 
             // Export the key information to an RSAParameters object.
             // You must pass true to export the private key for signing.

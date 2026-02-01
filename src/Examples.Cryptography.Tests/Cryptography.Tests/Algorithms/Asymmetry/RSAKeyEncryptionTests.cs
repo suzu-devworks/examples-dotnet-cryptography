@@ -31,7 +31,7 @@ public class RSAKeyEncryptionTests(
             //public and private key data.
             //# 公開鍵データと秘密鍵データを生成するために、RSACryptoServiceProvider の新しいインスタンスを作成します。
             //# using var rsa = new RSACryptoServiceProvider();
-            using var rsa = fixture.KeyPair;
+            var rsa = fixture.KeyPair;
             {
                 //Pass the data to ENCRYPT, the public key information
                 //(using RSACryptoServiceProvider.ExportParameters(false),
