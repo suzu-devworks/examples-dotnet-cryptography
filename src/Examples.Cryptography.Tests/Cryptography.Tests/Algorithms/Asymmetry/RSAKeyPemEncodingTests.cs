@@ -34,14 +34,15 @@ public class RSAKeyPemEncodingTests(
         var pem = fixture.Pem;
         var fields = PemEncoding.Find(pem);
 
+        output.WriteLine("DecodedDataLength: {0}", fields.DecodedDataLength);
+        output.WriteLine("Location: {0}", fields.Location);
+        output.WriteLine("Label: {0}", fields.Label);
+        output.WriteLine("Base64Data: {0}", fields.Base64Data);
+
         // Assert:
-        output.WriteLine("DecodedDataLength:", fields.DecodedDataLength);
-        output.WriteLine("Location:", fields.Location);
-        output.WriteLine("Label:", fields.Label);
-        output.WriteLine("Base64Data:", fields.Base64Data);
 
         // Gets the size of the decoded base-64 data, in bytes.
-        Assert.True(2348 <= fields.DecodedDataLength && fields.DecodedDataLength <= 2400);
+        Assert.True(fields.DecodedDataLength is >= 2348 and <= 2400);
 
         // Gets the location of the PEM-encoded text,
         // including the surrounding encapsulation boundaries.
@@ -52,12 +53,12 @@ public class RSAKeyPemEncodingTests(
         Assert.Equal(11, fields.Label.Start);
         Assert.Equal(26, fields.Label.End);
         Assert.Equal("RSA PRIVATE KEY", pem[fields.Label]);
-        output.WriteLine("Label:", pem[fields.Label]);
+        output.WriteLine("Label: {0}", pem[fields.Label]);
 
         // Gets the location of the base-64 data inside of the PEM.
         Assert.Equal(32, fields.Base64Data.Start);
         Assert.Equal(3212, fields.Base64Data.End);
-        output.WriteLine("Base64Data:", pem[fields.Base64Data]);
+        output.WriteLine("Base64Data: {0}", pem[fields.Base64Data]);
 
         var data = Convert.FromBase64String(pem[fields.Base64Data]);
 
