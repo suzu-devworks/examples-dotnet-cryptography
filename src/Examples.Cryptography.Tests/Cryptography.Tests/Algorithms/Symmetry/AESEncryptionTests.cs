@@ -8,8 +8,10 @@ namespace Examples.Cryptography.Tests.Algorithms.Symmetry;
 /// </summary>
 /// <param name="output"></param>
 /// <seealso href="https://learn.microsoft.com/ja-jp/dotnet/api/system.security.cryptography.aes.-ctor"/>
-public class AESEncryptionTests(ITestOutputHelper output)
+public class AESEncryptionTests
 {
+    private ITestOutputHelper? Output => TestContext.Current.TestOutputHelper;
+
     [Fact]
     public void When_EncryptedAndDecryptedViaCryptoStream_Then_StringIsRestored()
     {
@@ -36,8 +38,8 @@ public class AESEncryptionTests(ITestOutputHelper output)
         Assert.Equal(original, roundtrip);
 
         //Display the original data and the decrypted data.
-        output.WriteLine("Original:   {0}", original);
-        output.WriteLine("Round Trip: {0}", roundtrip);
+        Output?.WriteLine("Original:   {0}", original);
+        Output?.WriteLine("Round Trip: {0}", roundtrip);
 
         static byte[] Encrypt(string plainText, byte[] key, byte[] initialVector)
         {
@@ -120,8 +122,8 @@ public class AESEncryptionTests(ITestOutputHelper output)
         Assert.Equal(original, roundtrip);
 
         //Display the original data and the decrypted data.
-        output.WriteLine("Original:   {0}", original);
-        output.WriteLine("Round Trip: {0}", roundtrip);
+        Output?.WriteLine("Original:   {0}", original);
+        Output?.WriteLine("Round Trip: {0}", roundtrip);
 
         static byte[] Encrypt(string plainText, byte[] key, byte[] iv)
         {

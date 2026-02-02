@@ -1,11 +1,9 @@
 using System.Security.Cryptography;
+using static Examples.Cryptography.Tests.Algorithms.Asymmetry.RSAKeyPemEncodingTests;
 
 namespace Examples.Cryptography.Tests.Algorithms.Asymmetry;
 
-public class RSAKeyPemEncodingTests(
-    RSAKeyPemEncodingTests.Fixture fixture,
-    ITestOutputHelper output)
-    : IClassFixture<RSAKeyPemEncodingTests.Fixture>
+public class RSAKeyPemEncodingTests(Fixture fixture) : IClassFixture<Fixture>
 {
     public class Fixture : IDisposable
     {
@@ -27,6 +25,8 @@ public class RSAKeyPemEncodingTests(
         }
     }
 
+    private ITestOutputHelper? Output => TestContext.Current.TestOutputHelper;
+
     [Fact]
     public void When_FindIsUsedOnPemCreatedWithOpenSSL_Then_ParsingSucceeds()
     {
@@ -34,13 +34,13 @@ public class RSAKeyPemEncodingTests(
         var pem = fixture.Pem;
         var fields = PemEncoding.Find(pem);
 
-        output.WriteLine("DecodedDataLength: {0}", fields.DecodedDataLength);
-        output.WriteLine("Location: {0}", fields.Location);
-        output.WriteLine("Label: {0}", fields.Label);
-        output.WriteLine("Base64Data: {0}", fields.Base64Data);
+        Output?.WriteLine("DecodedDataLength: {0}", fields.DecodedDataLength);
+        Output?.WriteLine("Location: {0}", fields.Location);
+        Output?.WriteLine("Label: {0}", fields.Label);
+        Output?.WriteLine("Base64Data: {0}", fields.Base64Data);
 
-        output.WriteLine("{0}", pem[fields.Label]);
-        output.WriteLine("{0}", pem[fields.Base64Data]);
+        Output?.WriteLine("{0}", pem[fields.Label]);
+        Output?.WriteLine("{0}", pem[fields.Base64Data]);
 
         // Assert:
 
