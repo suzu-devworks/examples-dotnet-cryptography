@@ -8,8 +8,10 @@ namespace Examples.Cryptography.Tests.Algorithms.Symmetry;
 /// </summary>
 /// <param name="output"></param>
 /// <seealso href="https://datatracker.ietf.org/doc/html/rfc5288"/>
-public class AESAeadGcmEncryptionTests(ITestOutputHelper output)
+public class AESAeadGcmEncryptionTests
 {
+    private ITestOutputHelper? Output => TestContext.Current.TestOutputHelper;
+
     [Fact]
     public void When_EncryptedAndDecrypted_Then_StringIsRestored()
     {
@@ -28,8 +30,8 @@ public class AESAeadGcmEncryptionTests(ITestOutputHelper output)
         var outputText = Encoding.UTF8.GetString(roundtrip);
 
         //Display the original data and the decrypted data.
-        output.WriteLine("Original:   {0}", original);
-        output.WriteLine("Round Trip: {0}", outputText);
+        Output?.WriteLine("Original:   {0}", original);
+        Output?.WriteLine("Round Trip: {0}", outputText);
 
         // Assert:
 
