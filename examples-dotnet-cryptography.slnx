@@ -1,2 +1,8 @@
 <Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Examples.Cryptography.BouncyCastle.Tests/Examples.Cryptography.BouncyCastle.Tests.csproj" />
+    <Project Path="src/Examples.Cryptography.Tests/Examples.Cryptography.Tests.csproj" />
+    <Project Path="src/Examples.Cryptography.Xml.Tests/Examples.Cryptography.Xml.Tests.csproj" />
+    <Project Path="src/Examples.Cryptography/Examples.Cryptography.csproj" />
+  </Folder>
 </Solution>

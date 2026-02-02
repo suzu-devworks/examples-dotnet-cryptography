@@ -9,6 +9,9 @@
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "postCreateCommand": "/bin/sh ./.devcontainer/postCreateCommand.sh",
   "remoteUser": "vscode",
+  "remoteEnv": {
+    "TEST_ASSETS_PATH": "/workspaces/${localWorkspaceFolderBasename}/assets"
+  },
   "customizations": {
     "vscode": {
       "extensions": [
@@ -17,7 +20,7 @@
         "DavidAnson.vscode-markdownlint",
         "ms-dotnettools.csdevkit",
         "jeremycaron.csharp-organize-usings",
-        "aliasadidev.nugetpackagemanagergui",
+        "aliasadidev.nugetpackagemanagergui"
       ]
     }
   }

@@ -23,6 +23,8 @@ jobs:
     timeout-minutes: 5
     permissions:
       contents: read
+    env:
+      TEST_ASSETS_PATH: ${{ github.workspace }}/assets
 
     steps:
       - uses: actions/checkout@v6
@@ -42,5 +44,19 @@ jobs:
         run: dotnet restore --locked-mode
       - name: Build
         run: dotnet build --configuration Release --no-restore
+
+      - name: Test assets scripts
+        run: |
+          set -e
+          ./scripts/openssl-generate.sh ${{ env.TEST_ASSETS_PATH }}
+        timeout-minutes: 1
       - name: Test
-        run: dotnet test --configuration Release --no-build --verbosity normal
+        run: dotnet test --configuration Release --no-build --report-xunit-trx --results-directory ./TestResults
+        env:
+          TEST_ASSETS_PATH: ${{ env.TEST_ASSETS_PATH }}
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: ./TestResults

@@ -15,6 +15,12 @@
   "dictionaryDefinitions": [],
   "dictionaries": [],
   "words": [
+    "ecparam",
+    "genkey",
+    "noout",
+    "outform",
+    "pkcs",
+    "pubout",
     "xunit"
   ],
   "ignoreWords": [],
