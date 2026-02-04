@@ -6,7 +6,7 @@ namespace Examples.Cryptography.Tests.Algorithms.Asymmetry;
 /// <summary>
 /// Example uses the RSA class to encrypt a string into an array of bytes and then decrypt the bytes back into a string.
 /// </summary>
-/// <param name="output"></param>
+/// <param name="fixture"></param>
 /// <seealso href="https://learn.microsoft.com/ja-jp/dotnet/api/system.security.cryptography.rsacryptoserviceprovider"/>
 public class RSAKeyEncryptionTests(RSAKeyFixture fixture) : IClassFixture<RSAKeyFixture>
 {

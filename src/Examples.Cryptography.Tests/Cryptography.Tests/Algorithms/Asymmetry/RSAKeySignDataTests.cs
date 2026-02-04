@@ -6,7 +6,7 @@ namespace Examples.Cryptography.Tests.Algorithms.Asymmetry;
 /// <summary>
 /// Example signs and verifies data.
 /// </summary>
-/// <param name="output"></param>
+/// <param name="fixture"></param>
 /// <seealso href="https://learn.microsoft.com/ja-jp/dotnet/api/system.security.cryptography.rsacryptoserviceprovider.signdata"/>
 public class RSAKeySignDataTests(RSAKeyFixture fixture) : IClassFixture<RSAKeyFixture>
 {

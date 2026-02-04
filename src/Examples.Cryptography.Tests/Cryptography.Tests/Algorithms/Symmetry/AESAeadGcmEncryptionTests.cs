@@ -6,7 +6,6 @@ namespace Examples.Cryptography.Tests.Algorithms.Symmetry;
 /// <summary>
 /// Tests of AES Galois Counter Mode (GCM) Cipher Suites for TLS.
 /// </summary>
-/// <param name="output"></param>
 /// <seealso href="https://datatracker.ietf.org/doc/html/rfc5288"/>
 public class AESAeadGcmEncryptionTests
 {

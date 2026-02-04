@@ -6,7 +6,6 @@ namespace Examples.Cryptography.Tests.Algorithms.Asymmetry;
 /// Tests for RSA key export and import.
 /// </summary>
 /// <param name="fixture"></param>
-/// <param name="output"></param>
 public class RSAKeyExportableTests(RSAKeyFixture fixture) : IClassFixture<RSAKeyFixture>
 {
     private ITestOutputHelper? Output => TestContext.Current.TestOutputHelper;

@@ -6,7 +6,6 @@ namespace Examples.Cryptography.Tests.Algorithms.Symmetry;
 /// <summary>
 /// Example demonstrates how to encrypt and decrypt sample data using the Aes class.
 /// </summary>
-/// <param name="output"></param>
 /// <seealso href="https://learn.microsoft.com/ja-jp/dotnet/api/system.security.cryptography.aes.-ctor"/>
 public class AESEncryptionTests
 {

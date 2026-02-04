@@ -91,7 +91,7 @@ dotnet_style_prefer_conditional_expression_over_return = true:suggestion
 dotnet_style_prefer_foreach_explicit_cast_in_source = when_strongly_typed:suggestion
 dotnet_style_prefer_inferred_anonymous_type_member_names = true:suggestion
 dotnet_style_prefer_inferred_tuple_names = true:suggestion
-dotnet_style_prefer_is_null_check_over_reference_equality_method = true:suggestion
+dotnet_style_prefer_is_null_check_over_reference_equality_method = true:warning
 dotnet_style_prefer_simplified_boolean_expressions = true:suggestion
 dotnet_style_prefer_simplified_interpolation = true:suggestion
 
@@ -408,9 +408,15 @@ dotnet_naming_style.camelcase.capitalization = camel_case
 #### .NET Coding Severity ####
 
 # Default severity for analyzer diagnostics with category 'Style'
-dotnet_analyzer_diagnostic.category-Style.severity = silent
+dotnet_analyzer_diagnostic.category-Style.severity = suggestion
 
 [src/**/*.{cs,vb}]
+
+# IDE0004 : Remove unnecessary cast
+dotnet_diagnostic.IDE0004.severity = warning
+
+# IDE0005: Using directive is unnecessary
+dotnet_diagnostic.IDE0005.severity = warning
 
 # IDE0055: Fix Formatting
 dotnet_diagnostic.IDE0055.severity = warning

@@ -6,7 +6,6 @@ namespace Examples.Cryptography.Tests.Algorithms.Symmetry;
 /// <summary>
 /// Tests of AES-CCM Cipher Suites for Transport Layer Security (TLS).
 /// </summary>
-/// <param name="output"></param>
 /// <seealso href="https://datatracker.ietf.org/doc/html/rfc6655"/>
 public class AESAeadCcmEncryptionTests
 {

@@ -6,7 +6,6 @@ namespace Examples.Cryptography.Tests.Algorithms.Asymmetry;
 /// Tests for ECDSA key export and import.
 /// </summary>
 /// <param name="fixture"></param>
-/// <param name="output"></param>
 public class ECDSAKeyExportableTests(ECDSAKeyFixture fixture) : IClassFixture<ECDSAKeyFixture>
 {
     private ITestOutputHelper? Output => TestContext.Current.TestOutputHelper;
