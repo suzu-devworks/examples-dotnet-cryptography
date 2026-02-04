@@ -10,12 +10,7 @@ public class RSAKeyPemEncodingTests(Fixture fixture) : IClassFixture<Fixture>
         public Fixture()
         {
             var dir = Environment.GetEnvironmentVariable("TEST_ASSETS_PATH") ?? Environment.CurrentDirectory;
-            var path = Path.Combine(dir, "localhost.rsa.key");
-            if (!File.Exists(path))
-            {
-                throw new FileNotFoundException("The PEM file was not found. Please create it using OpenSSL.", path);
-            }
-            Pem = File.ReadAllText(path);
+            Pem = File.ReadAllText(Path.Combine(dir, "localhost.rsa.key"));
         }
         public string Pem { get; }
 
