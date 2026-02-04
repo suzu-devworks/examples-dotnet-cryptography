@@ -6,12 +6,10 @@ namespace Examples.Cryptography.Tests.Algorithms.Asymmetry;
 /// Tests for RSA key export and import.
 /// </summary>
 /// <param name="fixture"></param>
-/// <param name="output"></param>
-public class RSAKeyExportableTests(
-    RSAKeyFixture fixture,
-    ITestOutputHelper output)
-     : IClassFixture<RSAKeyFixture>
+public class RSAKeyExportableTests(RSAKeyFixture fixture) : IClassFixture<RSAKeyFixture>
 {
+    private ITestOutputHelper? Output => TestContext.Current.TestOutputHelper;
+
     [Fact]
     public void When_ExportedAndImported_Then_PrivateKeyIsRestored()
     {
@@ -51,7 +49,7 @@ public class RSAKeyExportableTests(
         RSA original = fixture.KeyPair;
 
         var pem = original.ExportRSAPrivateKeyPem();
-        output.WriteLine($"{pem}");
+        Output?.WriteLine($"{pem}");
         //File.WriteAllText(@"private-rsa.key", pem);
 
         using var imported = RSA.Create();
@@ -112,7 +110,7 @@ public class RSAKeyExportableTests(
         RSA original = fixture.KeyPair;
 
         var pem = original.ExportRSAPublicKeyPem();
-        output.WriteLine($"{pem}");
+        Output?.WriteLine($"{pem}");
         //File.WriteAllText(@"public-rsa.key", pem);
 
         using var imported = RSA.Create();
@@ -143,7 +141,7 @@ public class RSAKeyExportableTests(
         RSA original = fixture.KeyPair;
 
         var xml = original.ToXmlString(includePrivateParameters: true);
-        output.WriteLine($"{xml}");
+        Output?.WriteLine($"{xml}");
         //File.WriteAllText(@"private-rsa.key.xml", xml);
 
         using var imported = RSA.Create();
@@ -163,7 +161,7 @@ public class RSAKeyExportableTests(
         RSA original = fixture.KeyPair;
 
         var xml = original.ToXmlString(includePrivateParameters: false);
-        output.WriteLine($"{xml}");
+        Output?.WriteLine($"{xml}");
         //File.WriteAllText(@"public-rsa.key.xml", xml);
 
         using var imported = RSA.Create();

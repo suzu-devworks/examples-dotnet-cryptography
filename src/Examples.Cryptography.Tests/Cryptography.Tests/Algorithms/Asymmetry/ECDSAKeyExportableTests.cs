@@ -6,12 +6,10 @@ namespace Examples.Cryptography.Tests.Algorithms.Asymmetry;
 /// Tests for ECDSA key export and import.
 /// </summary>
 /// <param name="fixture"></param>
-/// <param name="output"></param>
-public class ECDSAKeyExportableTests(
-    ECDSAKeyFixture fixture,
-    ITestOutputHelper output)
-    : IClassFixture<ECDSAKeyFixture>
+public class ECDSAKeyExportableTests(ECDSAKeyFixture fixture) : IClassFixture<ECDSAKeyFixture>
 {
+    private ITestOutputHelper? Output => TestContext.Current.TestOutputHelper;
+
     [Fact]
     public void When_ExportedAndImported_Then_PrivateKeyIsRestored()
     {
@@ -47,10 +45,10 @@ public class ECDSAKeyExportableTests(
         // openssl ec -in private-ecdsa.key -out private-ecdsa.out.pem -outform PEM
         // ```
 
-        using ECDsa original = fixture.KeyPair;
+        ECDsa original = fixture.KeyPair;
 
         var pem = original.ExportECPrivateKeyPem();
-        output.WriteLine($"{pem}");
+        Output?.WriteLine($"{pem}");
         //File.WriteAllText(@"private-ecdsa.key", pem);
 
         using var imported = ECDsa.Create();

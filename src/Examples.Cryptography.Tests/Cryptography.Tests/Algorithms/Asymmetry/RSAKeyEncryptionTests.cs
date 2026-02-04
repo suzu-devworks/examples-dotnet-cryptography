@@ -6,13 +6,12 @@ namespace Examples.Cryptography.Tests.Algorithms.Asymmetry;
 /// <summary>
 /// Example uses the RSA class to encrypt a string into an array of bytes and then decrypt the bytes back into a string.
 /// </summary>
-/// <param name="output"></param>
+/// <param name="fixture"></param>
 /// <seealso href="https://learn.microsoft.com/ja-jp/dotnet/api/system.security.cryptography.rsacryptoserviceprovider"/>
-public class RSAKeyEncryptionTests(
-    RSAKeyFixture fixture,
-    ITestOutputHelper output)
-    : IClassFixture<RSAKeyFixture>
+public class RSAKeyEncryptionTests(RSAKeyFixture fixture) : IClassFixture<RSAKeyFixture>
 {
+    private ITestOutputHelper? Output => TestContext.Current.TestOutputHelper;
+
     [Fact]
     public void When_DataIsEncryptedAndDecrypted_Then_OriginalDataIsRestored()
     {
@@ -31,7 +30,7 @@ public class RSAKeyEncryptionTests(
             //public and private key data.
             //# 公開鍵データと秘密鍵データを生成するために、RSACryptoServiceProvider の新しいインスタンスを作成します。
             //# using var rsa = new RSACryptoServiceProvider();
-            using var rsa = fixture.KeyPair;
+            var rsa = fixture.KeyPair;
             {
                 //Pass the data to ENCRYPT, the public key information
                 //(using RSACryptoServiceProvider.ExportParameters(false),
@@ -50,7 +49,7 @@ public class RSAKeyEncryptionTests(
                     doOAEPPadding: false);
 
                 //Display the decrypted plaintext to the console.
-                output.WriteLine("Decrypted plaintext: {0}", converter.GetString(decryptedData));
+                Output?.WriteLine("Decrypted plaintext: {0}", converter.GetString(decryptedData));
             }
 
             // Assert:
@@ -63,7 +62,7 @@ public class RSAKeyEncryptionTests(
         {
             //Catch this exception in case the encryption did
             //not succeed.
-            output.WriteLine("Encryption failed.");
+            Output?.WriteLine("Encryption failed.");
 
             //# Assert
             Assert.Fail("Encryption failed.");
@@ -100,7 +99,7 @@ public class RSAKeyEncryptionTests(
         //to the console.
         catch (CryptographicException e)
         {
-            output.WriteLine(e.Message);
+            Output?.WriteLine(e.Message);
 
             //# return null;
             throw;
@@ -134,7 +133,7 @@ public class RSAKeyEncryptionTests(
         //to the console.
         catch (CryptographicException e)
         {
-            output.WriteLine(e.ToString());
+            Output?.WriteLine(e.ToString());
 
             //# return null;
             throw;

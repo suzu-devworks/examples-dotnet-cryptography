@@ -441,7 +441,8 @@ $RECYCLE.BIN/
 !.vscode/cspell.json
 
 ## User Define
-[Tt]emp/
+/[Tt]emp
 *.db
 *.db-shm
 *.db-wal
+/assets

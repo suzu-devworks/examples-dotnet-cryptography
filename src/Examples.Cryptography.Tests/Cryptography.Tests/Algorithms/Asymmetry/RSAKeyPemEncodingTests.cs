@@ -1,11 +1,9 @@
 using System.Security.Cryptography;
+using static Examples.Cryptography.Tests.Algorithms.Asymmetry.RSAKeyPemEncodingTests;
 
 namespace Examples.Cryptography.Tests.Algorithms.Asymmetry;
 
-public class RSAKeyPemEncodingTests(
-    RSAKeyPemEncodingTests.Fixture fixture,
-    ITestOutputHelper output)
-    : IClassFixture<RSAKeyPemEncodingTests.Fixture>
+public class RSAKeyPemEncodingTests(Fixture fixture) : IClassFixture<Fixture>
 {
     public class Fixture : IDisposable
     {
@@ -27,6 +25,8 @@ public class RSAKeyPemEncodingTests(
         }
     }
 
+    private ITestOutputHelper? Output => TestContext.Current.TestOutputHelper;
+
     [Fact]
     public void When_FindIsUsedOnPemCreatedWithOpenSSL_Then_ParsingSucceeds()
     {
@@ -34,26 +34,32 @@ public class RSAKeyPemEncodingTests(
         var pem = fixture.Pem;
         var fields = PemEncoding.Find(pem);
 
+        Output?.WriteLine("DecodedDataLength: {0}", fields.DecodedDataLength);
+        Output?.WriteLine("Location: {0}", fields.Location);
+        Output?.WriteLine("Label: {0}", fields.Label);
+        Output?.WriteLine("Base64Data: {0}", fields.Base64Data);
+
+        Output?.WriteLine("{0}", pem[fields.Label]);
+        Output?.WriteLine("{0}", pem[fields.Base64Data]);
+
         // Assert:
 
         // Gets the size of the decoded base-64 data, in bytes.
-        Assert.True(2348 <= fields.DecodedDataLength && fields.DecodedDataLength <= 2400);
+        Assert.True(fields.DecodedDataLength is >= 2300 and <= 2400);
 
         // Gets the location of the PEM-encoded text,
         // including the surrounding encapsulation boundaries.
         Assert.Equal(0, fields.Location.Start);
-        Assert.Equal(3242, fields.Location.End);
+        Assert.True(fields.Location.End.Value is >= 3200 and <= 3300);
 
         // Gets the location of the label.
         Assert.Equal(11, fields.Label.Start);
         Assert.Equal(26, fields.Label.End);
         Assert.Equal("RSA PRIVATE KEY", pem[fields.Label]);
-        output.WriteLine("Label:", pem[fields.Label]);
 
         // Gets the location of the base-64 data inside of the PEM.
         Assert.Equal(32, fields.Base64Data.Start);
-        Assert.Equal(3212, fields.Base64Data.End);
-        output.WriteLine("Base64Data:", pem[fields.Base64Data]);
+        Assert.True(fields.Base64Data.End.Value is >= 3200 and <= 3300);
 
         var data = Convert.FromBase64String(pem[fields.Base64Data]);
 

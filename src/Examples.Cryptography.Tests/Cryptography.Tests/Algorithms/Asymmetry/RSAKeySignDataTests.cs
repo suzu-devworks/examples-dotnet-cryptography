@@ -6,13 +6,12 @@ namespace Examples.Cryptography.Tests.Algorithms.Asymmetry;
 /// <summary>
 /// Example signs and verifies data.
 /// </summary>
-/// <param name="output"></param>
+/// <param name="fixture"></param>
 /// <seealso href="https://learn.microsoft.com/ja-jp/dotnet/api/system.security.cryptography.rsacryptoserviceprovider.signdata"/>
-public class RSAKeySignDataTests(
-    RSAKeyFixture fixture,
-    ITestOutputHelper output)
-    : IClassFixture<RSAKeyFixture>
+public class RSAKeySignDataTests(RSAKeyFixture fixture) : IClassFixture<RSAKeyFixture>
 {
+    private ITestOutputHelper? Output => TestContext.Current.TestOutputHelper;
+
     [Fact]
     public void When_DataIsSigned_Then_VerificationSucceeds()
     {
@@ -30,7 +29,7 @@ public class RSAKeySignDataTests(
             // Create a new instance of the RSACryptoServiceProvider class
             // and automatically create a new key-pair.
             //# var rsa = new RSACryptoServiceProvider();
-            using var rsa = fixture.KeyPair;
+            var rsa = fixture.KeyPair;
 
             // Export the key information to an RSAParameters object.
             // You must pass true to export the private key for signing.
@@ -45,16 +44,16 @@ public class RSAKeySignDataTests(
             // console.
             if (VerifySignedHash(originalData, signedData, key))
             {
-                output.WriteLine("The data was verified.");
+                Output?.WriteLine("The data was verified.");
             }
             else
             {
-                output.WriteLine("The data does not match the signature.");
+                Output?.WriteLine("The data does not match the signature.");
             }
         }
         catch (ArgumentNullException)
         {
-            output.WriteLine("The data was not signed or verified");
+            Output?.WriteLine("The data was not signed or verified");
             Assert.Fail("The data was not signed or verified.");
         }
     }
@@ -77,7 +76,7 @@ public class RSAKeySignDataTests(
         }
         catch (CryptographicException e)
         {
-            output.WriteLine(e.Message);
+            Output?.WriteLine(e.Message);
 
             //return null;
             throw;
@@ -103,7 +102,7 @@ public class RSAKeySignDataTests(
         }
         catch (CryptographicException e)
         {
-            output.WriteLine(e.Message);
+            Output?.WriteLine(e.Message);
 
             return false;
         }
