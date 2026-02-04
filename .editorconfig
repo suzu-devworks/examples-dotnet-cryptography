@@ -127,7 +127,7 @@ csharp_style_pattern_matching_over_as_with_null_check = true:suggestion
 csharp_style_pattern_matching_over_is_with_cast_check = true:suggestion
 csharp_style_prefer_extended_property_pattern = true:suggestion
 csharp_style_prefer_not_pattern = true:suggestion
-csharp_style_prefer_pattern_matching = true:silent
+csharp_style_prefer_pattern_matching = true:suggestion
 csharp_style_prefer_switch_expression = true:suggestion
 
 # Null-checking preferences
@@ -408,7 +408,7 @@ dotnet_naming_style.camelcase.capitalization = camel_case
 #### .NET Coding Severity ####
 
 # Default severity for analyzer diagnostics with category 'Style'
-dotnet_analyzer_diagnostic.category-Style.severity = suggestion
+dotnet_analyzer_diagnostic.category-Style.severity = silent
 
 [src/**/*.{cs,vb}]
 
