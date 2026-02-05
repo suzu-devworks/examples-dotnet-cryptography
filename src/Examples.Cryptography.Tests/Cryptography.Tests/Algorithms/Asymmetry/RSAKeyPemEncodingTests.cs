@@ -10,7 +10,7 @@ public class RSAKeyPemEncodingTests(Fixture fixture) : IClassFixture<Fixture>
         public Fixture()
         {
             var dir = Environment.GetEnvironmentVariable("TEST_ASSETS_PATH") ?? Environment.CurrentDirectory;
-            Pem = File.ReadAllText(Path.Combine(dir, "localhost.rsa.key"));
+            Pem = File.ReadAllText(Path.Combine(dir, "example.rsa.key"));
         }
         public string Pem { get; }
 

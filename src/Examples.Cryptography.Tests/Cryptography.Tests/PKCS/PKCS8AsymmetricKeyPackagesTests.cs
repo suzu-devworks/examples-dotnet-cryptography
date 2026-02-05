@@ -17,7 +17,7 @@ public class PKCS8AsymmetricKeyPackagesTests(
         {
             var dir = Environment.GetEnvironmentVariable("TEST_ASSETS_PATH") ?? Environment.CurrentDirectory;
 
-            Pem = File.ReadAllText(Path.Combine(dir, "localhost.ecdsa.pk8"));
+            Pem = File.ReadAllText(Path.Combine(dir, "example.ecdsa.pk8"));
             Secret = File.ReadAllText(Path.Combine(dir, ".password"));
         }
 
