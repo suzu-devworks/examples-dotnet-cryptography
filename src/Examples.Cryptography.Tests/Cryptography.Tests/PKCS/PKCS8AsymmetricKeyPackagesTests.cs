@@ -5,33 +5,12 @@ namespace Examples.Cryptography.Tests.PKCS;
 /// <summary>
 /// Asymmetric Key Packages.
 /// </summary>
-/// <param name="fixture"></param>
+/// <param name="fixture">The test fixture.</param>
 /// <seealso href="https://datatracker.ietf.org/doc/html/rfc5958"/>
-public class PKCS8AsymmetricKeyPackagesTests(
+public partial class PKCS8AsymmetricKeyPackagesTests(
     PKCS8AsymmetricKeyPackagesTests.Fixture fixture
     ) : IClassFixture<PKCS8AsymmetricKeyPackagesTests.Fixture>
 {
-    public class Fixture : IDisposable
-    {
-        public Fixture()
-        {
-            var dir = Environment.GetEnvironmentVariable("TEST_ASSETS_PATH") ?? Environment.CurrentDirectory;
-
-            Pem = File.ReadAllText(Path.Combine(dir, "example.ecdsa.pk8"));
-            Secret = File.ReadAllText(Path.Combine(dir, ".password"));
-        }
-
-        public void Dispose()
-        {
-            KeyPair?.Dispose();
-            GC.SuppressFinalize(this);
-        }
-
-        public ECDsa KeyPair { get; } = ECDsa.Create(ECCurve.NamedCurves.nistP256);
-        public string Pem { get; }
-        public string Secret { get; }
-    }
-
     private ITestOutputHelper? Output => TestContext.Current.TestOutputHelper;
 
     [Fact]
