@@ -82,9 +82,14 @@ openssl pkcs7 -print_certs -in ${OUT_DIR}/example.ecdsa.p7b -out ${OUT_DIR}/exam
 # PKCS 8
 openssl pkcs8 -topk8 -nocrypt -in ${OUT_DIR}/example.ecdsa.key -out ${OUT_DIR}/example.ecdsa.pk8
 openssl ec -in ${OUT_DIR}/example.ecdsa.pk8 -pubout -out ${OUT_DIR}/example.ecdsa.pk8.pub
+
 # PKCS 12
 openssl pkcs12 -export -in ${OUT_DIR}/example.ecdsa.crt -inkey ${OUT_DIR}/example.ecdsa.key \
     -out ${OUT_DIR}/example.ecdsa.p12 -passout file:${OUT_DIR}/.password
+openssl pkcs12 -in ${OUT_DIR}/example.ecdsa.p12 -nocerts -nodes \
+    -out ${OUT_DIR}/example.ecdsa.p12.key -passin file:${OUT_DIR}/.password
+openssl pkcs12 -in ${OUT_DIR}/example.ecdsa.p12 -clcerts -nokeys \
+    -out ${OUT_DIR}/example.ecdsa.p12.crt -passin file:${OUT_DIR}/.password
 
 echo ""
 echo "OpenSSL files generated."
