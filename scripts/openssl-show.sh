@@ -4,7 +4,7 @@ echo "Show OpenSSL files..."
 openssl version
 
 FILE_DIR=$(dirname "$0")
-IN_DIR="${2:-.}"
+IN_DIR="${2:-./assets}"
 echo "Input From: ${IN_DIR}"
 
 show_root_ca() {
