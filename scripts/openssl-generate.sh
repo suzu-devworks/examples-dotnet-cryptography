@@ -82,6 +82,8 @@ openssl pkcs7 -print_certs -in ${OUT_DIR}/example.ecdsa.p7b -out ${OUT_DIR}/exam
 # PKCS 8
 openssl pkcs8 -topk8 -nocrypt -in ${OUT_DIR}/example.ecdsa.key -out ${OUT_DIR}/example.ecdsa.pk8
 openssl ec -in ${OUT_DIR}/example.ecdsa.pk8 -pubout -out ${OUT_DIR}/example.ecdsa.pk8.pub
+openssl pkcs8 -topk8 -v2 aes-256-cbc -v2prf hmacWithSHA512 -in ${OUT_DIR}/example.ecdsa.key \
+    -out ${OUT_DIR}/example.ecdsa.pk8.enc -passout file:${OUT_DIR}/.password
 
 # PKCS 12
 openssl pkcs12 -export -in ${OUT_DIR}/example.ecdsa.crt -inkey ${OUT_DIR}/example.ecdsa.key \
