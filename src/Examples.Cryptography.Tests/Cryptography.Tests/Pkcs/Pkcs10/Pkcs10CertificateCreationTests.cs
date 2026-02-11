@@ -143,7 +143,9 @@ public class Pkcs10CertificateCreationTests(
              -out localhost.crt
         ```
         */
-        var notBefore = DateTimeOffset.UtcNow.AddSeconds(-50);
+        // The requested notBefore value (...) is earlier than issuerCertificate.NotBefore (...)
+        // var notBefore = DateTimeOffset.UtcNow.AddSeconds(-50);
+        var notBefore = DateTimeOffset.UtcNow.AddSeconds(5);
         var notAfter = notBefore.AddDays(1);
         var serial = new CertificateSerialNumber();
 
