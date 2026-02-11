@@ -41,7 +41,7 @@ public static class X509Certificate2SignatureExtensions
         var signature = certificate.Signature();
         var tbs = certificate.TbsCertificate();
         var hash = SignatureAlgorithms.GetHashAlgorithmName(certificate.SignatureAlgorithm)
-            ?? throw new NotSupportedException($"Unsupported SignatureAlgorithm \"{certificate.SignatureAlgorithm.FriendlyName}\".");
+            ?? throw new NotSupportedException($"Unsupported SignatureAlgorithm \"{certificate.SignatureAlgorithm.Value}\".");
 
         using var rsa = signer.GetRSAPublicKey();
         using var ecdsa = signer.GetECDsaPublicKey();
@@ -68,7 +68,7 @@ public static class X509Certificate2SignatureExtensions
     }
 
     /// <summary>
-    ///
+    /// Determines whether the certificate is self-signed by verifying its signature with itself.
     /// </summary>
     /// <param name="certificate"></param>
     /// <returns></returns>
@@ -122,7 +122,7 @@ public static class X509Certificate2SignatureExtensions
     }
 
     private static ReadOnlySpan<byte> TbsCertificate(this X509Certificate2 certificate,
-        AsnEncodingRules encodingRules = AsnEncodingRules.BER)
+        AsnEncodingRules encodingRules = AsnEncodingRules.DER)
     {
         var signedData = certificate.RawDataMemory;
         AsnDecoder.ReadSequence(

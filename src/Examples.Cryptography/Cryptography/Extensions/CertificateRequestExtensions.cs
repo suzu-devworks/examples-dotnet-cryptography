@@ -18,6 +18,7 @@ public static class CertificateRequestExtensions
     /// <param name="notAfter">The date and time when this certificate is no longer considered valid.</param>
     /// <param name="serialNumber">The serial number to use for the new certificate.</param>
     /// <returns>A <see cref="X509Certificate2" /> instance.</returns>
+    /// <exception cref="NotSupportedException">If you are using an unsupported issuer key pair algorithm.</exception>
     public static X509Certificate2 CreateCertificate(this CertificateRequest request,
         X500DistinguishedName issuerName,
         AsymmetricAlgorithm issuerKeyPair,
@@ -29,8 +30,8 @@ public static class CertificateRequestExtensions
         {
             ECDsa ecdsa => X509SignatureGenerator.CreateForECDsa(ecdsa),
             RSA rsa => X509SignatureGenerator.CreateForRSA(rsa, RSASignaturePadding.Pkcs1),
-            _ => throw new NotSupportedException($"not supported {issuerKeyPair?.GetType().ToString()
-                ?? "issuerKeyPair is null"}."),
+            null => throw new ArgumentNullException(nameof(issuerKeyPair)),
+            _ => throw new NotSupportedException($"not supported {issuerKeyPair?.GetType()}"),
         };
 
         var newCertificate = request.Create(issuerName, generator,

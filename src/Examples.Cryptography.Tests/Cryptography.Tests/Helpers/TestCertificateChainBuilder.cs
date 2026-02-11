@@ -118,7 +118,7 @@ public sealed class TestCertificateChainBuilder(X500DistinguishedName rootCaSubj
         DateTimeOffset timestamp,
         int days)
     {
-        var keyPair = ECDsa.Create(ECCurve.NamedCurves.nistP256);
+        using var keyPair = ECDsa.Create(ECCurve.NamedCurves.nistP256);
 
         var req = new CertificateRequest(
             subject,

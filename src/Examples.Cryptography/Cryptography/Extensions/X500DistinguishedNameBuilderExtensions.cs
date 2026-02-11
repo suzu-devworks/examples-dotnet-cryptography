@@ -21,7 +21,7 @@ public static class X500DistinguishedNameBuilderExtensions
     }
 
     /// <summary>
-    /// Adds a organization to the distinguished name builder.
+    /// Adds an organization to the distinguished name builder.
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="organization"></param>
