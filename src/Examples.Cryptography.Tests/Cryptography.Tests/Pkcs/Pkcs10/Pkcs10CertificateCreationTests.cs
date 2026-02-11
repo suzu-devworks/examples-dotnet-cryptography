@@ -145,7 +145,7 @@ public class Pkcs10CertificateCreationTests(
         */
         var notBefore = DateTimeOffset.UtcNow.AddSeconds(-50);
         var notAfter = notBefore.AddDays(1);
-        var serial = new CertificateSerialNumber(new Random());
+        var serial = new CertificateSerialNumber();
 
         // Reproduce `CertificateRequestLoadOptions.Default`.
         request.CertificateExtensions.Clear();

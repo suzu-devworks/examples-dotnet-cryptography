@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+
 namespace Examples.Cryptography.X509Certificates;
 
 /// <summary>
@@ -16,34 +18,21 @@ public class CertificateSerialNumber
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CertificateSerialNumber" /> class
-    /// using a random generator.
+    /// using a cryptographic random generator.
     /// </summary>
-    /// <param name="random">The random generator.</param>
-    public CertificateSerialNumber(Random random)
-        : this(1, long.MaxValue, random)
+    public CertificateSerialNumber()
+        : this(1, long.MaxValue)
     {
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CertificateSerialNumber" /> class
-    /// using a random generator with a specified minimum value.
-    /// </summary>
-    /// <param name="min">The minimum value.</param>
-    /// <param name="random">The random generator.</param>
-    public CertificateSerialNumber(long min, Random random)
-        : this(min, long.MaxValue, random)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CertificateSerialNumber" /> class
-    /// using a random generator with a specified minimum and maximum values.
+    /// using a cryptographic random generator with specified minimum and maximum values.
     /// </summary>
     /// <param name="min">The minimum value.</param>
     /// <param name="max">The maximum value.</param>
-    /// <param name="random">The random generator.</param>
-    public CertificateSerialNumber(long min, long max, Random random)
-        : this(random.NextInt64(min, max))
+    public CertificateSerialNumber(long min, long max)
+        : this(NextInt64(min, max))
     {
     }
 
@@ -53,12 +42,48 @@ public class CertificateSerialNumber
     public long Value { get; }
 
     /// <summary>
-    /// Get the serial number as a byte array.
+    /// Gets the serial number as a byte array in big-endian format.
+    /// The result is trimmed of leading zero bytes and, if the most significant bit
+    /// of the first byte is set, a <c>0x00</c> byte is prepended to ensure the value
+    /// is interpreted as a positive integer in ASN.1 DER encoding.
     /// </summary>
-    /// <returns>A serial number as a byte array.</returns>
+    /// <returns>A byte array representing the serial number in ASN.1 DER-compatible format.</returns>
     public byte[] ToBytes()
-        => BitConverter.IsLittleEndian
-            ? [.. BitConverter.GetBytes(Value).Reverse()]
-            : BitConverter.GetBytes(Value);
+    {
+        Span<byte> bytes = stackalloc byte[sizeof(long)];
+        System.Buffers.Binary.BinaryPrimitives.WriteInt64BigEndian(bytes, Value);
 
+        // Trim leading zero bytes, but keep at least one byte.
+        bytes = bytes.TrimStart((byte)0);
+        if (bytes.IsEmpty)
+        {
+            return [0];
+        }
+
+        // Prepend 0x00 if the MSB is set to ensure a positive ASN.1 INTEGER.
+        if ((bytes[0] & 0x80) != 0)
+        {
+            var result = new byte[bytes.Length + 1];
+            bytes.CopyTo(result.AsSpan(1));
+            return result;
+        }
+
+        return bytes.ToArray();
+    }
+
+    /// <summary>
+    /// Creates a new <see cref="CertificateSerialNumber" /> with a cryptographically random value.
+    /// </summary>
+    /// <param name="min">The minimum value.</param>
+    /// <returns>A new <see cref="CertificateSerialNumber" /> instance.</returns>
+    public static CertificateSerialNumber CreateRandom(long min = 1)
+        => new(min, long.MaxValue);
+
+    private static long NextInt64(long min, long max)
+    {
+        Span<byte> bytes = stackalloc byte[sizeof(long)];
+        RandomNumberGenerator.Fill(bytes);
+        var value = BitConverter.ToInt64(bytes) & long.MaxValue;
+        return min + (value % (max - min));
+    }
 }

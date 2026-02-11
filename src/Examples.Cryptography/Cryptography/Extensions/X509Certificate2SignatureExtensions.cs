@@ -22,7 +22,7 @@ public static class X509Certificate2SignatureExtensions
     {
         if (!certificate.VerifiesSignature(signer))
         {
-            throw new InvalidDataException("A public key was presented that is not for certificate signing.");
+            throw new InvalidDataException("Signature validation failed.");
         }
     }
 
@@ -76,7 +76,7 @@ public static class X509Certificate2SignatureExtensions
         => certificate.VerifiesSignature(certificate);
 
     private static byte[] Signature(this X509Certificate2 certificate,
-        AsnEncodingRules encodingRules = AsnEncodingRules.BER)
+        AsnEncodingRules encodingRules = AsnEncodingRules.DER)
     {
         // https://datatracker.ietf.org/doc/html/rfc5280#section-4.1
         //
@@ -142,7 +142,6 @@ public static class X509Certificate2SignatureExtensions
             out _
             );
 
-        // include ASN1 4 byte header to get WHOLE TBS Cert
         return certificateSpan[..(tbsLength + tbsOffset)];
     }
 
