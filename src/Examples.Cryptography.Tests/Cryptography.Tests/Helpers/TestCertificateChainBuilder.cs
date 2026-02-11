@@ -130,7 +130,7 @@ public sealed class TestCertificateChainBuilder(X500DistinguishedName rootCaSubj
 
         var notBefore = timestamp.AddSeconds(-50);
         var notAfter = notBefore.AddDays(days);
-        var serial = new CertificateSerialNumber(100L - pathLength).ToBytes();
+        var serial = new CertificateSerialNumber(100L - pathLength).ToByteArray();
 
         var cert = req.CreateCertificate(
             issuer.SubjectName,
@@ -164,7 +164,7 @@ public sealed class TestCertificateChainBuilder(X500DistinguishedName rootCaSubj
 
         var notBefore = timestamp.AddSeconds(-50);
         var notAfter = timestamp.AddDays(days);
-        var serial = CertificateSerialNumber.CreateRandom(200L).ToBytes();
+        var serial = CertificateSerialNumber.CreateRandom().ToByteArray();
 
         var cert = req.CreateCertificate(
             issuer.SubjectName,
