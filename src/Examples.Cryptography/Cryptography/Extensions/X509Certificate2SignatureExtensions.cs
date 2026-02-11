@@ -11,11 +11,11 @@ namespace Examples.Cryptography.Extensions;
 public static class X509Certificate2SignatureExtensions
 {
     /// <summary>
-    /// Validates the certificate signature using the signer certificate,
-    /// Generates an exception if it fails.
+    /// Validates the certificate signature using the signer certificate.
+    /// Throws an exception if validation fails.
     /// </summary>
-    /// <param name="certificate">The Certificate to verify.</param>
-    /// <param name="signer">The signed certificate.</param>
+    /// <param name="certificate">The certificate to verify.</param>
+    /// <param name="signer">The signer certificate.</param>
     /// <exception cref="NotSupportedException">If you are using an unsupported signature algorithm.</exception>
     public static void ValidateSignature(this X509Certificate2 certificate,
         X509Certificate2 signer)
@@ -29,8 +29,8 @@ public static class X509Certificate2SignatureExtensions
     /// <summary>
     /// Verifies the certificate signature with the signer certificate.
     /// </summary>
-    /// <param name="certificate">The Certificate to verify.</param>
-    /// <param name="signer">The signed certificate.</param>
+    /// <param name="certificate">The certificate to verify.</param>
+    /// <param name="signer">The signer certificate.</param>
     /// <returns>true if signature matches the signature computed using the specified hash algorithm;
     /// otherwise, false.</returns>
     /// <exception cref="NotSupportedException">If you are using an unsupported signature algorithm.</exception>
@@ -70,8 +70,8 @@ public static class X509Certificate2SignatureExtensions
     /// <summary>
     /// Determines whether the certificate is self-signed by verifying its signature with itself.
     /// </summary>
-    /// <param name="certificate"></param>
-    /// <returns></returns>
+    /// <param name="certificate">The certificate to verify.</param>
+    /// <returns>True if the certificate is self-signed; otherwise, false.</returns>
     public static bool IsSelfSigned(this X509Certificate2 certificate)
         => certificate.VerifiesSignature(certificate);
 

@@ -10,9 +10,9 @@ public static class X500DistinguishedNameBuilderExtensions
     /// <summary>
     /// Adds a country or region to the distinguished name builder.
     /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="countryOrRegion"></param>
-    /// <returns></returns>
+    /// <param name="builder">The builder instance.</param>
+    /// <param name="countryOrRegion">The country or region value.</param>
+    /// <returns>The builder instance.</returns>
     public static X500DistinguishedNameBuilder WithCountryOrRegion(this X500DistinguishedNameBuilder builder,
         string countryOrRegion)
     {
@@ -23,9 +23,9 @@ public static class X500DistinguishedNameBuilderExtensions
     /// <summary>
     /// Adds an organization to the distinguished name builder.
     /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="organization"></param>
-    /// <returns></returns>
+    /// <param name="builder">The builder instance.</param>
+    /// <param name="organization">The organization name.</param>
+    /// <returns>The builder instance.</returns>
     public static X500DistinguishedNameBuilder WithOrganization(this X500DistinguishedNameBuilder builder,
         string organization)
     {
@@ -36,9 +36,9 @@ public static class X500DistinguishedNameBuilderExtensions
     /// <summary>
     /// Adds a common name to the distinguished name builder.
     /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="commonName"></param>
-    /// <returns></returns>
+    /// <param name="builder">The builder instance.</param>
+    /// <param name="commonName">The common name value.</param>
+    /// <returns>The builder instance.</returns>
     public static X500DistinguishedNameBuilder WithCommonName(this X500DistinguishedNameBuilder builder,
         string commonName)
     {

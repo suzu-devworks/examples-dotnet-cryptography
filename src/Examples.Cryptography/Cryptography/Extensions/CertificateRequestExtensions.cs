@@ -178,34 +178,6 @@ public static class CertificateRequestExtensions
     }
 
     /// <summary>
-    /// Adds RFC 5280 4.2.1.9. Basic Constraints.
-    /// </summary>
-    /// <param name="request">The <see cref="CertificateRequest" /> instance.</param>
-    /// <param name="critical"></param>
-    /// <param name="isCa"></param>
-    /// <param name="pathLengthConstraint"></param>
-    /// <returns>An extended <see cref="CertificateRequest" /> instance.</returns>
-    /// <seealso href="https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.9" />
-    [Obsolete(message: "Use req.AddExtension() with X509BasicConstraintsExtension static factories.")]
-    public static CertificateRequest AddBasicConstraintsExtension(this CertificateRequest request,
-        bool critical = false,
-        bool isCa = true,
-        int? pathLengthConstraint = null)
-    {
-        // ```openssl.conf
-        // basicConstraints = critical, CA:true
-        // ```
-
-        return request.AddExtension(
-            new X509BasicConstraintsExtension(
-                isCa,
-                pathLengthConstraint != null,
-                pathLengthConstraint ?? 0,
-                critical
-            ));
-    }
-
-    /// <summary>
     /// Adds RFC 5280 4.2.1.12. Extended Key Usage.
     /// </summary>
     /// <param name="request">The <see cref="CertificateRequest" /> instance.</param>
@@ -232,7 +204,7 @@ public static class CertificateRequestExtensions
     /// Adds RFC 5280 4.2.1.13. CRL Distribution Points.
     /// </summary>
     /// <param name="request">The <see cref="CertificateRequest" /> instance.</param>
-    /// <param name="action"></param>
+    /// <param name="action">The delegate method for configuration.</param>
     /// <returns>An extended <see cref="CertificateRequest" /> instance.</returns>
     /// <seealso href="https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.13" />
     public static CertificateRequest AddCRLDistributionPointsExtension(this CertificateRequest request,

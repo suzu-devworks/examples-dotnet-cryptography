@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 namespace Examples.Cryptography.X509Certificates;
 
 /// <summary>
-/// Defines OBJECT IDENTIFIER for signature algorithm.
+/// Defines OBJECT IDENTIFIERS for signature algorithms.
 /// </summary>
 /// <seealso href="https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-gpnap/a48b02b2-2a10-4eb0-bed4-1807a6d2f5ad" />
 public static class SignatureAlgorithms
@@ -28,10 +28,10 @@ public static class SignatureAlgorithms
     };
 
     /// <summary>
-    /// Converts signature OID to <see cref="HashAlgorithmName"/> entry.
+    /// Converts a signature OID to a <see cref="HashAlgorithmName" /> entry.
     /// </summary>
     /// <param name="signature">The signature OID.</param>
-    /// <returns>A <see cref="HashAlgorithmName" />An entry.</returns>
+    /// <returns>The corresponding <see cref="HashAlgorithmName" /> entry.</returns>
     public static HashAlgorithmName? GetHashAlgorithmName(Oid signature)
     {
         if (Algorithms.TryGetValue(signature.Value ?? "unknown", out var info))

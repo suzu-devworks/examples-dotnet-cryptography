@@ -3,17 +3,17 @@ using System.Security.Cryptography;
 namespace Examples.Cryptography.Extensions;
 
 /// <summary>
-/// Extension methods for <see cref="RSA" /> class methods.
+/// Extension methods for the <see cref="RSA" /> class.
 /// </summary>
 public static class RSAExtensions
 {
     /// <summary>
     /// Compares two RSA instances for equality of their parameters.
     /// </summary>
-    /// <param name="me"></param>
-    /// <param name="other"></param>
-    /// <param name="includePrivateParameters"></param>
-    /// <returns></returns>
+    /// <param name="me">The RSA instance to compare.</param>
+    /// <param name="other">The RSA instance to compare against.</param>
+    /// <param name="includePrivateParameters">True to compare private parameters; otherwise, false.</param>
+    /// <returns>True if the parameters are equal; otherwise, false.</returns>
     public static bool EqualsParameters(this RSA me, RSA other, bool includePrivateParameters = false)
     {
         var p1 = me.ExportParameters(includePrivateParameters);
