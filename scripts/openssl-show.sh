@@ -9,43 +9,43 @@ echo "Input From: ${IN_DIR}"
 
 show_root_ca() {
     echo "=== Root CA Key ==="
-    openssl ec -in ${IN_DIR}/example.ca-root.key -text -noout
+    openssl ec -in "${IN_DIR}/example.ca-root.key" -text -noout
 
     echo "=== Root CA Certificate ==="
-    openssl x509 -in ${IN_DIR}/example.ca-root.crt -text -noout
+    openssl x509 -in "${IN_DIR}/example.ca-root.crt" -text -noout
     echo ""
 }
 
 show_intermediate_ca() {
     echo "=== Intermediate CA Key ==="
-    openssl ec -in ${IN_DIR}/example.ca-intermediate.key -text -noout
+    openssl ec -in "${IN_DIR}/example.ca-intermediate.key" -text -noout
 
     echo "=== Intermediate CA Certificate ==="
-    openssl x509 -in ${IN_DIR}/example.ca-intermediate.crt -text -noout
+    openssl x509 -in "${IN_DIR}/example.ca-intermediate.crt" -text -noout
     echo ""
 }
 
 show_rsa_cert() {
     echo "=== RSA Key ==="
-    openssl rsa -in ${IN_DIR}/example.rsa.key -text -noout
+    openssl rsa -in "${IN_DIR}/example.rsa.key" -text -noout
     echo "=== RSA Certificate ==="
-    openssl x509 -in ${IN_DIR}/example.rsa.crt -text -
+    openssl x509 -in "${IN_DIR}/example.rsa.crt" -text -noout
     echo ""
 }
 
 show_ecdsa_cert() {
     echo "=== ECDSA Key ==="
-    openssl ec -in ${IN_DIR}/example.ecdsa.key -text -noout
+    openssl ec -in "${IN_DIR}/example.ecdsa.key" -text -noout
     echo "=== ECDSA Certificate ==="
-    openssl x509 -in ${IN_DIR}/example.ecdsa.crt -text -noout
+    openssl x509 -in "${IN_DIR}/example.ecdsa.crt" -text -noout
     echo ""
 }
 
 show_edd25519_cert() {
     echo "=== ed25519 Key ==="
-    openssl pkey -in ${IN_DIR}/example.ed25519.key -text -noout
+    openssl pkey -in "${IN_DIR}/example.ed25519.key" -text -noout
     echo "=== ed25519 Certificate ==="
-    openssl x509 -in ${IN_DIR}/example.ed25519.crt -text
+    openssl x509 -in "${IN_DIR}/example.ed25519.crt" -text -noout
     echo ""
 }
 
