@@ -11,7 +11,7 @@ echo "Output To: ${OUT_DIR}"
 
 CONF_FILE=${FILE_DIR}/openssl-test.cnf
 
-DAYS=10
+DAYS=3
 echo "Certificate valid for ${DAYS} days"
 
 # Generate a random password file
@@ -20,48 +20,79 @@ chmod 600 "${OUT_DIR}/.password"
 wc -c < ${OUT_DIR}/.password | awk '{print "Password length: " $1}'
 echo ""
 
-# Self signed CA (ECDSA)
-openssl ecparam -genkey -name prime256v1 -noout -out ${OUT_DIR}/localhost.ca.key
+# Self signed root CA (ECDSA)
+openssl ecparam -genkey -name secp384r1 -noout -out ${OUT_DIR}/example.ca-root.key
 openssl req -new -x509 -config ${CONF_FILE} -batch \
-    -subj "/C=JP/O=examples/CN=Example Test CA" \
-    -key ${OUT_DIR}/localhost.ca.key -out ${OUT_DIR}/localhost.ca.crt -days ${DAYS}
+    -subj "/C=JP/O=examples/CN=Example Root CA" \
+    -key ${OUT_DIR}/example.ca-root.key \
+    -out ${OUT_DIR}/example.ca-root.crt -days ${DAYS} -extensions v3_ca
+
+# Intermediate CA (ECDSA)
+openssl ecparam -genkey -name prime256v1 -noout -out ${OUT_DIR}/example.ca-intermediate.key
+openssl req -new -config ${CONF_FILE} -batch \
+    -subj "/C=JP/O=examples/CN=Example Intermediate CA" \
+    -key ${OUT_DIR}/example.ca-intermediate.key \
+    -out ${OUT_DIR}/example.ca-intermediate.csr
+openssl x509 -req -in ${OUT_DIR}/example.ca-intermediate.csr \
+    -CA ${OUT_DIR}/example.ca-root.crt -CAkey ${OUT_DIR}/example.ca-root.key -CAcreateserial \
+    -extfile ${CONF_FILE} -extensions v3_intermediate_ca \
+    -out ${OUT_DIR}/example.ca-intermediate.crt -days ${DAYS}
 
 # RSA
-openssl genrsa -traditional -out ${OUT_DIR}/localhost.rsa.key 4096
+openssl genrsa -traditional -out ${OUT_DIR}/example.rsa.key 4096
 openssl req -new -config ${CONF_FILE} -batch \
     -subj "/C=JP/CN=*.rsa.example.com" \
-    -key ${OUT_DIR}/localhost.rsa.key -out ${OUT_DIR}/localhost.rsa.csr
-openssl x509 -req -in ${OUT_DIR}/localhost.rsa.csr -CA ${OUT_DIR}/localhost.ca.crt \
-    -CAkey ${OUT_DIR}/localhost.ca.key -CAcreateserial -out ${OUT_DIR}/localhost.rsa.crt -days ${DAYS}
+    -key ${OUT_DIR}/example.rsa.key \
+    -out ${OUT_DIR}/example.rsa.csr
+openssl x509 -req -in ${OUT_DIR}/example.rsa.csr \
+    -CA ${OUT_DIR}/example.ca-intermediate.crt -CAkey ${OUT_DIR}/example.ca-intermediate.key -CAcreateserial \
+    -extfile ${CONF_FILE} -extensions v3_cert \
+    -out ${OUT_DIR}/example.rsa.crt -days ${DAYS}
 
 # ECDSA
-openssl ecparam -genkey -name prime256v1 -noout -out ${OUT_DIR}/localhost.ecdsa.key
+openssl ecparam -genkey -name prime256v1 -noout -out ${OUT_DIR}/example.ecdsa.key
 openssl req -new -config ${CONF_FILE} -batch \
     -subj "/C=JP/CN=*.ecdsa.example.com" \
-    -key ${OUT_DIR}/localhost.ecdsa.key -out ${OUT_DIR}/localhost.ecdsa.csr
-openssl x509 -req -in ${OUT_DIR}/localhost.ecdsa.csr -CA ${OUT_DIR}/localhost.ca.crt \
-    -CAkey ${OUT_DIR}/localhost.ca.key -CAcreateserial -out ${OUT_DIR}/localhost.ecdsa.crt -days ${DAYS}
+    -key ${OUT_DIR}/example.ecdsa.key \
+    -out ${OUT_DIR}/example.ecdsa.csr
+openssl x509 -req -in ${OUT_DIR}/example.ecdsa.csr \
+    -CA ${OUT_DIR}/example.ca-intermediate.crt -CAkey ${OUT_DIR}/example.ca-intermediate.key -CAcreateserial \
+    -extfile ${CONF_FILE} -extensions v3_cert \
+    -out ${OUT_DIR}/example.ecdsa.crt -days ${DAYS}
 
 # ed25519 key
-openssl genpkey -algorithm ed25519 -out ${OUT_DIR}/localhost.ed25519.key
+openssl genpkey -algorithm ed25519 -out ${OUT_DIR}/example.ed25519.key
 openssl req -new -config ${CONF_FILE} -batch \
     -subj "/C=JP/CN=*.ed25519.example.com" \
-    -key ${OUT_DIR}/localhost.ed25519.key -out ${OUT_DIR}/localhost.ed25519.csr
-openssl x509 -req -in ${OUT_DIR}/localhost.ed25519.csr -CA ${OUT_DIR}/localhost.ca.crt \
-    -CAkey ${OUT_DIR}/localhost.ca.key -CAcreateserial -out ${OUT_DIR}/localhost.ed25519.crt -days ${DAYS}
+    -key ${OUT_DIR}/example.ed25519.key \
+    -out ${OUT_DIR}/example.ed25519.csr
+openssl x509 -req -in ${OUT_DIR}/example.ed25519.csr \
+    -CA ${OUT_DIR}/example.ca-intermediate.crt -CAkey ${OUT_DIR}/example.ca-intermediate.key -CAcreateserial \
+    -extfile ${CONF_FILE} -extensions v3_cert \
+    -out ${OUT_DIR}/example.ed25519.crt -days ${DAYS}
 
 # PKCS 7
-openssl crl2pkcs7 -nocrl -certfile ${OUT_DIR}/localhost.ecdsa.crt -out ${OUT_DIR}/localhost.ecdsa.p7b -certfile ${OUT_DIR}/localhost.ca.crt
-openssl pkcs7 -print_certs -in ${OUT_DIR}/localhost.ecdsa.p7b -out ${OUT_DIR}/localhost.ecdsa.fromp7b.crt
+openssl crl2pkcs7 -nocrl \
+    -certfile ${OUT_DIR}/example.ecdsa.crt \
+    -certfile ${OUT_DIR}/example.ca-intermediate.crt \
+    -certfile ${OUT_DIR}/example.ca-root.crt \
+    -out ${OUT_DIR}/example.ecdsa.p7b
+openssl pkcs7 -print_certs -in ${OUT_DIR}/example.ecdsa.p7b -out ${OUT_DIR}/example.ecdsa.p7b.crt
 
 # PKCS 8
-openssl pkcs8 -topk8 -nocrypt -in ${OUT_DIR}/localhost.ecdsa.key -out ${OUT_DIR}/localhost.ecdsa.pk8
-openssl ec -in ${OUT_DIR}/localhost.ecdsa.pk8 -pubout -out ${OUT_DIR}/localhost.ecdsa.pk8.pub
+openssl pkcs8 -topk8 -nocrypt -in ${OUT_DIR}/example.ecdsa.key -out ${OUT_DIR}/example.ecdsa.pk8
+openssl ec -in ${OUT_DIR}/example.ecdsa.pk8 -pubout -out ${OUT_DIR}/example.ecdsa.pk8.pub
+openssl pkcs8 -topk8 -v2 aes-256-cbc -v2prf hmacWithSHA512 -in ${OUT_DIR}/example.ecdsa.key \
+    -out ${OUT_DIR}/example.ecdsa.pk8.enc -passout file:${OUT_DIR}/.password
 
 # PKCS 12
-openssl pkcs12 -export -in ${OUT_DIR}/localhost.ecdsa.crt -inkey ${OUT_DIR}/localhost.ecdsa.key \
-    -out ${OUT_DIR}/localhost.ecdsa.p12 -passout file:${OUT_DIR}/.password
+openssl pkcs12 -export -in ${OUT_DIR}/example.ecdsa.crt -inkey ${OUT_DIR}/example.ecdsa.key \
+    -out ${OUT_DIR}/example.ecdsa.p12 -passout file:${OUT_DIR}/.password
+openssl pkcs12 -in ${OUT_DIR}/example.ecdsa.p12 -nocerts -nodes \
+    -out ${OUT_DIR}/example.ecdsa.p12.key -passin file:${OUT_DIR}/.password
+openssl pkcs12 -in ${OUT_DIR}/example.ecdsa.p12 -clcerts -nokeys \
+    -out ${OUT_DIR}/example.ecdsa.p12.crt -passin file:${OUT_DIR}/.password
 
 echo ""
 echo "OpenSSL files generated."
-ls -l ${OUT_DIR}/localhost.*
+ls -l ${OUT_DIR}/example.*
