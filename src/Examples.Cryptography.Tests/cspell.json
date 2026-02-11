@@ -4,9 +4,24 @@
   "dictionaryDefinitions": [],
   "dictionaries": [],
   "words": [
+    "Acreateserial",
+    "certfile",
     "decryptor",
+    "ecparam",
     "encryptor",
-    "OAEP"
+    "extfile",
+    "genkey",
+    "hmac",
+    "inkey",
+    "nocrl",
+    "nocrypt",
+    "noout",
+    "OAEP",
+    "outform",
+    "passout",
+    "pubout",
+    "reqexts",
+    "topk"
   ],
   "ignoreWords": [],
   "import": [

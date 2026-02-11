@@ -28,35 +28,48 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v5
+      - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '10.0.x'
       - name: Display .NET info
         run: dotnet --info
 
-      - name: Auth Github
-        run: dotnet nuget update source github --username suzu-devworks --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
+      - name: Auth Github Nuget
+        run: >
+          dotnet nuget update source github
+          --username suzu-devworks --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
 
       - name: Install Tools
         run: dotnet tool restore
       - name: Install dependencies
-        run: dotnet restore --locked-mode
+        run: dotnet restore
       - name: Build
         run: dotnet build --configuration Release --no-restore
 
-      - name: Test assets scripts
+      - name: Test Assets Scripts
         run: |
           set -e
           ./scripts/openssl-generate.sh ${{ env.TEST_ASSETS_PATH }}
         timeout-minutes: 1
       - name: Test
-        run: dotnet test --configuration Release --no-build --report-xunit-trx --results-directory ./TestResults
+        run: >
+          dotnet test --configuration Release --no-build --verbosity normal
+          --report-xunit-trx --results-directory ./TestResults
         env:
           TEST_ASSETS_PATH: ${{ env.TEST_ASSETS_PATH }}
-      - name: Upload Test Results
+      - name: Report Test Results
+        uses: dorny/test-reporter@v2
         if: always()
+        with:
+          name: .NET Tests
+          path: ./TestResults/*.trx
+          reporter: dotnet-trx
+          fail-on-error: 'true'
+      - name: Upload Test Results
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: test-results
           path: ./TestResults
+          retention-days: 7
+
