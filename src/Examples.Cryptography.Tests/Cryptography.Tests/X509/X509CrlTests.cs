@@ -60,7 +60,7 @@ public class X509CrlTests(
             X509RevocationReason.KeyCompromise);
 
         builder.AddEntry(
-            new CertificateSerialNumber().ToBytes(),
+            CertificateSerialNumber.CreateRandom().ToByteArray(),
             DateTimeOffset.Parse("2016-02-29"),
             X509RevocationReason.WeakAlgorithmOrKey);
 

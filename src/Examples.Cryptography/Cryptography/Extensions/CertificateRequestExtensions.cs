@@ -18,6 +18,7 @@ public static class CertificateRequestExtensions
     /// <param name="notAfter">The date and time when this certificate is no longer considered valid.</param>
     /// <param name="serialNumber">The serial number to use for the new certificate.</param>
     /// <returns>A <see cref="X509Certificate2" /> instance.</returns>
+    /// <exception cref="NotSupportedException">If you are using an unsupported issuer key pair algorithm.</exception>
     public static X509Certificate2 CreateCertificate(this CertificateRequest request,
         X500DistinguishedName issuerName,
         AsymmetricAlgorithm issuerKeyPair,
@@ -29,8 +30,8 @@ public static class CertificateRequestExtensions
         {
             ECDsa ecdsa => X509SignatureGenerator.CreateForECDsa(ecdsa),
             RSA rsa => X509SignatureGenerator.CreateForRSA(rsa, RSASignaturePadding.Pkcs1),
-            _ => throw new NotSupportedException($"not supported {issuerKeyPair?.GetType().ToString()
-                ?? "issuerKeyPair is null"}."),
+            null => throw new ArgumentNullException(nameof(issuerKeyPair)),
+            _ => throw new NotSupportedException($"not supported {issuerKeyPair?.GetType()}"),
         };
 
         var newCertificate = request.Create(issuerName, generator,
@@ -177,34 +178,6 @@ public static class CertificateRequestExtensions
     }
 
     /// <summary>
-    /// Adds RFC 5280 4.2.1.9. Basic Constraints.
-    /// </summary>
-    /// <param name="request">The <see cref="CertificateRequest" /> instance.</param>
-    /// <param name="critical"></param>
-    /// <param name="isCa"></param>
-    /// <param name="pathLengthConstraint"></param>
-    /// <returns>An extended <see cref="CertificateRequest" /> instance.</returns>
-    /// <seealso href="https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.9" />
-    [Obsolete(message: "Use req.AddExtension() with X509BasicConstraintsExtension static factories.")]
-    public static CertificateRequest AddBasicConstraintsExtension(this CertificateRequest request,
-        bool critical = false,
-        bool isCa = true,
-        int? pathLengthConstraint = null)
-    {
-        // ```openssl.conf
-        // basicConstraints = critical, CA:true
-        // ```
-
-        return request.AddExtension(
-            new X509BasicConstraintsExtension(
-                isCa,
-                pathLengthConstraint != null,
-                pathLengthConstraint ?? 0,
-                critical
-            ));
-    }
-
-    /// <summary>
     /// Adds RFC 5280 4.2.1.12. Extended Key Usage.
     /// </summary>
     /// <param name="request">The <see cref="CertificateRequest" /> instance.</param>
@@ -231,7 +204,7 @@ public static class CertificateRequestExtensions
     /// Adds RFC 5280 4.2.1.13. CRL Distribution Points.
     /// </summary>
     /// <param name="request">The <see cref="CertificateRequest" /> instance.</param>
-    /// <param name="action"></param>
+    /// <param name="action">The delegate method for configuration.</param>
     /// <returns>An extended <see cref="CertificateRequest" /> instance.</returns>
     /// <seealso href="https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.13" />
     public static CertificateRequest AddCRLDistributionPointsExtension(this CertificateRequest request,

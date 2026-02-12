@@ -25,6 +25,12 @@ public class X509Crl
         TbsCertList = new TBSCertList(certificateList.ReadSequence());
         SignatureAlgorithm = new AlgorithmIdentifier(certificateList.ReadSequence());
         SignatureValue = certificateList.ReadBitString(out var _);
+
+        if (certificateList.HasData || reader.HasData)
+        {
+            throw new CryptographicException("Unexpected data after parsing X509 CRL.");
+        }
+
     }
 
     /// <summary>
@@ -162,7 +168,9 @@ public class X509Crl
         var sb = new StringBuilder();
         sb.AppendLine();
         sb.AppendLine($"  version: {TbsCertList.Version}");
-        sb.AppendLine($"  signatureAlgorithm: {SignatureAlgorithm?.Algorithm.Value}");
+        sb.AppendLine($"  signatureAlgorithm: {(SignatureAlgorithm?.Algorithm is not null
+                ? SignatureAlgorithms.GetAlgorithmName(SignatureAlgorithm.Algorithm)
+                : "unknown")}");
         sb.AppendLine($"  issuer: {TbsCertList.Issuer.Name}");
         sb.AppendLine($"  thisUpdate: {TbsCertList.ThisUpdate:O}");
         sb.AppendLine($"  nextUpdate: {TbsCertList.NextUpdate:O}");

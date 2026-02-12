@@ -3,17 +3,17 @@ using System.Security.Cryptography;
 namespace Examples.Cryptography.Extensions;
 
 /// <summary>
-/// Extension methods for <see cref="ECDsa" /> class methods.
+/// Extension methods for the <see cref="ECDsa" /> class.
 /// </summary>
 public static class ECDsaExtensions
 {
     /// <summary>
     /// Compares two ECDsa instances for equality of their parameters.
     /// </summary>
-    /// <param name="me"></param>
-    /// <param name="other"></param>
-    /// <param name="includePrivateParameters"></param>
-    /// <returns></returns>
+    /// <param name="me">The ECDsa instance to compare.</param>
+    /// <param name="other">The ECDsa instance to compare against.</param>
+    /// <param name="includePrivateParameters">True to compare private parameters; otherwise, false.</param>
+    /// <returns>True if the parameters are equal; otherwise, false.</returns>
     public static bool EqualsParameters(this ECDsa me, ECDsa? other, bool includePrivateParameters = false)
     {
         if (other is null) { return false; }

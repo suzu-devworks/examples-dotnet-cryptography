@@ -147,7 +147,7 @@ public class Pkcs10CertificateCreationTests(
         // var notBefore = DateTimeOffset.UtcNow.AddSeconds(-50);
         var notBefore = DateTimeOffset.UtcNow.AddSeconds(5);
         var notAfter = notBefore.AddDays(1);
-        var serial = new CertificateSerialNumber();
+        var serial = CertificateSerialNumber.CreateRandom();
 
         // Reproduce `CertificateRequestLoadOptions.Default`.
         request.CertificateExtensions.Clear();
@@ -171,7 +171,7 @@ public class Pkcs10CertificateCreationTests(
             request.CertificateExtensions.Add(san);
         }
 
-        using var cert = request.Create(signerCert, notBefore, notAfter, serial.ToBytes());
+        using var cert = request.Create(signerCert, notBefore, notAfter, serial.ToByteArray());
 
         // Assert:
 

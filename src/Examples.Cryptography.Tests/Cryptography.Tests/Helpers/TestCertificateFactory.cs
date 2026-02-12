@@ -14,7 +14,7 @@ public static class TestCertificateFactory
         DateTime notBefore,
         int days = 1)
     {
-        var keyPair = ECDsa.Create(ECCurve.NamedCurves.nistP256);
+        using var keyPair = ECDsa.Create(ECCurve.NamedCurves.nistP256);
 
         var req = new CertificateRequest(
             subject,

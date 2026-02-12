@@ -134,7 +134,7 @@ public class X509ChainTests(
     public void When_CertificateChainIsBuilt_WithNoTrustAnchors_Then_ReturnsNotSuccess()
     {
         var certs = fixture.Certificates;
-        var trustAnchors = fixture.TrustAnchors;
+        // var trustAnchors = fixture.TrustAnchors;
         var target = fixture.TargetCertificate;
 
         //Output chain information of the selected certificate.

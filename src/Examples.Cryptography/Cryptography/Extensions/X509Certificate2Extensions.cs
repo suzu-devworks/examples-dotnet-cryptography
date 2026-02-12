@@ -23,8 +23,8 @@ public static class X509Certificate2Extensions
     /// <summary>
     /// Indicates whether the certificate is a Certificate Authority (CA).
     /// </summary>
-    /// <param name="certificate"></param>
-    /// <returns></returns>
+    /// <param name="certificate">The certificate instance.</param>
+    /// <returns>True if the certificate is a CA; otherwise, false.</returns>
     public static bool IsCertificateAuthority(this X509Certificate2 certificate)
         => certificate.GetExtension<X509BasicConstraintsExtension>()
             ?.CertificateAuthority ?? false;
@@ -32,9 +32,9 @@ public static class X509Certificate2Extensions
     /// <summary>
     /// Gets the public key as an <see cref="AsymmetricAlgorithm" />.
     /// </summary>
-    /// <param name="certificate"></param>
-    /// <returns></returns>
-    /// <exception cref="NotSupportedException"></exception>
+    /// <param name="certificate">The certificate instance.</param>
+    /// <returns>The public key as an <see cref="AsymmetricAlgorithm" />.</returns>
+    /// <exception cref="NotSupportedException">The public key algorithm is not supported.</exception>
     public static AsymmetricAlgorithm GetAnyPublicKey(this X509Certificate2 certificate)
     {
         return (AsymmetricAlgorithm?)certificate.GetRSAPublicKey()

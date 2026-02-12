@@ -3,9 +3,9 @@ using System.Security.Cryptography;
 namespace Examples.Cryptography.X509Certificates;
 
 /// <summary>
-/// Defines OBJECT IDENTIFIER for Extended Key Usage as described in RFC 5280.
+/// Defines OBJECT IDENTIFIERS for Extended Key Usage as described in RFC 5280.
 /// </summary>
-public class X509ExtendedKeyUsages
+public static class X509ExtendedKeyUsages
 {
     /// <summary>
     /// id-kp-serverAuth -- TLS WWW server authentication.
