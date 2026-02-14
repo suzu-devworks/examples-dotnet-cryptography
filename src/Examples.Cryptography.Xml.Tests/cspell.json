@@ -4,7 +4,9 @@
   "dictionaryDefinitions": [],
   "dictionaries": [],
   "words": [
-    "Dsig"
+    "Dsig",
+    "RSASHA",
+    "xades"
   ],
   "ignoreWords": [],
   "import": [
