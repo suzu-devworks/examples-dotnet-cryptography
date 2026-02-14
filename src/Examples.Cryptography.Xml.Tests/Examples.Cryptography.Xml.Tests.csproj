@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-     <NoWarn>$(NoWarn);CA1822;</NoWarn>
+    <NoWarn>$(NoWarn);CA1822;</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,4 +30,5 @@
     <ProjectReference Include="..\Examples.Cryptography\Examples.Cryptography.csproj" />
   </ItemGroup>
 
+  <Import Project="XmlSampleGenerator.Build.targets" />
 </Project>

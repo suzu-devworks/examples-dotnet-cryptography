@@ -18,6 +18,7 @@
     "Deformatter",
     "OCSP",
     "pkcs",
+    "xscgen",
     "xunit"
   ],
   "ignoreWords": [],
