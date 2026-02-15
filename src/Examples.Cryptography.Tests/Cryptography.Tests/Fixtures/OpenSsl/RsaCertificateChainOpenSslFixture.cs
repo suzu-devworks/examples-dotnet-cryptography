@@ -1,5 +1,4 @@
 using System.Security.Cryptography.X509Certificates;
-using Examples.Cryptography.Tests.Helpers;
 
 namespace Examples.Cryptography.Tests.Fixtures.OpenSsl;
 
@@ -17,7 +16,7 @@ public class RsaCertificateChainOpenSslFixture(bool includePrivateKeys = false) 
         if (includePrivateKeys)
         {
             EndEntityCertificate = EndEntityCertificate.CopyWithPrivateKey(
-                await TestPrivateKeyLoader.LoadRsaPrivateKey(
+                await AsymmetricAlgorithmLoader.LoadRsaPrivateKeyAsync(
                     Path.Combine(dir, "example.rsa.key"),
                     TestContext.Current.CancellationToken));
         }
