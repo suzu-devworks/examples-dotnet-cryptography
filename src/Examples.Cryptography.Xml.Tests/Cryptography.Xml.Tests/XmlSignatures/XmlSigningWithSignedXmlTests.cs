@@ -2,7 +2,7 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Xml;
-using Examples.Cryptography.Xml;
+using Examples.Cryptography.Xml.Extensions;
 
 namespace Examples.Cryptography.Tests.Xml;
 

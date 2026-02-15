@@ -1,9 +1,9 @@
 using System.Security.Cryptography.Xml;
 using System.Xml;
 using System.Xml.Serialization;
-using Examples.Cryptography.Xml;
+using Examples.Cryptography.Xml.Extensions;
 
-namespace Examples.Cryptography.Tests.Xml;
+namespace Examples.Cryptography.Tests.Xml.Extensions;
 
 public class XmlNamespacesExtensionsTests
 {

@@ -3,6 +3,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Security.Cryptography.Xml;
 using System.Xml;
 using Examples.Cryptography.Xml;
+using Examples.Cryptography.Xml.Extensions;
 
 namespace Examples.Cryptography.Tests.Xml;
 

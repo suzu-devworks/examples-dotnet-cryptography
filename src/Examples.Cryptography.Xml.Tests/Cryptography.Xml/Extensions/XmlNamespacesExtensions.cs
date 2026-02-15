@@ -1,7 +1,7 @@
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace Examples.Cryptography.Xml;
+namespace Examples.Cryptography.Xml.Extensions;
 
 /// <summary>
 /// Extension methods for XML namespace.

@@ -1,7 +1,7 @@
 using System.Text;
 using System.Xml;
 
-namespace Examples.Cryptography.Xml;
+namespace Examples.Cryptography.Xml.Extensions;
 
 /// <summary>
 /// Extension methods for <see cref="XmlDocument" />.
