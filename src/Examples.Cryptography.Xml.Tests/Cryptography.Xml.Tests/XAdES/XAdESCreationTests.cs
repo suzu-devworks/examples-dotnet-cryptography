@@ -4,8 +4,11 @@ using System.Xml.Linq;
 using Examples.Cryptography.Xml;
 using Examples.Cryptography.Xml.Extensions;
 using Examples.Cryptography.Xml.Tests.Fixtures.OpenSsl;
+using Examples.Cryptography.Xml.XAdES;
 
 namespace Examples.Cryptography.Tests.Xml.XAdES;
+
+using SchemaBased = Examples.Cryptography.Xml.XAdES.SchemaBased;
 
 public class XAdESCreationTests(XAdESCreationTests.Fixture fixture)
     : IClassFixture<XAdESCreationTests.Fixture>
@@ -41,7 +44,7 @@ public class XAdESCreationTests(XAdESCreationTests.Fixture fixture)
             $"{original.ToFormattedString()}{Environment.NewLine}");
 
         // ===== Without prefix =====
-        var signed = new XadesBuilder(signer)
+        var signed = new XAdESBuilder(signer)
             .Build(original, _signingTime, "id-target");
 
         Output?.WriteLine($"[Signed XML]:{Environment.NewLine}" +
@@ -61,7 +64,7 @@ public class XAdESCreationTests(XAdESCreationTests.Fixture fixture)
             $"{original.ToFormattedString()}{Environment.NewLine}");
 
         // ===== Use Custom SignedXML =====
-        var signed = new XadesBuilder(signer)
+        var signed = new XAdESBuilder(signer)
             .WithCustomSignedXml(doc => new PrefixedSignedXml(doc, "ds"))
             .Build(original, _signingTime, "id-target");
 
@@ -84,7 +87,7 @@ public class XAdESCreationTests(XAdESCreationTests.Fixture fixture)
         // ===== Use Custom XmlDocument  =====
         // However, the presence of the "ds" prefix within "SignedInfo"
         // and its descendants causes the signing to fail.
-        var signed = new XadesBuilder(signer)
+        var signed = new XAdESBuilder(signer)
             .WithCustomXmlDocument(() => new XmlDsigDocument())
             .Build(original, _signingTime, "id-target");
 
@@ -107,8 +110,7 @@ public class XAdESCreationTests(XAdESCreationTests.Fixture fixture)
         // ===== Use Generated classes  =====
         // However, the presence of the "ds" prefix within "SignedInfo"
         // and its descendants causes the signing to fail.
-        var signed = new XadesBuilder(signer)
-            .UseGeneratedClasses()
+        var signed = new SchemaBased.XAdESBuilder(signer)
             .Build(original, _signingTime, "id-target");
 
         Output?.WriteLine($"[Signed XML]:{Environment.NewLine}" +

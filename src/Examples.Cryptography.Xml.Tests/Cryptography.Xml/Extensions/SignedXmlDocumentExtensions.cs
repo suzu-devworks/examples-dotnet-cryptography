@@ -19,10 +19,7 @@ public static class SignedXmlDocumentExtensions
     /// <returns>True if the signature is valid; otherwise, false.</returns>
     public static bool VerifySignature(this XmlDocument signed, X509Certificate2 signer)
     {
-        var document = new XmlDocument()
-        {
-            PreserveWhitespace = false,
-        };
+        var document = new XmlDocument() { PreserveWhitespace = false };
         document.LoadXml(signed.OuterXml);
 
         var signature = SelectSignatureNode(document);
