@@ -15,8 +15,10 @@
   "dictionaryDefinitions": [],
   "dictionaries": [],
   "words": [
+    "Deformatter",
     "OCSP",
     "pkcs",
+    "xscgen",
     "xunit"
   ],
   "ignoreWords": [],
