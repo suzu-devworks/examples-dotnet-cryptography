@@ -142,4 +142,3 @@ public class XAdESCreationTests(XAdESCreationTests.Fixture fixture)
     }
 
 }
-

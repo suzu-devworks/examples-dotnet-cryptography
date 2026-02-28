@@ -40,7 +40,6 @@ public class ECDsa256SignatureDescription : SignatureDescription
         return new ECDsaSignatureDeformatter(ecdsa);
     }
 
-
     private class ECDsaSignatureFormatter : AsymmetricSignatureFormatter
     {
         private ECDsa _key;

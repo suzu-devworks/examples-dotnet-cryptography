@@ -116,7 +116,6 @@ public static partial class AsymmetricCipherKeyPairAgent
         throw new NotSupportedException($"type is {loaded.GetType().Name}");
     }
 
-
     private static AsymmetricKeyParameter GetPublicKey(AsymmetricKeyParameter privateKey)
     {
         return privateKey switch

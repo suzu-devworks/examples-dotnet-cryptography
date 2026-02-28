@@ -1,6 +1,5 @@
 namespace Examples.Cryptography.Tests.Pkcs.Pkcs8;
 
-
 public class Pkcs8OpenSslFixture : IAsyncLifetime
 {
     public async ValueTask InitializeAsync()
