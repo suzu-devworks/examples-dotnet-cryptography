@@ -125,7 +125,7 @@ public class EcdsaKeyPairTests(EcdsaKeyPairTests.Fixture fixture)
         Assert.Equal(msDer, bcDer);
 
         var msPem = msKeyPair.ExportECPrivateKeyPem();
-        var bcPem = bcKeyPair.ExportPrivateKeyPem();
+        var bcPem = bcKeyPair.ExportECPrivateKeyPem();
         Assert.Equal(msPem, bcPem);
     }
 }
