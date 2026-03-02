@@ -16,6 +16,7 @@
   "dictionaries": [],
   "words": [
     "Deformatter",
+    "HMAC",
     "OCSP",
     "pkcs",
     "xscgen",
