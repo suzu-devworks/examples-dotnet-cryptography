@@ -4,7 +4,7 @@ using Examples.Cryptography.BouncyCastle.Tests.Helpers;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Security;
 
-namespace Examples.Cryptography.BouncyCastle.Tests.Algorithms.Asymmetry;
+namespace Examples.Cryptography.BouncyCastle.Tests.Algorithms.Asymmetry.Rsa;
 
 public class RSAKeyPairTests(RSAKeyPairTests.Fixture fixture)
     : IClassFixture<RSAKeyPairTests.Fixture>
@@ -50,7 +50,7 @@ public class RSAKeyPairTests(RSAKeyPairTests.Fixture fixture)
 
         var exported = keyPair.ExportRSAPrivateKey();
 
-        var imported = AsymmetricCipherKeyPairAgent.CreateRSAPrivateKeyFrom(exported);
+        var imported = AsymmetricCipherKeyPairAgent.LoadRSAPrivateKeyFrom(exported);
 
         // Assert:
 
@@ -71,7 +71,7 @@ public class RSAKeyPairTests(RSAKeyPairTests.Fixture fixture)
         Output?.WriteLine($"{pem}");
         await FileOutput.WriteFileAsync(@"rsa-private.key", pem, TestContext.Current.CancellationToken);
 
-        var imported = AsymmetricCipherKeyPairAgent.CreateFromPem(pem);
+        var imported = AsymmetricCipherKeyPairAgent.LoadFromPem(pem);
 
         // Assert:
 

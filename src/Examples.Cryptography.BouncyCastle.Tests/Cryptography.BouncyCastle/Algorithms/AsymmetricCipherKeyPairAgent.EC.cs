@@ -99,11 +99,11 @@ public static partial class AsymmetricCipherKeyPairAgent
     }
 
     /// <summary>
-    /// Creates a new <see cref="AsymmetricCipherKeyPair" /> from the ECPrivateKey structure.
+    /// Loads a new <see cref="AsymmetricCipherKeyPair" /> from the ECPrivateKey structure.
     /// </summary>
     /// <param name="der">The bytes of an ECPrivateKey structure in ASN.1-BER encoding.</param>
     /// <returns>The <see cref="AsymmetricCipherKeyPair" /> instance containing the imported key.</returns>
-    public static AsymmetricCipherKeyPair CreateECPrivateKeyFrom(byte[] der)
+    public static AsymmetricCipherKeyPair LoadECPrivateKeyFrom(byte[] der)
     {
         var seq = Asn1Sequence.GetInstance(der);
         if (seq.Count != 4)

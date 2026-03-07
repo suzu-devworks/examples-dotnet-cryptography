@@ -4,7 +4,7 @@ using Examples.Cryptography.BouncyCastle.Tests.Helpers;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Security;
 
-namespace Examples.Cryptography.BouncyCastle.Tests.Algorithms.Asymmetry;
+namespace Examples.Cryptography.BouncyCastle.Tests.Algorithms.Asymmetry.Eddsa;
 
 public class Ed25519KeyPairTests(Ed25519KeyPairTests.Fixture fixture)
     : IClassFixture<Ed25519KeyPairTests.Fixture>
@@ -50,7 +50,7 @@ public class Ed25519KeyPairTests(Ed25519KeyPairTests.Fixture fixture)
 
         var exported = keyPair.ExportPrivateKey();
 
-        var imported = AsymmetricCipherKeyPairAgent.CreateFrom(exported);
+        var imported = AsymmetricCipherKeyPairAgent.LoadFrom(exported);
 
         // Assert:
 
@@ -71,7 +71,7 @@ public class Ed25519KeyPairTests(Ed25519KeyPairTests.Fixture fixture)
         Output?.WriteLine($"{pem}");
         await FileOutput.WriteFileAsync(@"bc-ed25519-private.key", pem, TestContext.Current.CancellationToken);
 
-        var imported = AsymmetricCipherKeyPairAgent.CreateFromPem(pem);
+        var imported = AsymmetricCipherKeyPairAgent.LoadFromPem(pem);
 
         // Assert:
 

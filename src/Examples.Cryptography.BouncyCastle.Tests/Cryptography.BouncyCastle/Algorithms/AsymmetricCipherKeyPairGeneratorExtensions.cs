@@ -1,7 +1,6 @@
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.X9;
 using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Security;
@@ -49,30 +48,6 @@ public static class AsymmetricCipherKeyPairGeneratorExtensions
 
         var publicExponent = BigInteger.ValueOf(0x10001);
         var param = new RsaKeyGenerationParameters(publicExponent, random, strength, certainty);
-        generator.Init(param);
-
-        return generator;
-    }
-
-    /// <summary>
-    /// Configures the <see cref="IAsymmetricCipherKeyPairGenerator"/> for DSA key generation with specified parameters.
-    /// </summary>
-    /// <param name="generator">The key pair generator to configure.</param>
-    /// <param name="size">The size of the DSA key in bits.</param>
-    /// <param name="certainty">The certainty for the prime number generation.</param>
-    /// <param name="random">The secure random number generator.</param>
-    /// <returns>The configured key pair generator.</returns>
-    public static IAsymmetricCipherKeyPairGenerator ConfigureDSAParameter(this IAsymmetricCipherKeyPairGenerator generator,
-        int size = 1024,
-        int certainty = 64,
-        SecureRandom? random = null)
-    {
-        random ??= new();
-
-        var paramGen = new DsaParametersGenerator();
-        paramGen.Init(size, certainty, random);
-
-        var param = new DsaKeyGenerationParameters(random, paramGen.GenerateParameters());
         generator.Init(param);
 
         return generator;

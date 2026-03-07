@@ -5,7 +5,7 @@ using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.EC;
 using Org.BouncyCastle.Security;
 
-namespace Examples.Cryptography.BouncyCastle.Tests.Algorithms.Asymmetry;
+namespace Examples.Cryptography.BouncyCastle.Tests.Algorithms.Asymmetry.Ecdsa;
 
 public class EcdsaKeyPairTests(EcdsaKeyPairTests.Fixture fixture)
     : IClassFixture<EcdsaKeyPairTests.Fixture>
@@ -65,7 +65,7 @@ public class EcdsaKeyPairTests(EcdsaKeyPairTests.Fixture fixture)
 
         var exported = keyPair.ExportECPrivateKey();
 
-        var imported = AsymmetricCipherKeyPairAgent.CreateECPrivateKeyFrom(exported);
+        var imported = AsymmetricCipherKeyPairAgent.LoadECPrivateKeyFrom(exported);
 
         // Assert:
 
@@ -86,7 +86,7 @@ public class EcdsaKeyPairTests(EcdsaKeyPairTests.Fixture fixture)
         Output?.WriteLine($"{pem}");
         await FileOutput.WriteFileAsync("bc-ecdsa-p256-private.key", pem, TestContext.Current.CancellationToken);
 
-        var imported = AsymmetricCipherKeyPairAgent.CreateFromPem(pem);
+        var imported = AsymmetricCipherKeyPairAgent.LoadFromPem(pem);
 
         // Assert:
 
@@ -115,10 +115,6 @@ public class EcdsaKeyPairTests(EcdsaKeyPairTests.Fixture fixture)
 
         // They are different instances.
         Assert.NotSame(msKeyPair, bcKeyPair);
-
-        // I expected DER(BER) and PEM to be the same,
-        // but that doesn't seem to be the case.
-        // Is that what it is?
 
         var msDer = msKeyPair.ExportECPrivateKey();
         var bcDer = bcKeyPair.ExportECPrivateKey();

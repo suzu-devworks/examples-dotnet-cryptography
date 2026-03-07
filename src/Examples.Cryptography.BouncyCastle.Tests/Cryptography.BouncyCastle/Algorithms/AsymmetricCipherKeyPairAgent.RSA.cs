@@ -16,11 +16,11 @@ public static partial class AsymmetricCipherKeyPairAgent
         => keyPair.ExportPrivateKey();
 
     /// <summary>
-    /// Creates a new <see cref="AsymmetricCipherKeyPair" /> from the PKCS #1 RSAPrivateKey structure.
+    /// Loads a new <see cref="AsymmetricCipherKeyPair" /> from the PKCS #1 RSAPrivateKey structure.
     /// </summary>
     /// <param name="der">The bytes of an PKCS #1 RSAPrivateKey structure in ASN.1-BER encoding.</param>
     /// <returns>The <see cref="AsymmetricCipherKeyPair" /> instance containing the imported key.</returns>
-    public static AsymmetricCipherKeyPair CreateRSAPrivateKeyFrom(byte[] der)
+    public static AsymmetricCipherKeyPair LoadRSAPrivateKeyFrom(byte[] der)
     {
         var seq = Asn1Sequence.GetInstance(der);
         if (seq.Count < 9)
