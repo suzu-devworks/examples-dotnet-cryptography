@@ -95,10 +95,11 @@ public static partial class AsymmetricCipherKeyPairLoader
     /// Loads a new <see cref="AsymmetricCipherKeyPair" /> from RFC 7468 PEM-encoded private key.
     /// </summary>
     /// <param name="pem">The PEM-encoded private key.</param>
+    /// <param name="passwordFinder">An optional <see cref="IPasswordFinder" /> to provide a password for encrypted PEMs.</param>
     /// <returns>The <see cref="AsymmetricCipherKeyPair" /> instance containing the imported key.</returns>
-    public static AsymmetricCipherKeyPair LoadFromPem(string pem)
+    public static AsymmetricCipherKeyPair LoadFromPem(string pem, IPasswordFinder? passwordFinder = null)
     {
-        using var reader = new PemReader(new StringReader(pem));
+        using var reader = new PemReader(new StringReader(pem), passwordFinder);
         var loaded = reader.ReadObject();
 
         if (loaded is AsymmetricCipherKeyPair pair)
