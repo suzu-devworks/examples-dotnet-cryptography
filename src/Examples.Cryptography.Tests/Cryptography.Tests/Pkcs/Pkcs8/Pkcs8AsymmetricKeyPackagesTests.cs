@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using Examples.Cryptography.Extensions;
+using Examples.Cryptography.Tests.Fixtures.OpenSsl;
 using Examples.Cryptography.Tests.Helpers;
 
 namespace Examples.Cryptography.Tests.Pkcs.Pkcs8;

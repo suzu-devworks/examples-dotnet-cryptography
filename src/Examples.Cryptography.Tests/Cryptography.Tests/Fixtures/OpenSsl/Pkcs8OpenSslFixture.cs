@@ -1,4 +1,4 @@
-namespace Examples.Cryptography.Tests.Pkcs.Pkcs8;
+namespace Examples.Cryptography.Tests.Fixtures.OpenSsl;
 
 public class Pkcs8OpenSslFixture : IAsyncLifetime
 {
