@@ -48,9 +48,9 @@ public class RSAKeyPairTests(RSAKeyPairTests.Fixture fixture)
     {
         var keyPair = fixture.KeyPair;
 
-        var exported = keyPair.ExportRSAPrivateKey();
+        var exported = keyPair.ExportPrivateKey();
 
-        var imported = AsymmetricCipherKeyPairAgent.LoadRSAPrivateKeyFrom(exported);
+        var imported = AsymmetricCipherKeyPairLoader.LoadRSAPrivateKeyFrom(exported);
 
         // Assert:
 
@@ -71,7 +71,7 @@ public class RSAKeyPairTests(RSAKeyPairTests.Fixture fixture)
         Output?.WriteLine($"{pem}");
         await FileOutput.WriteFileAsync(@"rsa-private.key", pem, TestContext.Current.CancellationToken);
 
-        var imported = AsymmetricCipherKeyPairAgent.LoadFromPem(pem);
+        var imported = AsymmetricCipherKeyPairLoader.LoadFromPem(pem);
 
         // Assert:
 
@@ -102,7 +102,7 @@ public class RSAKeyPairTests(RSAKeyPairTests.Fixture fixture)
 
         // I expected DER(BER) and PEM to be the same.
         var msDer = msKeyPair.ExportRSAPrivateKey();
-        var bcDer = bcKeyPair.ExportRSAPrivateKey();
+        var bcDer = bcKeyPair.ExportPrivateKey();
         Assert.Equal(msDer, bcDer);
 
         var msPem = msKeyPair.ExportRSAPrivateKeyPem();

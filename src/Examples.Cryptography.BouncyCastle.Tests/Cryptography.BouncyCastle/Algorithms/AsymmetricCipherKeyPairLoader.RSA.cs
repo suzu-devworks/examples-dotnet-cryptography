@@ -5,16 +5,8 @@ using Org.BouncyCastle.Crypto.Parameters;
 
 namespace Examples.Cryptography.BouncyCastle.Algorithms;
 
-public static partial class AsymmetricCipherKeyPairAgent
+public static partial class AsymmetricCipherKeyPairLoader
 {
-    /// <summary>
-    /// Export the current key in PKCS#1 RSAPrivateKey format.
-    /// </summary>
-    /// <param name="keyPair">A <see cref="AsymmetricCipherKeyPair" /> type key pair.</param>
-    /// <returns>A byte array containing the RSAPrivateKey representation of this key.</returns>
-    public static byte[] ExportRSAPrivateKey(this AsymmetricCipherKeyPair keyPair)
-        => keyPair.ExportPrivateKey();
-
     /// <summary>
     /// Loads a new <see cref="AsymmetricCipherKeyPair" /> from the PKCS #1 RSAPrivateKey structure.
     /// </summary>

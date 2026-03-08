@@ -11,7 +11,7 @@ using Org.BouncyCastle.Utilities.IO.Pem;
 
 namespace Examples.Cryptography.BouncyCastle.Algorithms;
 
-public static partial class AsymmetricCipherKeyPairAgent
+public static partial class AsymmetricCipherKeyPairLoader
 {
     /// <summary>
     /// Export the current key in RFC 5915 ECPrivateKey format,

@@ -50,7 +50,7 @@ public class Ed25519KeyPairTests(Ed25519KeyPairTests.Fixture fixture)
 
         var exported = keyPair.ExportPrivateKey();
 
-        var imported = AsymmetricCipherKeyPairAgent.LoadFrom(exported);
+        var imported = AsymmetricCipherKeyPairLoader.LoadFrom(exported);
 
         // Assert:
 
@@ -71,7 +71,7 @@ public class Ed25519KeyPairTests(Ed25519KeyPairTests.Fixture fixture)
         Output?.WriteLine($"{pem}");
         await FileOutput.WriteFileAsync(@"bc-ed25519-private.key", pem, TestContext.Current.CancellationToken);
 
-        var imported = AsymmetricCipherKeyPairAgent.LoadFromPem(pem);
+        var imported = AsymmetricCipherKeyPairLoader.LoadFromPem(pem);
 
         // Assert:
 

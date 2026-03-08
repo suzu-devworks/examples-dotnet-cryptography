@@ -8,12 +8,12 @@ using Org.BouncyCastle.Security;
 namespace Examples.Cryptography.BouncyCastle.Algorithms;
 
 /// <summary>
-/// The <see cref="AsymmetricCipherKeyPair" /> importer and extension methods for export.
+/// Utility methods for loading and exporting <see cref="AsymmetricCipherKeyPair"/> instances in various formats.
 /// </summary>
-public static partial class AsymmetricCipherKeyPairAgent
+public static partial class AsymmetricCipherKeyPairLoader
 {
     /// <summary>
-    /// Exports the current key in the PKCS #8 PrivateKeyInfo format.
+    /// Exports the current key in the PrivateKeyInfo format.
     /// </summary>
     /// <param name="keyPair">A <see cref="AsymmetricCipherKeyPair" /> type key pair.</param>
     /// <returns>A byte array containing the PrivateKeyInfo representation of this key.</returns>
@@ -24,7 +24,7 @@ public static partial class AsymmetricCipherKeyPairAgent
     }
 
     /// <summary>
-    /// Exports the current key in the PKCS #8 PrivateKeyInfo format, PEM encoded.
+    /// Exports the current key in the PrivateKeyInfo format, PEM encoded.
     /// </summary>
     /// <param name="keyPair">A <see cref="AsymmetricCipherKeyPair" /> type key pair.</param>
     /// <returns>A string containing the PEM-encoded PrivateKey.</returns>
@@ -44,9 +44,9 @@ public static partial class AsymmetricCipherKeyPairAgent
     }
 
     /// <summary>
-    /// Loads a new <see cref="AsymmetricCipherKeyPair" /> from a PKCS #8 PrivateKey structure.
+    /// Loads a new <see cref="AsymmetricCipherKeyPair" /> from a PrivateKey structure.
     /// </summary>
-    /// <param name="der">The bytes of a PKCS #8 PrivateKey structure in ASN.1-BER encoding.</param>
+    /// <param name="der">The bytes of a PrivateKey structure in ASN.1-BER encoding.</param>
     /// <returns>The <see cref="AsymmetricCipherKeyPair" /> instance containing the imported key.</returns>
     public static AsymmetricCipherKeyPair LoadFrom(byte[] der)
     {
