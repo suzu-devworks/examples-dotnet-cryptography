@@ -1,4 +1,5 @@
 using Examples.Cryptography.BouncyCastle.Algorithms;
+using Examples.Cryptography.BouncyCastle.Asn1;
 using Examples.Cryptography.BouncyCastle.Tests.Fixtures;
 using Examples.Cryptography.BouncyCastle.Tests.Helpers;
 using Org.BouncyCastle.Asn1.Nist;
@@ -56,11 +57,12 @@ public class Pkcs8PackageTests(
     {
         var keyPair = fixture.KeyPair;
 
-        var pkcs8 = new Pkcs8Generator(keyPair.Private);
+        var pkcs8 = new Pkcs8Generator(keyPair.Private)
+            .Generate();
 
         var pem = PemUtility.ToPemString(pkcs8);
         Output?.WriteLine($"{pem}");
-        await FileOutput.WriteFileAsync("bc-ecdsa-private.key.pk8", pem,
+        await FileOutput.WriteFileAsync("bc-ecdsa-private.p8", pem,
             TestContext.Current.CancellationToken);
 
         var imported = AsymmetricCipherKeyPairLoader.LoadFromPem(pem);
@@ -77,6 +79,10 @@ public class Pkcs8PackageTests(
         // The key is the same.
         Assert.Equal(keyPair.Private, imported.Private);
         Assert.Equal(keyPair.Public, imported.Public);
+
+        using var writer = new StringWriter();
+        PrivateKeyInfo.GetInstance(pkcs8.Content).WriteStructure(writer);
+        Output?.WriteLine(writer.ToString());
     }
 
     [Fact]
@@ -109,9 +115,9 @@ public class Pkcs8PackageTests(
 
         var pem = PemUtility.ToPemString(pkcs8enc);
         Output?.WriteLine($"{pem}");
-        await FileOutput.WriteFileAsync("bc-ecdsa-private1.key.pk8e", pem,
+        await FileOutput.WriteFileAsync("bc-ecdsa-private1.p8.enc", pem,
             TestContext.Current.CancellationToken);
-        await FileOutput.WriteFileAsync("bc-ecdsa-private1.key.pk8e.secret", password,
+        await FileOutput.WriteFileAsync("bc-ecdsa-private1.p8.enc.secret", password,
             TestContext.Current.CancellationToken);
 
         var imported = AsymmetricCipherKeyPairLoader.LoadFromPem(pem, new PasswordFinder(password));
@@ -128,6 +134,13 @@ public class Pkcs8PackageTests(
         // The key is the same.
         Assert.Equal(keyPair.Private, imported.Private);
         Assert.Equal(keyPair.Public, imported.Public);
+
+        var encryptedPrivateKeyInfo = EncryptedPrivateKeyInfo.GetInstance(pkcs8enc.Content);
+        using var writer = new StringWriter();
+        encryptedPrivateKeyInfo.WriteStructure(writer);
+        Output?.WriteLine(writer.ToString());
+
+        Assert.Equal(algorithm, encryptedPrivateKeyInfo.EncryptionAlgorithm.Algorithm);
     }
 
     [Fact]
@@ -151,9 +164,9 @@ public class Pkcs8PackageTests(
         var pem = PemUtility.ToPemString(encPrivateInfo);
 
         Output?.WriteLine($"{pem}");
-        await FileOutput.WriteFileAsync("bc-ecdsa-private.key.pk8e", pem,
+        await FileOutput.WriteFileAsync("bc-ecdsa-private.p8.enc2", pem,
             TestContext.Current.CancellationToken);
-        await FileOutput.WriteFileAsync("bc-ecdsa-private.key.pk8e.secret", password,
+        await FileOutput.WriteFileAsync("bc-ecdsa-private.p8.enc2.secret", password,
             TestContext.Current.CancellationToken);
 
         using var reader = new PemReader(new StringReader(pem), new PasswordFinder(password));
