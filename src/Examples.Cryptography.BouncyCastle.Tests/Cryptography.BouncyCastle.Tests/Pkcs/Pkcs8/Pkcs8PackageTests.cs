@@ -1,7 +1,9 @@
 using Examples.Cryptography.BouncyCastle.Algorithms;
 using Examples.Cryptography.BouncyCastle.Asn1;
 using Examples.Cryptography.BouncyCastle.Tests.Fixtures;
+using Examples.Cryptography.BouncyCastle.Tests.Fixtures.OpenSsl;
 using Examples.Cryptography.BouncyCastle.Tests.Helpers;
+using Examples.Cryptography.BouncyCastle.Utilities;
 using Org.BouncyCastle.Asn1.Nist;
 using Org.BouncyCastle.Asn1.Pkcs;
 using Org.BouncyCastle.Crypto;
@@ -10,7 +12,6 @@ using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.OpenSsl;
 using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
-using Xunit.Sdk;
 
 namespace Examples.Cryptography.BouncyCastle.Tests.Pkcs.Pkcs8;
 
@@ -169,15 +170,7 @@ public class Pkcs8PackageTests(
         await FileOutput.WriteFileAsync("bc-ecdsa-private.p8.enc2.secret", password,
             TestContext.Current.CancellationToken);
 
-        using var reader = new PemReader(new StringReader(pem), new PasswordFinder(password));
-        var loaded = reader.ReadObject();
-        if (loaded is not ECPrivateKeyParameters privateKey)
-        {
-            throw new XunitException("Failed to read private key from PEM.");
-        }
-
-        var publicKey = privateKey.GeneratePublicKey();
-        var imported = new AsymmetricCipherKeyPair(publicKey, privateKey);
+        var imported = AsymmetricCipherKeyPairLoader.LoadFromPem(pem, new PasswordFinder(password));
 
         // Assert:
 

@@ -1,4 +1,4 @@
-namespace Examples.Cryptography.BouncyCastle.Tests.Fixtures;
+namespace Examples.Cryptography.BouncyCastle.Tests.Fixtures.OpenSsl;
 
 public class Pkcs8OpenSslFixture : IAsyncLifetime
 {

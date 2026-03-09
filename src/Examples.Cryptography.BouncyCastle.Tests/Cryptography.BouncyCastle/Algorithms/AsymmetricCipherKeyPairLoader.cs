@@ -1,4 +1,4 @@
-using System.Text;
+using Examples.Cryptography.BouncyCastle.Utilities;
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.Pkcs;
 using Org.BouncyCastle.Crypto;
@@ -30,17 +30,7 @@ public static partial class AsymmetricCipherKeyPairLoader
     /// <returns>A string containing the PEM-encoded PrivateKey.</returns>
     public static string ExportPrivateKeyPem(this AsymmetricCipherKeyPair keyPair)
     {
-        var builder = new StringBuilder();
-        //using var memory = new MemoryStream();
-        //using (var writer = new PemWriter(new StreamWriter(memory, Encoding.ASCII)))
-        using (var writer = new PemWriter(new StringWriter(builder)))
-        {
-            writer.WriteObject(keyPair);
-        }
-        //var pem = Encoding.ASCII.GetString(memory.ToArray()).TrimEnd();
-        var pem = builder.ToString().TrimEnd();
-
-        return pem;
+        return PemUtility.ToPemString(keyPair);
     }
 
     /// <summary>
