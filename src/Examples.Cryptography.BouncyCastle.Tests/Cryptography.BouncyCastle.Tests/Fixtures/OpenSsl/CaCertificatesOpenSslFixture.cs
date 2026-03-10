@@ -12,17 +12,22 @@ public class CaCertificatesOpenSslFixture(bool includePrivateKeys = false) : IAs
         var dir = Environment.GetEnvironmentVariable("TEST_ASSETS_PATH") ?? Environment.CurrentDirectory;
 
         RootCaCertificate = X509CertificateLoader.LoadFromPem(
-                File.ReadAllText(Path.Combine(dir, "example.ca-root.crt")));
+            await File.ReadAllTextAsync(Path.Combine(dir, "example.ca-root.crt"),
+                TestContext.Current.CancellationToken));
+
         IntermediateCaCertificate = X509CertificateLoader.LoadFromPem(
-                File.ReadAllText(Path.Combine(dir, "example.ca-intermediate.crt")));
+            await File.ReadAllTextAsync(Path.Combine(dir, "example.ca-intermediate.crt"),
+                TestContext.Current.CancellationToken));
 
         if (includePrivateKeys)
         {
             RootCaPrivateKey = AsymmetricCipherKeyPairLoader.LoadFromPem(
-                File.ReadAllText(Path.Combine(dir, "example.ca-root.key")));
+                await File.ReadAllTextAsync(Path.Combine(dir, "example.ca-root.key"),
+                    TestContext.Current.CancellationToken));
 
             IntermediateCaPrivateKey = AsymmetricCipherKeyPairLoader.LoadFromPem(
-                File.ReadAllText(Path.Combine(dir, "example.ca-intermediate.key")));
+                await File.ReadAllTextAsync(Path.Combine(dir, "example.ca-intermediate.key"),
+                    TestContext.Current.CancellationToken));
         }
     }
 
