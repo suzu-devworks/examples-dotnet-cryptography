@@ -12,9 +12,9 @@ using Org.BouncyCastle.Security;
 
 namespace Examples.Cryptography.BouncyCastle.Tests.Pkcs.Pkcs10;
 
-public class Pkcs10CertRequestTests(
-    Pkcs10CertRequestTests.Fixture fixture
-    ) : IClassFixture<Pkcs10CertRequestTests.Fixture>
+public class Pkcs10CertificationRequestTests(
+    Pkcs10CertificationRequestTests.Fixture fixture
+    ) : IClassFixture<Pkcs10CertificationRequestTests.Fixture>
 {
     public class Fixture : IAsyncLifetime
     {
