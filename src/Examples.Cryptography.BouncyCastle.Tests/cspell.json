@@ -4,8 +4,10 @@
   "dictionaryDefinitions": [],
   "dictionaries": [],
   "words": [
+    "ADCA",
     "ciphertext",
     "Codebook",
+    "Crls",
     "Oids",
     "Pkix",
     "Threefish"
