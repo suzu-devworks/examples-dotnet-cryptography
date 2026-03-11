@@ -3,15 +3,29 @@ using Org.BouncyCastle.Asn1.Pkcs;
 
 namespace Examples.Cryptography.BouncyCastle.Asn1;
 
+/// <summary>
+/// Extension methods for ASN1 parsing for <see cref="PrivateKeyInfo"/>.
+/// </summary>
 public static class PrivateKeyInfoExtensions
 {
+    /// <summary>
+    /// Returns a string representation of the structure of the <see cref="PrivateKeyInfo"/> instance.
+    /// </summary>
+    /// <param name="privateKeyInfo">The <see cref="PrivateKeyInfo"/> instance.</param>
+    /// <returns>A string representation of the structure.</returns>
+    public static string ToStructureString(this PrivateKeyInfo privateKeyInfo)
+    {
+        using var writer = new StringWriter();
+        privateKeyInfo.WriteStructure(writer);
+        return writer.ToString();
+    }
+
     /// <summary>
     /// Writes the structure of the <see cref="PrivateKeyInfo"/> to the provided <see cref="TextWriter"/>.
     /// </summary>
     /// <param name="privateKeyInfo">The <see cref="PrivateKeyInfo"/> instance to write.</param>
-    /// <param name="output"></param>
-    /// <param name="indent">The character to use for indentation.</param>
-    public static void WriteStructure(this PrivateKeyInfo privateKeyInfo, TextWriter output, char indent = '\t')
+    /// <param name="output">The <see cref="TextWriter"/> to write the structure to.</param>
+    public static void WriteStructure(this PrivateKeyInfo privateKeyInfo, TextWriter output)
     {
         // RFC 5958 - Asymmetric Key Packages
         // 2. Asymmetric Key Package CMS Content Type
@@ -48,13 +62,13 @@ public static class PrivateKeyInfoExtensions
         //
         // Attributes ::= SET OF Attribute { { OneAsymmetricKeyAttributes } }
         // ```
-        output.WriteLine("PrivateKeyInfo(OneAsymmetricKey) : {");
-        output.WriteLine($"{indent}version             : {privateKeyInfo.Version}");
-        output.WriteLine($"{indent}privateKeyAlgorithm : {privateKeyInfo.PrivateKeyAlgorithm.Algorithm}");
-        output.WriteLine($"{indent}privateKey          : {privateKeyInfo.ParsePrivateKey()}");
-        output.WriteLine($"{indent}attributes [0]      : {privateKeyInfo.Attributes}");
-        output.WriteLine($"{indent}publicKey  [1]      : {privateKeyInfo.ParsePublicKey()}");
-        output.WriteLine("}");
 
+        output.WriteLine("PrivateKeyInfo ::= {");
+        output.WriteLine($"             version : {privateKeyInfo.Version}");
+        output.WriteLine($" privateKeyAlgorithm : {privateKeyInfo.PrivateKeyAlgorithm.Algorithm}");
+        output.WriteLine($"          privateKey : {privateKeyInfo.ParsePrivateKey()}");
+        output.WriteLine($"      attributes [0] : {privateKeyInfo.Attributes}");
+        output.WriteLine($"       publicKey [1] : {privateKeyInfo.ParsePublicKey()}");
+        output.WriteLine("}");
     }
 }

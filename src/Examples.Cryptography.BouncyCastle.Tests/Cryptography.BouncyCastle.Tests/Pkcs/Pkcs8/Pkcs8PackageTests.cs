@@ -81,9 +81,7 @@ public class Pkcs8PackageTests(
         Assert.Equal(keyPair.Private, imported.Private);
         Assert.Equal(keyPair.Public, imported.Public);
 
-        using var writer = new StringWriter();
-        PrivateKeyInfo.GetInstance(pkcs8.Content).WriteStructure(writer);
-        Output?.WriteLine(writer.ToString());
+        Output?.WriteLine(PrivateKeyInfo.GetInstance(pkcs8.Content).ToStructureString());
     }
 
     [Fact]
@@ -137,9 +135,7 @@ public class Pkcs8PackageTests(
         Assert.Equal(keyPair.Public, imported.Public);
 
         var encryptedPrivateKeyInfo = EncryptedPrivateKeyInfo.GetInstance(pkcs8enc.Content);
-        using var writer = new StringWriter();
-        encryptedPrivateKeyInfo.WriteStructure(writer);
-        Output?.WriteLine(writer.ToString());
+        Output?.WriteLine(encryptedPrivateKeyInfo.ToStructureString());
 
         Assert.Equal(algorithm, encryptedPrivateKeyInfo.EncryptionAlgorithm.Algorithm);
     }

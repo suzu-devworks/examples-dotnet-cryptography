@@ -55,6 +55,8 @@ public class Pkcs10CertificateCreationTests(
         public AsymmetricCipherKeyPair SignerKeyPair => CaCerts.IntermediateCaPrivateKey!;
     }
 
+    private ITestOutputHelper? Output => TestContext.Current.TestOutputHelper;
+
     [Fact]
     public void When_SignedBySelfSignedCert_Then_SelfSignedCertificateIsReturned()
     {
@@ -68,11 +70,12 @@ public class Pkcs10CertificateCreationTests(
             .Configure(g =>
             {
                 g.SetIssuerDN(subject);
-                g.SetSerialNumber(BigInteger.One);
                 g.SetSubjectDN(subject);
                 g.SetPublicKey(request.GetPublicKey());
+                g.SetSerialNumber(BigInteger.One);
+                g.SetNotBefore(now.UtcDateTime);
+                g.SetNotAfter(now.AddDays(1).UtcDateTime);
             })
-            .WithValidityPeriod(now, days: 1)
             .Generate(new Asn1SignatureFactory("SHA256WithECDSA", keyPair.Private));
 
         // Assert:
@@ -99,9 +102,11 @@ public class Pkcs10CertificateCreationTests(
             .Configure(g =>
             {
                 g.SetIssuerDN(signerCert.SubjectDN);
-                g.SetSerialNumber(serial);
                 g.SetSubjectDN(request.GetCertificationRequestInfo().Subject);
                 g.SetPublicKey(request.GetPublicKey());
+                g.SetSerialNumber(serial);
+                g.SetNotBefore(now.UtcDateTime);
+                g.SetNotAfter(now.AddDays(1).UtcDateTime);
 
                 g.AddExtension(X509Extensions.AuthorityKeyIdentifier,
                     critical: false,
@@ -116,8 +121,9 @@ public class Pkcs10CertificateCreationTests(
                     critical: true,
                     new KeyUsage(KeyUsage.DigitalSignature | KeyUsage.KeyEncipherment));
             })
-            .WithValidityPeriod(now, days: 1)
             .Generate(new Asn1SignatureFactory("SHA256WithECDSA", keyPair.Private));
+
+        Output?.WriteLine($"Certificate:\n{cert}");
 
         // Assert:
 

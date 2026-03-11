@@ -38,7 +38,8 @@ public class CaCertificatesOpenSslFixture(bool includePrivateKeys = false) : IAs
     }
 
     public X509Certificate RootCaCertificate { get; private set; } = default!;
-    public X509Certificate IntermediateCaCertificate { get; private set; } = default!;
     public AsymmetricCipherKeyPair? RootCaPrivateKey { get; private set; }
+
+    public X509Certificate IntermediateCaCertificate { get; private set; } = default!;
     public AsymmetricCipherKeyPair? IntermediateCaPrivateKey { get; private set; }
 }

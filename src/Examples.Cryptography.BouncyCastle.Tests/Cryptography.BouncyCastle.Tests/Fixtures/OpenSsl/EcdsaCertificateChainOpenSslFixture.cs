@@ -35,9 +35,12 @@ public class EcdsaCertificateChainOpenSslFixture(bool includePrivateKeys = false
     private readonly CaCertificatesOpenSslFixture _caCertificates = new(includePrivateKeys);
 
     public X509Certificate RootCaCertificate => _caCertificates.RootCaCertificate;
-    public X509Certificate IntermediateCaCertificate => _caCertificates.IntermediateCaCertificate;
-    public X509Certificate EndEntityCertificate { get; private set; } = default!;
+    public AsymmetricCipherKeyPair? RootCaPrivateKey => _caCertificates.RootCaPrivateKey;
 
+    public X509Certificate IntermediateCaCertificate => _caCertificates.IntermediateCaCertificate;
+    public AsymmetricCipherKeyPair? IntermediateCaPrivateKey => _caCertificates.IntermediateCaPrivateKey;
+
+    public X509Certificate EndEntityCertificate { get; private set; } = default!;
     public AsymmetricCipherKeyPair? EndEntityPrivateKey { get; private set; }
 
 }

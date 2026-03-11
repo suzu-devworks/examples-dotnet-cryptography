@@ -21,6 +21,8 @@ public class TimeStampTokenTests(
     TimeStampAuthorityFixture fixture
     ) : IClassFixture<TimeStampAuthorityFixture>
 {
+    private ITestOutputHelper? Output => TestContext.Current.TestOutputHelper;
+
     [Fact]
     public void When_CreatingNewTST_WithCheckItsContents()
     {
@@ -48,10 +50,17 @@ public class TimeStampTokenTests(
 
         var response = new TimeStampResponse(responseBytes);
 
-        // Assert:
+        Output?.WriteLine($"TimeStampResponse:\n{response.TimeStampToken}");
 
         // If you check with the TSA certificate, it will be successful.
-        // token.Validate(tsaCert);
+        response.TimeStampToken.Validate(fixture.TsaCertificate);
+
+        // Assert:
+
+        // TODO
+        var tstTime = response.TimeStampToken.TimeStampInfo.GenTime;
+        Assert.NotEqual(DateTime.MinValue, tstTime);
+        Assert.NotEqual(DateTime.MaxValue, tstTime);
 
         byte[] DoTSAServer(byte[] requestBytes)
         {
