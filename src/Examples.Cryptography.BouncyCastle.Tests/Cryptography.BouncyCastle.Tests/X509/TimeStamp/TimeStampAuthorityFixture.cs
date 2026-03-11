@@ -157,7 +157,7 @@ public class TimeStampAuthorityFixture : IAsyncLifetime
         var crl = new X509V2CrlGenerator()
             .Configure(gen =>
             {
-                gen.SetIssuerDN(issuerCert.IssuerDN);
+                gen.SetIssuerDN(issuerCert.SubjectDN);
                 gen.SetThisUpdate(updateAt.UtcDateTime);
                 gen.SetNextUpdate(nextUpdateAt.UtcDateTime);
 
