@@ -142,15 +142,13 @@ public class X509CrlTests(
         // The CRL is signed by the issuer.
         crl.Verify(issuerKey.Public);
         var isValid = crl.IsSignatureValid(issuerKey.Public);
+        Assert.True(isValid);
 
         // The CRL contains the revoked certificate.
         var revoked = crl.IsRevoked(revocationCert);
-        var nonRevoked = crl.IsRevoked(issuerCert);
-
-        // Assert:
-
-        Assert.True(isValid);
         Assert.True(revoked);
+
+        var nonRevoked = crl.IsRevoked(issuerCert);
         Assert.False(nonRevoked);
 
         Assert.Equal(2, crl.Version);
