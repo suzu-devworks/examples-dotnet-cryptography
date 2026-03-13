@@ -37,7 +37,7 @@ public class X509CrlTests(
         private readonly CaCertificatesOpenSslFixture _ca = new(includePrivateKeys: true);
 
         public X509Certificate IssuerCert => _ca.IntermediateCaCertificate;
-        public AsymmetricCipherKeyPair IssuerKey => _ca.IntermediateCaPrivateKey!;
+        public AsymmetricCipherKeyPair IssuerKey => _ca.IntermediateCaKeyPair!;
 
         public X509Certificate RevocationCert { get; private set; } = default!;
 

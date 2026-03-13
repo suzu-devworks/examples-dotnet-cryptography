@@ -34,13 +34,23 @@ public static class AsymmetricKeyParameterExtensions
     /// <exception cref="NotSupportedException"></exception>
     public static ISignatureFactory CreateDefaultSignature(this AsymmetricKeyParameter key)
     {
-        return key switch
+        return new Asn1SignatureFactory(key.GetSignatureAlgorithmName(), key);
+    }
+
+    /// <summary>
+    /// Gets the default signature algorithm name for the given key. Supported types are RSA, EC and Ed25519.
+    /// </summary>
+    /// <param name="key"></param>
+    /// <returns></returns>
+    /// <exception cref="NotSupportedException"></exception>
+    public static string GetSignatureAlgorithmName(this AsymmetricKeyParameter key)
+    {
+        return (key) switch
         {
-            RsaKeyParameters => new Asn1SignatureFactory("SHA256WithRSA", key),
-            ECKeyParameters => new Asn1SignatureFactory("SHA256WithECDSA", key),
-            Ed25519PrivateKeyParameters => new Asn1SignatureFactory("Ed25519", key),
+            RsaKeyParameters => "SHA256withRSA",
+            ECKeyParameters => "SHA256withECDSA",
+            Ed25519PrivateKeyParameters => "Ed25519",
             _ => throw new NotSupportedException($"not supported {key.GetType()}"),
         };
     }
-
 }

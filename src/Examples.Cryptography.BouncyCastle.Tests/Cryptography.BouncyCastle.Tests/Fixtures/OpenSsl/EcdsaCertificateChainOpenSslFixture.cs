@@ -20,7 +20,7 @@ public class EcdsaCertificateChainOpenSslFixture(bool includePrivateKeys = false
 
         if (includePrivateKeys)
         {
-            EndEntityPrivateKey = AsymmetricCipherKeyPairLoader.LoadFromPem(
+            EndEntityKeyPair = AsymmetricCipherKeyPairLoader.LoadFromPem(
                 await File.ReadAllTextAsync(Path.Combine(dir, "example.ecdsa.key"),
                     TestContext.Current.CancellationToken));
         }
@@ -35,12 +35,12 @@ public class EcdsaCertificateChainOpenSslFixture(bool includePrivateKeys = false
     private readonly CaCertificatesOpenSslFixture _caCertificates = new(includePrivateKeys);
 
     public X509Certificate RootCaCertificate => _caCertificates.RootCaCertificate;
-    public AsymmetricCipherKeyPair? RootCaPrivateKey => _caCertificates.RootCaPrivateKey;
+    public AsymmetricCipherKeyPair? RootCaKeyPair => _caCertificates.RootCaKeyPair;
 
     public X509Certificate IntermediateCaCertificate => _caCertificates.IntermediateCaCertificate;
-    public AsymmetricCipherKeyPair? IntermediateCaPrivateKey => _caCertificates.IntermediateCaPrivateKey;
+    public AsymmetricCipherKeyPair? IntermediateCaKeyPair => _caCertificates.IntermediateCaKeyPair;
 
     public X509Certificate EndEntityCertificate { get; private set; } = default!;
-    public AsymmetricCipherKeyPair? EndEntityPrivateKey { get; private set; }
+    public AsymmetricCipherKeyPair? EndEntityKeyPair { get; private set; }
 
 }

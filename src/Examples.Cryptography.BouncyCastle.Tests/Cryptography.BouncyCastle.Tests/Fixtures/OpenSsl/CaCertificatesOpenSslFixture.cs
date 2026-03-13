@@ -21,11 +21,11 @@ public class CaCertificatesOpenSslFixture(bool includePrivateKeys = false) : IAs
 
         if (includePrivateKeys)
         {
-            RootCaPrivateKey = AsymmetricCipherKeyPairLoader.LoadFromPem(
+            RootCaKeyPair = AsymmetricCipherKeyPairLoader.LoadFromPem(
                 await File.ReadAllTextAsync(Path.Combine(dir, "example.ca-root.key"),
                     TestContext.Current.CancellationToken));
 
-            IntermediateCaPrivateKey = AsymmetricCipherKeyPairLoader.LoadFromPem(
+            IntermediateCaKeyPair = AsymmetricCipherKeyPairLoader.LoadFromPem(
                 await File.ReadAllTextAsync(Path.Combine(dir, "example.ca-intermediate.key"),
                     TestContext.Current.CancellationToken));
         }
@@ -38,8 +38,8 @@ public class CaCertificatesOpenSslFixture(bool includePrivateKeys = false) : IAs
     }
 
     public X509Certificate RootCaCertificate { get; private set; } = default!;
-    public AsymmetricCipherKeyPair? RootCaPrivateKey { get; private set; }
+    public AsymmetricCipherKeyPair? RootCaKeyPair { get; private set; }
 
     public X509Certificate IntermediateCaCertificate { get; private set; } = default!;
-    public AsymmetricCipherKeyPair? IntermediateCaPrivateKey { get; private set; }
+    public AsymmetricCipherKeyPair? IntermediateCaKeyPair { get; private set; }
 }

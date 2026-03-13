@@ -33,7 +33,7 @@ public class Pkcs12StoreTests(
         public X509Certificate RootCaCertificate => CertChain.RootCaCertificate;
         public X509Certificate IntermediateCaCertificate => CertChain.IntermediateCaCertificate;
         public X509Certificate EndEntityCertificate => CertChain.EndEntityCertificate;
-        public AsymmetricCipherKeyPair EndEntityPrivateKey => CertChain.EndEntityPrivateKey!;
+        public AsymmetricCipherKeyPair EndEntityKeyPair => CertChain.EndEntityKeyPair!;
     }
 
     private TestFileOutputHelper FileOutput => TestFileOutputHelper.Instance;
@@ -44,7 +44,7 @@ public class Pkcs12StoreTests(
         var rootCert = fixture.RootCaCertificate;
         var caCert = fixture.IntermediateCaCertificate;
         var entityCert = fixture.EndEntityCertificate;
-        var entryKeyPair = fixture.EndEntityPrivateKey;
+        var entryKeyPair = fixture.EndEntityKeyPair;
         var password = PasswordGenerator.Generate(12);
 
         var alias = "My Key";

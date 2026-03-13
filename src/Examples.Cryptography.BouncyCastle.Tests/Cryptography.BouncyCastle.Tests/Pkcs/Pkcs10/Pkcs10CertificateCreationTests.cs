@@ -52,7 +52,7 @@ public class Pkcs10CertificateCreationTests(
 
         public CaCertificatesOpenSslFixture CaCerts { get; } = new(includePrivateKeys: true);
         public X509Certificate SignerCert => CaCerts.IntermediateCaCertificate;
-        public AsymmetricCipherKeyPair SignerKeyPair => CaCerts.IntermediateCaPrivateKey!;
+        public AsymmetricCipherKeyPair SignerKeyPair => CaCerts.IntermediateCaKeyPair!;
     }
 
     private ITestOutputHelper? Output => TestContext.Current.TestOutputHelper;
