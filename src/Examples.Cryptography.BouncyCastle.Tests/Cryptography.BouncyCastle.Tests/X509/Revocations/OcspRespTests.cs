@@ -1,4 +1,5 @@
 using Examples.Cryptography.BouncyCastle.Algorithms;
+using Examples.Cryptography.BouncyCastle.Asn1;
 using Examples.Cryptography.BouncyCastle.X509;
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.Ocsp;
@@ -75,6 +76,8 @@ public class OcspRespTests(OcspFixture fixture) : IClassFixture<OcspFixture>
         return response;
     }
 
+    private ITestOutputHelper? Output => TestContext.Current.TestOutputHelper;
+
     [Fact]
     public void When_CreatingOcspResponse_WithGoodStatus_Then_CertificateIsValid()
     {
@@ -98,6 +101,7 @@ public class OcspRespTests(OcspFixture fixture) : IClassFixture<OcspFixture>
         Assert.Equal(CertificateStatus.Good, basicResponse.Responses[0].GetCertStatus());
 
         Assert.True(response.VerifyStatus());
+        Output?.WriteLine($"\n{response.ToStructureString()}");
     }
 
     [Fact]
@@ -111,7 +115,7 @@ public class OcspRespTests(OcspFixture fixture) : IClassFixture<OcspFixture>
         var request = new OcspReq(requestBytes);
 
         var response = CreateOcspResponse(request, issuerCert, responderKeyPair.Private, responderCert,
-             new RevokedStatus(DateTime.UtcNow, ReasonFlags.KeyCompromise));
+             new RevokedStatus(DateTime.UtcNow, CrlReason.KeyCompromise));
 
         Assert.NotNull(response);
         response.Validate(request, issuerCert);
@@ -122,8 +126,9 @@ public class OcspRespTests(OcspFixture fixture) : IClassFixture<OcspFixture>
         Assert.NotNull(basicResponse);
         Assert.NotEmpty(basicResponse.Responses);
         var revoked = Assert.IsType<RevokedStatus>(basicResponse.Responses[0].GetCertStatus());
-        Assert.Equal(ReasonFlags.KeyCompromise, revoked.RevocationReason);
+        Assert.Equal(CrlReason.KeyCompromise, revoked.RevocationReason);
 
         Assert.False(response.VerifyStatus());
+        Output?.WriteLine($"\n{response.ToStructureString()}");
     }
 }
