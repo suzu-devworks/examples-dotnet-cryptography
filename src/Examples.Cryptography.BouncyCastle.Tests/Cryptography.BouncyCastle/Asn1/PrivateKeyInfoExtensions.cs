@@ -66,7 +66,7 @@ public static class PrivateKeyInfoExtensions
         output.WriteLine("PrivateKeyInfo ::= {");
         output.WriteLine($"             version : {privateKeyInfo.Version}");
         output.WriteLine($" privateKeyAlgorithm : {privateKeyInfo.PrivateKeyAlgorithm.Algorithm}");
-        output.WriteLine($"          privateKey : {privateKeyInfo.ParsePrivateKey()}");
+        output.WriteLine($"          privateKey : {privateKeyInfo.PrivateKey}");
         output.WriteLine($"      attributes [0] : {privateKeyInfo.Attributes}");
         output.WriteLine($"       publicKey [1] : {privateKeyInfo.ParsePublicKey()}");
         output.WriteLine("}");
