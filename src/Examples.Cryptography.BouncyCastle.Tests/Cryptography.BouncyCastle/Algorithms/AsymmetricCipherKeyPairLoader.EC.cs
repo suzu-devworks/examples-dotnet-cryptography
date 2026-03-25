@@ -38,7 +38,7 @@ public static partial class AsymmetricCipherKeyPairLoader
 
             // RFC 5915 - Elliptic Curve Private Key Structure
             // https://datatracker.ietf.org/doc/html/rfc5915#section-3
-            //
+
             // ```asn.1
             // ECPrivateKey ::= SEQUENCE {
             //      version        INTEGER { ecPrivkeyVer1(1) } (ecPrivkeyVer1),
@@ -106,8 +106,6 @@ public static partial class AsymmetricCipherKeyPairLoader
         // RFC 5915 - Elliptic Curve Private Key Structure
         // https://datatracker.ietf.org/doc/html/rfc5915#appendix-A
 
-        // Appendix A.  ASN.1 Module
-        //
         // ```asn.1
         // ECPrivateKey::= SEQUENCE {
         //      version         INTEGER { ecPrivkeyVer1(1) } (ecPrivkeyVer1),
@@ -122,8 +120,6 @@ public static partial class AsymmetricCipherKeyPairLoader
         // RFC 5208 - Public-Key Cryptography Standards (PKCS) #8
         // https://datatracker.ietf.org/doc/html/rfc5208#appendix-A
 
-        // Appendix A.  ASN.1 Syntax
-        //
         // ```asn.1
         // PrivateKeyInfo::= SEQUENCE {
         //      version             Version,
@@ -143,8 +139,6 @@ public static partial class AsymmetricCipherKeyPairLoader
         // RFC 5480: Elliptic Curve Cryptography Subject Public Key Information
         // https://datatracker.ietf.org/doc/html/rfc5480#section-2
 
-        // 2.  Subject Public Key Information Fields
-        //
         // ```asn.1
         // SubjectPublicKeyInfo::= SEQUENCE  {
         //      algorithm           AlgorithmIdentifier,

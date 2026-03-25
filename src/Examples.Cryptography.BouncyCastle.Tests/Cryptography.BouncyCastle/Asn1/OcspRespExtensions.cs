@@ -19,19 +19,18 @@ public static class OcspRespExtensions
     public static string ToStructureString(this OcspResp response)
     {
         using var writer = new StringWriter();
-        response.WriteStructure(writer);
+        WriteStructure(writer, response);
         return writer.ToString();
     }
 
     /// <summary>
     /// Writes the structure of the <see cref="OcspResp"/> to the provided <see cref="TextWriter"/>.
     /// </summary>
+    /// <param name="writer">The <see cref="TextWriter"/> to write the structure to.</param>
     /// <param name="response">The <see cref="OcspResp"/> instance.</param>
-    /// <param name="output">The <see cref="TextWriter"/> to write the structure to.</param>
-    public static void WriteStructure(this OcspResp response, TextWriter output)
+    public static void WriteStructure(TextWriter writer, OcspResp response)
     {
         // RFC 6960 X.509 Internet Public Key Infrastructure Online Certificate Status Protocol - OCSP
-        // 4.2 Response Syntax
         // https://datatracker.ietf.org/doc/html/rfc6960#section-4.2
 
         // ```asn.1
@@ -50,9 +49,9 @@ public static class OcspRespExtensions
         //  }
         // ```
         var ocspResponse = OcspResponse.GetInstance(response.GetEncoded());
-        output.WriteLine($"OCSPResponse ::= {{ ");
-        output.WriteLine($"      responseStatus : {ocspResponse.ResponseStatus.Value}");
-        output.WriteLine($"   responseBytes [0] : ... ");
+        writer.WriteLine($"OCSPResponse ::= {{ ");
+        writer.WriteLine($"          responseStatus: {ocspResponse.ResponseStatus.Value}");
+        writer.WriteLine($"       responseBytes [0]: ... ");
 
         // ```asn.1
         // ResponseBytes ::=        SEQUENCE {
@@ -60,8 +59,8 @@ public static class OcspRespExtensions
         //     response        OCTET STRING }
         // ```
         var responseBytes = ocspResponse.ResponseBytes;
-        output.WriteLine($"        responseType : id-pkix-ocsp-basic ({responseBytes.ResponseType})");
-        output.WriteLine($"            response : ... ");
+        writer.WriteLine($"            responseType: id-pkix-ocsp-basic ({responseBytes.ResponseType})");
+        writer.WriteLine($"                response: ... ");
 
         // ```asn.1
         // BasicOCSPResponse       ::= SEQUENCE {
@@ -71,21 +70,31 @@ public static class OcspRespExtensions
         //     certs            [0] EXPLICIT SEQUENCE OF Certificate OPTIONAL }
         // ```
         var basicOcspResponse = BasicOcspResponse.GetInstance(ocspResponse.ResponseBytes.Response.GetOctets());
-        output.WriteLine($"     tbsResponseData : ... ");
-        WriteTbsResponseDataStructure(basicOcspResponse.TbsResponseData, output);
+        writer.WriteLine($"         tbsResponseData: ... ");
+        WriteTbsResponseDataStructure(writer, basicOcspResponse.TbsResponseData);
 
-        output.WriteLine($"  signatureAlgorithm : ... ");
-        WriteAlgorithmIdentifierStructure(basicOcspResponse.SignatureAlgorithm, output);
+        writer.WriteLine($"      signatureAlgorithm: ... ");
+        WriteAlgorithmIdentifierStructure(writer, basicOcspResponse.SignatureAlgorithm);
 
-        output.WriteLine($"           signature : {basicOcspResponse.Signature}");
-        output.WriteLine($"               certs : ... ");
-        WriteCertsStructure(basicOcspResponse.Certs, output);
+        writer.WriteLine($"               signature: {basicOcspResponse.Signature}");
 
-        output.WriteLine($"}} ");
+        if (basicOcspResponse.Certs is not null)
+        {
+            // OPTIONAL
+            writer.WriteLine($"               certs [0]: ... ");
+            foreach (var (cert, index) in basicOcspResponse.Certs.Select((c, i) => (c, i)))
+            {
+                writer.WriteLine($"                        : --- certs[{index}] --- ");
+                WriteX509CertificateStructure(writer, X509CertificateStructure.GetInstance(cert));
+                writer.WriteLine($"                        : --- certs[{index}] end --- ");
+
+            }
+        }
+
+        writer.WriteLine($"}} ");
     }
 
-
-    private static void WriteTbsResponseDataStructure(ResponseData tbsResponseData, TextWriter output)
+    private static void WriteTbsResponseDataStructure(TextWriter writer, ResponseData tbsResponseData)
     {
         // ```asn.1
         // ResponseData ::= SEQUENCE {
@@ -95,20 +104,30 @@ public static class OcspRespExtensions
         //       responses                SEQUENCE OF SingleResponse,
         //       responseExtensions   [1] EXPLICIT Extensions OPTIONAL }
         // ```
-        output.WriteLine($"         version [0] : {tbsResponseData.Version}");
-        output.WriteLine($"         responderID : ... ");
-        WriteResponderIDStructure(tbsResponseData.ResponderID, output);
+        writer.WriteLine($"             version [0]: {tbsResponseData.Version}");
+        writer.WriteLine($"             responderID: ... ");
+        WriteResponderIDStructure(writer, tbsResponseData.ResponderID);
 
-        output.WriteLine($"          producedAt : {tbsResponseData.ProducedAt.ToDateTime():o}");
+        writer.WriteLine($"              producedAt: {tbsResponseData.ProducedAt.ToDateTime():o}");
 
-        output.WriteLine($"           responses : ... ");
-        WriteSingleResponsesStructure(tbsResponseData.Responses, output);
+        writer.WriteLine($"               responses: ... ");
+        WriteSingleResponsesStructure(writer, tbsResponseData.Responses);
 
-        output.WriteLine($"  responseExtensions : ... ");
-        WriteExtensionsStructure(tbsResponseData.ResponseExtensions, output);
+        if (tbsResponseData.ResponseExtensions is not null)
+        {
+            // OPTIONAL
+            writer.WriteLine($"  responseExtensions [1]: ... ");
+            foreach (var (oid, index) in tbsResponseData.ResponseExtensions.GetExtensionOids().Select((o, i) => (o, i)))
+            {
+                var extension = tbsResponseData.ResponseExtensions.GetExtension(oid);
+                writer.WriteLine($"                        : --- responseExtensions[{index}] --- ");
+                WriteX509ExtensionStructure(writer, oid, extension);
+                writer.WriteLine($"                        : --- responseExtensions[{index}] end --- ");
+            }
+        }
     }
 
-    private static void WriteResponderIDStructure(ResponderID responderID, TextWriter output)
+    private static void WriteResponderIDStructure(TextWriter writer, ResponderID responderID)
     {
         // ```asn.1
         // ResponderID ::= CHOICE {
@@ -120,15 +139,15 @@ public static class OcspRespExtensions
 
         if (responderID.Name is not null)
         {
-            output.WriteLine($"              byName : {responderID.Name}");
+            writer.WriteLine($"                  byName: {responderID.Name}");
         }
         else
         {
-            output.WriteLine($"              byKey : {responderID.GetKeyHash()?.ToBase64String()}");
+            writer.WriteLine($"                   byKey: {responderID.GetKeyHash()?.ToBase64String()}");
         }
     }
 
-    private static void WriteSingleResponsesStructure(Asn1Sequence responses, TextWriter output)
+    private static void WriteSingleResponsesStructure(TextWriter writer, Asn1Sequence responses)
     {
         // ```asn.1
         // SingleResponse ::= SEQUENCE {
@@ -148,27 +167,49 @@ public static class OcspRespExtensions
         //       revocationReason    [0]     EXPLICIT CRLReason OPTIONAL }
         //
         // UnknownInfo ::= NULL
+        //
+        // Extensions  ::=  SEQUENCE SIZE (1..MAX) OF Extension
         // ```
         if (responses.Count == 0)
         {
-            output.WriteLine($"                     : ... No responses ...");
+            writer.WriteLine($"                        : ... No responses ...");
             return;
         }
 
         var singleResponses = SingleResponse.GetInstance(responses[0]);
-        output.WriteLine($"              certID : ... ");
-        WriteCertIdStructure(singleResponses.CertId, output);
+        writer.WriteLine($"                  certID: ... ");
+        WriteCertIdStructure(writer, singleResponses.CertId);
 
-        output.WriteLine($"          certStatus : {GetCertStatusText(singleResponses.CertStatus)}");
+        writer.WriteLine($"              certStatus: {GetCertStatusText(singleResponses.CertStatus)}");
         if (singleResponses.CertStatus.Status is RevokedInfo revoked)
         {
-            output.WriteLine($"      revocationTime : {revoked.RevocationTime.ToDateTime():o}");
-            output.WriteLine($"revocationReason [0] : {revoked.RevocationReason}");
+            writer.WriteLine($"          revocationTime: {revoked.RevocationTime.ToDateTime():o}");
+            if (revoked.RevocationReason is not null)
+            {
+                // OPTIONAL
+                writer.WriteLine($"    revocationReason [0]: {revoked.RevocationReason}");
+            }
         }
-        output.WriteLine($"          thisUpdate : {singleResponses.ThisUpdate.ToDateTime():o}");
-        output.WriteLine($"      nextUpdate [0] : {singleResponses.NextUpdate?.ToDateTime():o}");
-        output.WriteLine($"singleExtensions [1] : ... ");
-        WriteExtensionsStructure(singleResponses.SingleExtensions, output);
+
+        writer.WriteLine($"              thisUpdate: {singleResponses.ThisUpdate.ToDateTime():o}");
+
+        if (singleResponses.NextUpdate is not null)
+        {
+            // OPTIONAL
+            writer.WriteLine($"              nextUpdate: {singleResponses.NextUpdate.ToDateTime():o}");
+        }
+
+        if (singleResponses.SingleExtensions is not null)
+        {
+            // OPTIONAL
+            writer.WriteLine($"    singleExtensions [1]: ... ");
+            foreach (var (oid, index) in singleResponses.SingleExtensions.GetExtensionOids().Select((o, i) => (o, i)))
+            {
+                writer.WriteLine($"                        : --- singleExtensions[{index}] --- ");
+                WriteX509ExtensionStructure(writer, oid, singleResponses.SingleExtensions.GetExtension(oid));
+                writer.WriteLine($"                        : --- singleExtensions[{index}] end --- ");
+            }
+        }
 
         static string? GetCertStatusText(CertStatus certStatus)
         {
@@ -182,59 +223,56 @@ public static class OcspRespExtensions
         }
     }
 
-    private static void WriteCertIdStructure(CertID certId, TextWriter output)
+    private static void WriteCertIdStructure(TextWriter writer, CertID certId)
     {
         // ```asn.1
         // CertID ::= SEQUENCE {
-        //       hashAlgorithm           AlgorithmIdentifier
+        //
+        //      hashAlgorithm           AlgorithmIdentifier
         //                                   { DIGEST - ALGORITHM, { ...} },
         //       issuerNameHash          OCTET STRING, -- Hash of issuer's DN
         //       issuerKeyHash           OCTET STRING, -- Hash of issuer's public key
         //       serialNumber            CertificateSerialNumber }
         // ```
-        output.WriteLine($"       hashAlgorithm : ... ");
-        WriteAlgorithmIdentifierStructure(certId.HashAlgorithm, output);
+        writer.WriteLine($"           hashAlgorithm: ... ");
+        WriteAlgorithmIdentifierStructure(writer, certId.HashAlgorithm);
 
-        output.WriteLine($"      issuerNameHash : {certId.IssuerNameHash}");
-        output.WriteLine($"       issuerKeyHash : {certId.IssuerKeyHash}");
-        output.WriteLine($"        serialNumber : {certId.SerialNumber}");
+        writer.WriteLine($"          issuerNameHash: {certId.IssuerNameHash}");
+        writer.WriteLine($"           issuerKeyHash: {certId.IssuerKeyHash}");
+        writer.WriteLine($"            serialNumber: {certId.SerialNumber}");
     }
 
-    private static void WriteAlgorithmIdentifierStructure(AlgorithmIdentifier hashAlgorithm, TextWriter output)
+    private static void WriteAlgorithmIdentifierStructure(TextWriter writer, AlgorithmIdentifier hashAlgorithm)
     {
         // RFC 5280 Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile
-        // 4.1.1.2.  signatureAlgorithm
         // https://datatracker.ietf.org/doc/html/rfc5280#section-4.1.1.2
 
         // ```asn.1
-        //    AlgorithmIdentifier  ::=  SEQUENCE  {
-        //         algorithm               OBJECT IDENTIFIER,
-        //         parameters              ANY DEFINED BY algorithm OPTIONAL  }
+        // AlgorithmIdentifier  ::=  SEQUENCE  {
+        //      algorithm               OBJECT IDENTIFIER,
+        //      parameters              ANY DEFINED BY algorithm OPTIONAL  }
         // ```
-        output.WriteLine($"           algorithm : {hashAlgorithm.Algorithm}");
-        output.WriteLine($"          parameters : {hashAlgorithm.Parameters}");
-    }
-
-    private static void WriteCertsStructure(Asn1Sequence certs, TextWriter output)
-    {
-        for (int i = 0; i < certs.Count; i++)
+        writer.WriteLine($"               algorithm: {hashAlgorithm.Algorithm}");
+        if (hashAlgorithm.Parameters is not null)
         {
-            var cert = X509CertificateStructure.GetInstance(certs[i]);
-            output.WriteLine($"                 [{i}] : issuer : {cert.Issuer}");
-            output.WriteLine($"                     : serialNumber : {cert.SerialNumber}");
-            output.WriteLine($"                     : subject : {cert.Subject}");
+            // OPTIONAL
+            writer.WriteLine($"              parameters: {hashAlgorithm.Parameters}");
         }
     }
 
-    private static void WriteExtensionsStructure(X509Extensions responseExtensions, TextWriter output)
+    private static void WriteX509CertificateStructure(TextWriter writer, X509CertificateStructure certificate)
+    {
+        writer.WriteLine($"                  issuer: {certificate.Issuer}");
+        writer.WriteLine($"            serialNumber: {certificate.SerialNumber.LongValueExact:x}");
+        writer.WriteLine($"                 subject: {certificate.Subject}");
+    }
+
+    private static void WriteX509ExtensionStructure(TextWriter writer, DerObjectIdentifier oid, X509Extension extension)
     {
         // RFC 5280 Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile
-        // 4.1.  Basic Certificate Fields
         // https://datatracker.ietf.org/doc/html/rfc5280#section-4.1
 
         // ```asn.1
-        // Extensions  ::=  SEQUENCE SIZE (1..MAX) OF Extension
-        //
         // Extension  ::=  SEQUENCE  {
         //      extnID      OBJECT IDENTIFIER,
         //      critical    BOOLEAN DEFAULT FALSE,
@@ -245,14 +283,9 @@ public static class OcspRespExtensions
         // }
         // ```
         // spell-checker: words extn
-        var index = 0;
-        foreach (var oid in responseExtensions?.GetExtensionOids() ?? [])
-        {
-            var extension = responseExtensions!.GetExtension(oid);
-            output.WriteLine($"                 [{index}] : extnID : {oid.Id}");
-            output.WriteLine($"                     : critical : {extension.IsCritical}");
-            output.WriteLine($"                     : extnValue : {extension.Value}");
-            ++index;
-        }
+
+        writer.WriteLine($"                  extnID: {oid.Id}");
+        writer.WriteLine($"                critical: {extension.IsCritical}");
+        writer.WriteLine($"               extnValue: {extension.Value}");
     }
 }

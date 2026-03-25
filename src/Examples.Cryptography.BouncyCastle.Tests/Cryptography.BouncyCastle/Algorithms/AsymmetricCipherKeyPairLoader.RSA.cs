@@ -23,8 +23,6 @@ public static partial class AsymmetricCipherKeyPairLoader
         // RFC 8017 - PKCS #1: RSA Cryptography Specifications Version 2.2
         // https://datatracker.ietf.org/doc/html/rfc8017#appendix-A
 
-        // A.1.2.  RSA Private Key Syntax
-        //
         // ```asn.1
         // RSAPrivateKey::= SEQUENCE {
         //      version         Version,

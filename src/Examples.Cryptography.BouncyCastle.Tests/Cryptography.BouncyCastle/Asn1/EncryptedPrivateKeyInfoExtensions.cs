@@ -15,19 +15,18 @@ public static class EncryptedPrivateKeyInfoExtensions
     public static string ToStructureString(this EncryptedPrivateKeyInfo encryptedPrivateKeyInfo)
     {
         using var writer = new StringWriter();
-        encryptedPrivateKeyInfo.WriteStructure(writer);
+        WriteStructure(writer, encryptedPrivateKeyInfo);
         return writer.ToString();
     }
 
     /// <summary>
     /// Writes the structure of the <see cref="EncryptedPrivateKeyInfo"/> to the provided <see cref="TextWriter"/>.
     /// </summary>
+    /// <param name="writer">The <see cref="TextWriter"/> to write the structure to.</param>
     /// <param name="encryptedPrivateKeyInfo">The <see cref="EncryptedPrivateKeyInfo"/> instance to write.</param>
-    /// <param name="output">The <see cref="TextWriter"/> to write the structure to.</param>
-    public static void WriteStructure(this EncryptedPrivateKeyInfo encryptedPrivateKeyInfo, TextWriter output)
+    public static void WriteStructure(TextWriter writer, EncryptedPrivateKeyInfo encryptedPrivateKeyInfo)
     {
         // RFC 5958 - Asymmetric Key Packages
-        // 3.  Encrypted Private Key Info
         // https://datatracker.ietf.org/doc/html/rfc5958#section-3
 
         // ```asn.1
@@ -42,9 +41,9 @@ public static class EncryptedPrivateKeyInfoExtensions
         // EncryptedData ::= OCTET STRING
         // ```
 
-        output.WriteLine("EncryptedPrivateKeyInfo ::= {");
-        output.WriteLine($" encryptionAlgorithm : {encryptedPrivateKeyInfo.EncryptionAlgorithm.Algorithm}");
-        output.WriteLine($"       encryptedData : {encryptedPrivateKeyInfo.EncryptedData}");
-        output.WriteLine("}");
+        writer.WriteLine($"EncryptedPrivateKeyInfo ::= {{");
+        writer.WriteLine($"     encryptionAlgorithm: {encryptedPrivateKeyInfo.EncryptionAlgorithm.Algorithm}");
+        writer.WriteLine($"           encryptedData: {encryptedPrivateKeyInfo.EncryptedData}");
+        writer.WriteLine($"}}");
     }
 }

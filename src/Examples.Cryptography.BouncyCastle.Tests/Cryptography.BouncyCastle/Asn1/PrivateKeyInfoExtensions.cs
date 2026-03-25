@@ -16,19 +16,18 @@ public static class PrivateKeyInfoExtensions
     public static string ToStructureString(this PrivateKeyInfo privateKeyInfo)
     {
         using var writer = new StringWriter();
-        privateKeyInfo.WriteStructure(writer);
+        WriteStructure(writer, privateKeyInfo);
         return writer.ToString();
     }
 
     /// <summary>
     /// Writes the structure of the <see cref="PrivateKeyInfo"/> to the provided <see cref="TextWriter"/>.
     /// </summary>
+    /// <param name="writer">The <see cref="TextWriter"/> to write the structure to.</param>
     /// <param name="privateKeyInfo">The <see cref="PrivateKeyInfo"/> instance to write.</param>
-    /// <param name="output">The <see cref="TextWriter"/> to write the structure to.</param>
-    public static void WriteStructure(this PrivateKeyInfo privateKeyInfo, TextWriter output)
+    public static void WriteStructure(TextWriter writer, PrivateKeyInfo privateKeyInfo)
     {
         // RFC 5958 - Asymmetric Key Packages
-        // 2. Asymmetric Key Package CMS Content Type
         // https://datatracker.ietf.org/doc/html/rfc5958#section-2
 
         // ```asn.1
@@ -63,12 +62,23 @@ public static class PrivateKeyInfoExtensions
         // Attributes ::= SET OF Attribute { { OneAsymmetricKeyAttributes } }
         // ```
 
-        output.WriteLine("PrivateKeyInfo ::= {");
-        output.WriteLine($"             version : {privateKeyInfo.Version}");
-        output.WriteLine($" privateKeyAlgorithm : {privateKeyInfo.PrivateKeyAlgorithm.Algorithm}");
-        output.WriteLine($"          privateKey : {privateKeyInfo.PrivateKey}");
-        output.WriteLine($"      attributes [0] : {privateKeyInfo.Attributes}");
-        output.WriteLine($"       publicKey [1] : {privateKeyInfo.ParsePublicKey()}");
-        output.WriteLine("}");
+        writer.WriteLine("PrivateKeyInfo ::= {");
+        writer.WriteLine($"                 version: {privateKeyInfo.Version}");
+        writer.WriteLine($"     privateKeyAlgorithm: {privateKeyInfo.PrivateKeyAlgorithm.Algorithm}");
+        writer.WriteLine($"              privateKey: {privateKeyInfo.PrivateKey}");
+
+        if (privateKeyInfo.Attributes is not null)
+        {
+            // OPTIONAL
+            writer.WriteLine($"            attributes [0]: {privateKeyInfo.Attributes}");
+        }
+
+        if (privateKeyInfo.ParsePublicKey() is not null)
+        {
+            // OPTIONAL
+            writer.WriteLine($"           publicKey [1]: {privateKeyInfo.ParsePublicKey()}");
+        }
+
+        writer.WriteLine("}");
     }
 }
