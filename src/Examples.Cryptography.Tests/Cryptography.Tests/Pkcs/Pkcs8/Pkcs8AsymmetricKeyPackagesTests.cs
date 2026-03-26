@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using Examples.Cryptography.Extensions;
+using Examples.Cryptography.Tests.Fixtures.OpenSsl;
 using Examples.Cryptography.Tests.Helpers;
 
 namespace Examples.Cryptography.Tests.Pkcs.Pkcs8;
@@ -45,12 +46,12 @@ public class Pkcs8AsymmetricKeyPackagesTests(
 
         /* With OpenSSL use the following command:
         ```shell
-        openssl pkcs8 -topk8 -nocrypt -in ecdsa.private.key -out ecdsa.private.key.pk8
+        openssl pkcs8 -topk8 -nocrypt -in ecdsa.private.key -out ecdsa.private.key.p8
         ```
         */
         var pem = original.ExportPkcs8PrivateKeyPem();
         Output?.WriteLine($"{pem}");
-        await FileOutput.WriteFileAsync("ecdsa.private.key.pk8", pem,
+        await FileOutput.WriteFileAsync("ecdsa.private.p8", pem,
             TestContext.Current.CancellationToken);
 
         using var importing = ECDsa.Create();
@@ -115,7 +116,9 @@ public class Pkcs8AsymmetricKeyPackagesTests(
 
         var pem = original.ExportEncryptedPkcs8PrivateKeyPem(password.AsSpan(), parameters);
         Output?.WriteLine($"{pem}");
-        await FileOutput.WriteFileAsync("ecdsa.private.key.p8enc", pem,
+        await FileOutput.WriteFileAsync("ecdsa.private.p8.enc", pem,
+            TestContext.Current.CancellationToken);
+        await FileOutput.WriteFileAsync("ecdsa.private.p8.enc.secret", password,
             TestContext.Current.CancellationToken);
 
         using var importing = ECDsa.Create();

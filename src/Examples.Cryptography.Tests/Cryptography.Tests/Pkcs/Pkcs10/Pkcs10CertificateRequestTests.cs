@@ -143,7 +143,6 @@ public class Pkcs10CertificateRequestTests(
         AssertSame(original, imported);
     }
 
-
     [Fact]
     public async Task When_CreatedPemAndLoaded_Then_CertificateRequestIsRestored()
     {

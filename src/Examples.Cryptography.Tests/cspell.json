@@ -12,6 +12,7 @@
     "extfile",
     "genkey",
     "hmac",
+    "HMACSHA",
     "inkey",
     "nocrl",
     "nocrypt",

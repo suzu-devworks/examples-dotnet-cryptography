@@ -3,7 +3,16 @@
   "ignorePaths": [],
   "dictionaryDefinitions": [],
   "dictionaries": [],
-  "words": [],
+  "words": [
+    "ADCA",
+    "ciphertext",
+    "Codebook",
+    "Crls",
+    "Extenmsion",
+    "Oids",
+    "Pkix",
+    "Threefish"
+  ],
   "ignoreWords": [],
   "import": [
     "../../.vscode/cspell.json"
