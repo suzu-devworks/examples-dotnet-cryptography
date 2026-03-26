@@ -1,5 +1,7 @@
 using System.Text;
+using Examples.Cryptography.BouncyCastle.Asn1;
 using Examples.Cryptography.BouncyCastle.X509;
+using Org.BouncyCastle.Asn1.Cmp;
 using Org.BouncyCastle.Asn1.Nist;
 using Org.BouncyCastle.Asn1.Tsp;
 using Org.BouncyCastle.Asn1.X509;
@@ -21,6 +23,55 @@ public class TimeStampTokenTests(
     TimeStampAuthorityFixture fixture
     ) : IClassFixture<TimeStampAuthorityFixture>
 {
+
+    private static void AssertContent(TimeStampToken timeStampToken)
+    {
+        // SignerIdentifier
+        var sid = timeStampToken.SignerID;
+        Assert.Equal("C=JP,CN=Test CA root for TSA", sid.Issuer.ToString());
+        Assert.NotEqual(BigInteger.Zero, sid.SerialNumber);
+        Assert.Null(sid.SubjectKeyIdentifier);
+
+        var certs = timeStampToken.GetCertificates().EnumerateMatches(null);
+        var crls = timeStampToken.GetCrls().EnumerateMatches(null);
+        var sAttrs = timeStampToken.SignedAttributes;
+        var uAttrs = timeStampToken.UnsignedAttributes;
+
+        // ContentInfo
+        var content = timeStampToken.ToCmsSignedData().ContentInfo;
+        Assert.Equal("1.2.840.113549.1.7.2", content.ContentType.Id); // id-signedData
+
+        // SignedData
+        var cms = timeStampToken.ToCmsSignedData();
+        Assert.Equal(3, cms.Version);
+        Assert.Equal("2.16.840.1.101.3.4.2.3", cms.GetDigestAlgorithms().Single().Algorithm.Id); // id-sha512
+        Assert.Equal("1.2.840.113549.1.9.16.1.4", cms.SignedContentType.Id); // id-ct-TSTInfo
+        Assert.Equal(certs, cms.GetCertificates().EnumerateMatches(null));
+        Assert.Equal(crls, cms.GetCrls().EnumerateMatches(null));
+
+        // SignerInfo
+        var signer = timeStampToken.ToCmsSignedData().GetSignerInfos().Single();
+        Assert.Equal(1, signer.Version);
+        Assert.Equal(sid, signer.SignerID);
+        Assert.Equal("2.16.840.1.101.3.4.2.3", signer.DigestAlgorithmID.Algorithm.Id); // id-sha512
+        Assert.Equal(sAttrs, signer.SignedAttributes);
+        Assert.Equal("1.2.840.10045.4.3.4", signer.SignatureAlgorithm.Algorithm.Id); // ecdsa-with-SHA512
+        Assert.Equal(uAttrs, signer.UnsignedAttributes);
+
+        // TSTInfo
+        var tst = timeStampToken.TimeStampInfo;
+        Assert.Equal("0.1.2.3.4.5", tst.Policy);
+        Assert.Equal("2.16.840.1.101.3.4.2.3", tst.MessageImprintAlgOid); // id-sha512
+        Assert.Equal(BigInteger.One, tst.SerialNumber);
+        Assert.False(tst.IsOrdered);
+        Assert.Equal(BigInteger.Zero, tst.Nonce);
+        Assert.Null(tst.Tsa);
+
+        var tstTime = timeStampToken.TimeStampInfo.GenTime;
+        Assert.True(DateTime.UtcNow.AddSeconds(-10) < tstTime);
+        Assert.True(tstTime < DateTime.UtcNow.AddSeconds(10));
+    }
+
     private ITestOutputHelper? Output => TestContext.Current.TestOutputHelper;
 
     [Fact]
@@ -50,17 +101,18 @@ public class TimeStampTokenTests(
 
         var response = new TimeStampResponse(responseBytes);
 
-        Output?.WriteLine($"TimeStampResponse:\n{response.TimeStampToken}");
+        Output?.WriteLine($"TimeStampResponse:\n{response.TimeStampToken.ToStructureString()}");
+
+        // Validate the response against the original request.
+        response.Validate(request);
 
         // If you check with the TSA certificate, it will be successful.
         response.TimeStampToken.Validate(fixture.TsaCertificate);
 
         // Assert:
 
-        // TODO
-        var tstTime = response.TimeStampToken.TimeStampInfo.GenTime;
-        Assert.NotEqual(DateTime.MinValue, tstTime);
-        Assert.NotEqual(DateTime.MaxValue, tstTime);
+        Assert.Equal((int)PkiStatus.Granted, response.Status);
+        AssertContent(response.TimeStampToken);
 
         byte[] DoTSAServer(byte[] requestBytes)
         {
@@ -94,4 +146,5 @@ public class TimeStampTokenTests(
             return response.GetEncoded();
         }
     }
+
 }
