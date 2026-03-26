@@ -10,8 +10,8 @@ public static class ECPrivateKeyParametersExtensions
     /// <summary>
     /// Creates Public key as <see cref="ECPublicKeyParameters"/> from the given <see cref="ECPrivateKeyParameters"/>.
     /// </summary>
-    /// <param name="privateKey"></param>
-    /// <returns></returns>
+    /// <param name="privateKey">The EC private key parameters used to generate the public key.</param>
+    /// <returns>The corresponding EC public key parameters derived from the specified private key.</returns>
     public static ECPublicKeyParameters GeneratePublicKey(this ECPrivateKeyParameters privateKey)
     {
         // 1. Get the private key value as D

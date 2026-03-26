@@ -23,8 +23,8 @@ public static class TimeStampTokenExtensions
     /// <summary>
     /// Writes the structure of the <see cref="TimeStampToken"/> to the provided <see cref="TextWriter"/>.
     /// </summary>
-    /// <param name="writer"></param>
-    /// <param name="timeStampToken"></param>
+    /// <param name="writer">The text writer to write the structure to.</param>
+    /// <param name="timeStampToken">The timestamp token to write the structure for.</param>
     public static void WriteStructure(TextWriter writer, TimeStampToken timeStampToken)
     {
         // RFC 3161 Internet X.509 Public Key Infrastructure Time - Stamp Protocol(TSP)
