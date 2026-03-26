@@ -14,20 +14,17 @@ public class Sha3DigestTests
     public static readonly TheoryData<string, int, string> DigestsData = new()
     {
         {
-            "SHA3_256",
-            SHA3_256.HashSizeInBytes,
+            "SHA3-256", SHA3_256.HashSizeInBytes,
             // spell-checker: disable-next-line
             "X+Qp/elj/YikFAdxFbiGKs1Quimp4o9jqwF2vORxv5I="
         },
         {
-            "SHA3_384",
-            SHA3_384.HashSizeInBytes,
+            "SHA3-384", SHA3_384.HashSizeInBytes,
             // spell-checker: disable-next-line
             "V4yg3n/s2On98xRokf9UJpq01+GLHAcd70/QscStvbtu8LWDLC5wrrl+CFgFHetN"
         },
         {
-            "SHA3_512",
-            SHA3_512.HashSizeInBytes,
+            "SHA3-512", SHA3_512.HashSizeInBytes,
             // spell-checker: disable-next-line
             "URJaJroURp7sRHxiRV6rIRrGk8Dc8KUIfE39ObkWuSm8Qqz3UAfHBtz25ppRcyV+vmrA+cO32A2VdimDHgGqVQ=="
         },
@@ -35,15 +32,15 @@ public class Sha3DigestTests
 
     [Theory]
     [MemberData(nameof(DigestsData))]
-    public void When_HashedWithHashData_Then_DigestMatchesExpectedValue(string name, int length, string expected)
+    public void When_LargeDataIsHashed_WithHashData_Then_DigestMatchesExpectedValue(string name, int length, string expected)
     {
         var input = LargeData;
 
         var actual = name switch
         {
-            "SHA3_256" => SHA3_256.HashData(input),
-            "SHA3_384" => SHA3_384.HashData(input),
-            "SHA3_512" => SHA3_512.HashData(input),
+            "SHA3-256" => SHA3_256.HashData(input),
+            "SHA3-384" => SHA3_384.HashData(input),
+            "SHA3-512" => SHA3_512.HashData(input),
             _ => throw new ApplicationException("no expected pattern.")
         };
 
@@ -53,7 +50,7 @@ public class Sha3DigestTests
 
     [Theory]
     [MemberData(nameof(DigestsData))]
-    public async Task When_HashedWithHashDataAsync_Then_DigestMatchesExpectedValue(string name, int length, string expected)
+    public async Task When_LargeDataIsHashed_WithHashDataAsync_Then_DigestMatchesExpectedValue(string name, int length, string expected)
     {
         var input = LargeData;
 
@@ -62,9 +59,9 @@ public class Sha3DigestTests
         var token = TestContext.Current.CancellationToken;
         var task = name switch
         {
-            "SHA3_256" => SHA3_256.HashDataAsync(stream, actual, token),
-            "SHA3_384" => SHA3_384.HashDataAsync(stream, actual, token),
-            "SHA3_512" => SHA3_512.HashDataAsync(stream, actual, token),
+            "SHA3-256" => SHA3_256.HashDataAsync(stream, actual, token),
+            "SHA3-384" => SHA3_384.HashDataAsync(stream, actual, token),
+            "SHA3-512" => SHA3_512.HashDataAsync(stream, actual, token),
             _ => throw new ApplicationException("no expected pattern.")
         };
         var len = await task;
@@ -76,15 +73,15 @@ public class Sha3DigestTests
 
     [Theory]
     [MemberData(nameof(DigestsData))]
-    public async Task When_HashedWithComputeHashAsync_Then_DigestMatchesExpectedValue(string name, int length, string expected)
+    public async Task When_LargeDataIsHashed_WithComputeHashAsync_Then_DigestMatchesExpectedValue(string name, int length, string expected)
     {
         var input = LargeData;
 
         using HashAlgorithm hasher = name switch
         {
-            "SHA3_256" => SHA3_256.Create(),
-            "SHA3_384" => SHA3_384.Create(),
-            "SHA3_512" => SHA3_512.Create(),
+            "SHA3-256" => SHA3_256.Create(),
+            "SHA3-384" => SHA3_384.Create(),
+            "SHA3-512" => SHA3_512.Create(),
             _ => throw new ApplicationException("no expected pattern.")
         };
 

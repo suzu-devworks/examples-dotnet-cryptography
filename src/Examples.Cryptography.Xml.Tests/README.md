@@ -2,8 +2,13 @@
 
 ## Table of Contents <!-- omit in toc -->
 
+- [Examples.Cryptography.Xml](#examplescryptographyxml)
 - [Development](#development)
   - [How the project was initialized](#how-the-project-was-initialized)
+
+## Examples.Cryptography.Xml
+
+- [`XmlNamespacesExtensionsTests`](./Cryptography.Xml.Tests/XmlNamespacesExtensionsTests.cs)
 
 ## Development
 

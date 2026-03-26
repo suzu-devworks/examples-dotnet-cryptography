@@ -23,4 +23,3 @@ public class Pkcs7OpenSslFixture : IAsyncLifetime
     public string ContainerPem { get; private set; } = string.Empty;
     public string CertificateCollectionPem { get; private set; } = string.Empty;
 }
-

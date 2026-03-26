@@ -2,9 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>$(LatestFramework)</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
     <RootNamespace>Examples</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup>
+     <NoWarn>$(NoWarn);CA1822;</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,6 +24,10 @@
     <PackageReference Include="BouncyCastle.Cryptography" Version="2.6.2" />
     <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.3.2" />
     <PackageReference Include="xunit.v3.mtp-v2" Version="3.2.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Examples.Cryptography\Examples.Cryptography.csproj" />
   </ItemGroup>
 
 </Project>

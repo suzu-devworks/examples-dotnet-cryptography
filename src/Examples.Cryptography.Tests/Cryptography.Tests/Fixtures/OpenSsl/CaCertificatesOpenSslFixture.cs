@@ -1,5 +1,4 @@
 using System.Security.Cryptography.X509Certificates;
-using Examples.Cryptography.Tests.Helpers;
 
 namespace Examples.Cryptography.Tests.Fixtures.OpenSsl;
 
@@ -17,11 +16,11 @@ public class CaCertificatesOpenSslFixture(bool includePrivateKeys = false) : IAs
         if (includePrivateKeys)
         {
             RootCaCertificate = RootCaCertificate.CopyWithPrivateKey(
-                await TestPrivateKeyLoader.LoadECDsaPrivateKey(
+                await AsymmetricAlgorithmLoader.LoadECDsaPrivateKeyAsync(
                     Path.Combine(dir, "example.ca-root.key"),
                     TestContext.Current.CancellationToken));
             IntermediateCaCertificate = IntermediateCaCertificate.CopyWithPrivateKey(
-                await TestPrivateKeyLoader.LoadECDsaPrivateKey(
+                await AsymmetricAlgorithmLoader.LoadECDsaPrivateKeyAsync(
                     Path.Combine(dir, "example.ca-intermediate.key"),
                     TestContext.Current.CancellationToken));
         }

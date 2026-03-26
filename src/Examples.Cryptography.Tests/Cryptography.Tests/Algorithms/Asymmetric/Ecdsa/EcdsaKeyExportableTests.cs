@@ -57,7 +57,6 @@ public class EcdsaKeyExportableTests(EcdsaKeyFixture fixture) : IClassFixture<Ec
         AssertSameKey(original, imported, includePrivateParameters: true);
     }
 
-
     [Fact]
     public async Task When_ExportedToPemAndImported_Then_PrivateKeyIsRestored()
     {
