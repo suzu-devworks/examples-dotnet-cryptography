@@ -263,7 +263,7 @@ public static class OcspRespExtensions
     private static void WriteX509CertificateStructure(TextWriter writer, X509CertificateStructure certificate)
     {
         writer.WriteLine($"                  issuer: {certificate.Issuer}");
-        writer.WriteLine($"            serialNumber: {certificate.SerialNumber.LongValueExact:x}");
+        writer.WriteLine($"            serialNumber: {certificate.SerialNumber.Value.ToString(16)}");
         writer.WriteLine($"                 subject: {certificate.Subject}");
     }
 

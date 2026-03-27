@@ -202,7 +202,7 @@ public static class TimeStampTokenExtensions
         writer.WriteLine($"          messageImprint: ... ");
         WriteMessageImprintStructure(writer, tstInfo.MessageImprint);
 
-        writer.WriteLine($"            serialNumber: {tstInfo.SerialNumber.LongValueExact:x}");
+        writer.WriteLine($"            serialNumber: {tstInfo.SerialNumber.Value.ToString(16)}");
         writer.WriteLine($"                 genTime: {tstInfo.GenTime.ToDateTime():o}");
 
         if (tstInfo.Accuracy is not null)
@@ -217,7 +217,7 @@ public static class TimeStampTokenExtensions
         if (tstInfo.Nonce is not null)
         {
             // OPTIONAL
-            writer.WriteLine($"                   nonce: {tstInfo.Nonce.LongValueExact:x}");
+            writer.WriteLine($"                   nonce: {tstInfo.Nonce.Value.ToString(16)}");
         }
 
         if (tstInfo.Tsa is not null)
@@ -280,7 +280,7 @@ public static class TimeStampTokenExtensions
     private static void WriteX509CertificateStructure(TextWriter writer, X509CertificateStructure certificate)
     {
         writer.WriteLine($"                  issuer: {certificate.Issuer}");
-        writer.WriteLine($"            serialNumber: {certificate.SerialNumber.LongValueExact:x}");
+        writer.WriteLine($"            serialNumber: {certificate.SerialNumber.Value.ToString(16)}");
         writer.WriteLine($"                 subject: {certificate.Subject}");
     }
 
@@ -295,7 +295,7 @@ public static class TimeStampTokenExtensions
 
             writer.Write($"                        : [{index}]");
             writer.Write($" {entry.RevocationDate.ToDateTime():o}");
-            writer.Write($", {entry.UserCertificate.LongValueExact:x}");
+            writer.Write($", {entry.UserCertificate.Value.ToString(16)}");
             writer.Write($", {reason}");
             writer.WriteLine();
         }
@@ -392,7 +392,7 @@ public static class TimeStampTokenExtensions
 
             writer.WriteLine($"   issuerAndSerialNumber: ... ");
             writer.WriteLine($"                  issuer: {issuerAndSerialNumber.Issuer} ");
-            writer.WriteLine($"            serialNumber: {issuerAndSerialNumber.SerialNumber.LongValueExact:x} ");
+            writer.WriteLine($"            serialNumber: {issuerAndSerialNumber.SerialNumber.Value.ToString(16)} ");
         }
         else
         {
