@@ -66,6 +66,9 @@ public class OcspCommand(OcspHttpClient client)
         Console.Error.WriteLine($"Requesting OCSP status from: {ocspUri}");
         var response = await client.RequestAsync(ocspUri, request, cancellationToken: cancellationToken);
 
+        // Validate the OCSP response (status, signature, nonce, issuer match, time)
+        response.Validate(request, issuerCert);
+
         // Display certificate status summary
         var basicResp = (BasicOcspResp)response.GetResponseObject();
         var single = basicResp.Responses.First();
