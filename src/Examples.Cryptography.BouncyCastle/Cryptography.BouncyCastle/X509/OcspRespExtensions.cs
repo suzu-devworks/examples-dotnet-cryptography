@@ -19,11 +19,16 @@ public static class OcspRespExtensions
     /// <param name="response">The OCSP response to validate.</param>
     /// <param name="request">The original OCSP request.</param>
     /// <param name="issuerCert">The issuer certificate of the certificate being checked.</param>
+    /// <param name="strict">
+    /// Enables additional RFC-oriented checks that may reduce interoperability with public OCSP responders.
+    /// Nonce validation still runs whenever the request includes a nonce.
+    /// </param>
     /// <param name="validatingTime">(Optional) The time at which to validate the OCSP response. Defaults to the current UTC time.</param>
     /// <exception cref="OcspException"></exception>
     public static void Validate(this OcspResp response,
         OcspReq request,
         X509Certificate issuerCert,
+        bool strict = false,
         DateTime? validatingTime = null)
     {
         _ = request ?? throw new ArgumentNullException(nameof(request));
@@ -45,7 +50,7 @@ public static class OcspRespExtensions
             throw new OcspException("Certificate identified does not match.");
         }
 
-        var responderCert = FindAndVerifySigner(basicResp, issuerCert);
+        var responderCert = FindAndVerifySigner(basicResp, issuerCert, strict);
 
         // 2. The signature on the response is valid; (RFC 6960 3.2.2)
         if (!basicResp.Verify(responderCert.GetPublicKey()))
@@ -63,8 +68,7 @@ public static class OcspRespExtensions
 
         // 4. The signer is currently authorized to provide a response for the
         //    certificate in question; (RFC 6960 3.2.4)
-        var eku = responderCert.GetExtendedKeyUsage();
-        if (eku == null || !eku.Contains(KeyPurposeID.id_kp_OCSPSigning))
+        if (strict && !HasOcspSigningExtendedKeyUsage(responderCert))
         {
             throw new OcspException("Responder certificate lacks id-kp-OCSPSigning extension.");
         }
@@ -73,7 +77,7 @@ public static class OcspRespExtensions
         TimeSpan skew = TimeSpan.FromMinutes(5);
 
         // 5. The time at which the status being indicated is known to be
-        //    correct (thisUpdate) is sufficiently recent; (RFC 6960 3
+        //    correct (thisUpdate) is sufficiently recent; (RFC 6960 3.2.5)
         if (single.ThisUpdate > validatingAt.Add(skew))
         {
             throw new OcspException("Response 'thisUpdate' is in the future.");
@@ -87,10 +91,13 @@ public static class OcspRespExtensions
             throw new OcspException("Response 'nextUpdate' has passed. Information is stale.");
         }
 
-        basicResp.ValidateNonce(request);
+        if (strict || HasNonce(basicResp))
+        {
+            basicResp.ValidateNonce(request);
+        }
     }
 
-    private static X509Certificate FindAndVerifySigner(BasicOcspResp basicResp, X509Certificate issuerCert)
+    private static X509Certificate FindAndVerifySigner(BasicOcspResp basicResp, X509Certificate issuerCert, bool strict)
     {
         // A. CA direct signature pattern (issuerCert == responder)
 
@@ -119,14 +126,22 @@ public static class OcspRespExtensions
         responderCert.Verify(issuerCert.GetPublicKey());
 
         // - explicitly designate this authority to another entity
-        var eku = responderCert.GetExtendedKeyUsage();
-        if (eku is null || !eku.Contains(KeyPurposeID.id_kp_OCSPSigning))
+        if (strict && !HasOcspSigningExtendedKeyUsage(responderCert))
         {
             throw new OcspException("Responder certificate lacks id-kp-OCSPSigning extension.");
         }
 
         return responderCert;
     }
+
+    private static bool HasOcspSigningExtendedKeyUsage(X509Certificate certificate)
+    {
+        var eku = certificate.GetExtendedKeyUsage();
+        return eku is not null && eku.Contains(KeyPurposeID.id_kp_OCSPSigning);
+    }
+
+    private static bool HasNonce(BasicOcspResp response)
+        => response.GetExtension(OcspObjectIdentifiers.PkixOcspNonce) is not null;
 
     private static void ValidateNonce(this BasicOcspResp resp, OcspReq req)
     {
@@ -145,8 +160,8 @@ public static class OcspRespExtensions
     /// <summary>
     /// Convenience method to extract the certificate status from an OCSP response.
     /// </summary>
-    /// <param name="response"></param>
-    /// <returns></returns>
+    /// <param name="response">The OCSP response whose certificate status should be verified.</param>
+    /// <returns>True if the certificate status in the response is <see cref="CertificateStatus.Good"/>, otherwise false.</returns>
     /// <exception cref="OcspException"></exception>
     public static bool VerifyStatus(this OcspResp response)
     {

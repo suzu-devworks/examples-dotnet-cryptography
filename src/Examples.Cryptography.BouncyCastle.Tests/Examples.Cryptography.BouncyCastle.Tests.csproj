@@ -22,12 +22,12 @@
 
   <ItemGroup>
     <PackageReference Include="BouncyCastle.Cryptography" Version="2.6.2" />
-    <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.3.2" />
+    <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.5.2" />
     <PackageReference Include="xunit.v3.mtp-v2" Version="3.2.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Examples.Cryptography\Examples.Cryptography.csproj" />
+    <ProjectReference Include="..\Examples.Cryptography.BouncyCastle\Examples.Cryptography.BouncyCastle.csproj" />
   </ItemGroup>
 
 </Project>
