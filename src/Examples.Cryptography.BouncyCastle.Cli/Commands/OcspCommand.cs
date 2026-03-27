@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using ConsoleAppFramework;
 using Examples.Cryptography.BouncyCastle.Asn1;
 using Examples.Cryptography.BouncyCastle.Cli.Clients;
@@ -57,7 +58,7 @@ public class OcspCommand(OcspHttpClient client)
         generator.AddRequest(certId);
 
         var nonce = new byte[16];
-        Random.Shared.NextBytes(nonce);
+        RandomNumberGenerator.Fill(nonce);
         generator.AddNonce(nonce);
 
         var request = generator.Generate();
