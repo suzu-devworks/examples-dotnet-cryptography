@@ -95,6 +95,7 @@ public class OcspCommand(OcspHttpClient client)
         {
             Console.WriteLine($"NextUpdate       : {single.NextUpdate.Value:o}");
         }
+
         // Display ASN.1 structure
         if (verbose)
         {
