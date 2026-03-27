@@ -11,3 +11,10 @@ This repository is the author's personal playground for learning cryptography pr
 It might be useful for developers who have the same problem.
 
 However, please note that the code discussed here is based on my personal opinion and may contain many inaccuracies.
+
+## Current learning topics
+
+- Classical cryptography with .NET `System.Security.Cryptography`
+- Post-quantum cryptography (PQC)
+  - ML-KEM key encapsulation (shared secret establishment for encryption)
+  - ML-DSA and SLH-DSA digital signatures
