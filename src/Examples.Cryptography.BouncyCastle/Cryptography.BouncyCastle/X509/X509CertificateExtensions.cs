@@ -51,7 +51,9 @@ public static class X509CertificateExtensions
             return null;
         }
 
-        return new Uri($"{access.AccessLocation.Name}");
+        return Uri.TryCreate($"{access.AccessLocation.Name}", UriKind.Absolute, out var uri)
+            ? uri
+            : null;
     }
 
     /// <summary>
@@ -82,7 +84,8 @@ public static class X509CertificateExtensions
     public static Uri? GetCrlDistributionPointsUri(this X509Certificate certificate)
     {
         var gName = certificate.GetCrlDistributionPoints()
-            .Where(x => x.DistributionPointName.Type == DistributionPointName.FullName)
+            .Where(x => x.DistributionPointName is not null
+                && x.DistributionPointName.Type == DistributionPointName.FullName)
             .SelectMany(x => GeneralNames.GetInstance(x.DistributionPointName.Name).GetNames())
             .Where(x => x.TagNo == GeneralName.UniformResourceIdentifier)
             .FirstOrDefault();
@@ -92,7 +95,9 @@ public static class X509CertificateExtensions
             return null;
         }
 
-        return new Uri($"{gName.Name}");
+        return Uri.TryCreate($"{gName.Name}", UriKind.Absolute, out var uri)
+            ? uri
+            : null;
     }
 
 }
