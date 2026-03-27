@@ -9,11 +9,11 @@ namespace Examples.Cryptography.BouncyCastle.Cli.Clients;
 /// <remarks>
 /// Initializes a new instance of the <see cref="OcspHttpClient" /> class.
 /// </remarks>
-/// <param name="httpClientFactory">A class instance that implements <see cref="IHttpClientFactory" />.</param>
-public class OcspHttpClient(IHttpClientFactory httpClientFactory)
+/// <param name="httpClient">A <see cref="HttpClient" /> instance managed by <see cref="IHttpClientFactory" />.</param>
+public class OcspHttpClient(HttpClient httpClient)
 {
-    // https://learn.microsoft.com/ja-jp/dotnet/fundamentals/networking/http/httpclient-guidelines
-    private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
+    // https://learn.microsoft.com/en-us/dotnet/core/extensions/httpclient-factory#typed-clients
+    private readonly HttpClient _httpClient = httpClient;
 
     /// <summary>
     /// Requests certificate revocation status to the OCSP responder.
@@ -35,22 +35,16 @@ public class OcspHttpClient(IHttpClientFactory httpClientFactory)
         var content = new ByteArrayContent(request.GetEncoded());
         content.Headers.ContentType = new MediaTypeHeaderValue(@"application/ocsp-request");
 
-        OcspResp response;
-        using (var client = _httpClientFactory.CreateClient(nameof(OcspHttpClient)))
+        var httpResponse = await _httpClient.PostAsync(requestUri, content, cancellationToken)
+            .WaitAsync(timeout ?? _httpClient.Timeout, cancellationToken);
+
+        if (!httpResponse.IsSuccessStatusCode)
         {
-            var httpResponse = await client.PostAsync(requestUri, content, cancellationToken)
-                .WaitAsync(timeout ?? client.Timeout, cancellationToken);
-
-            if (!httpResponse.IsSuccessStatusCode)
-            {
-                throw new Exception($"{httpResponse.StatusCode}");
-            }
-
-            var bytes = await httpResponse.Content.ReadAsByteArrayAsync(cancellationToken);
-            response = new OcspResp(bytes);
+            throw new Exception($"{httpResponse.StatusCode}");
         }
 
-        return response;
+        var bytes = await httpResponse.Content.ReadAsByteArrayAsync(cancellationToken);
+        return new OcspResp(bytes);
     }
 
 }

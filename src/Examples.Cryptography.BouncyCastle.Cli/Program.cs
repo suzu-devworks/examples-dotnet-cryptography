@@ -5,9 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 var app = ConsoleApp.Create()
     .ConfigureServices(services =>
     {
-        services.AddHttpClient();
-        services.AddTransient<OcspHttpClient>();
-        services.AddTransient<TimeStampHttpClient>();
+        services.AddHttpClient<OcspHttpClient>();
+        services.AddHttpClient<TimeStampHttpClient>();
     });
 
 await app.RunAsync(args);
