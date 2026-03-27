@@ -1,45 +1,45 @@
 # AES (Advanced Encryption Standard)
 
-アメリカが2001年に標準暗号として定めた共通鍵暗号アルゴリズムである。アメリカ国立標準技術研究所（NIST）が公募し、Rijndael（ラインダール）がAESとして採用された。
+AES is a symmetric-key block cipher algorithm that was standardized by the United States in 2001. The U.S. National Institute of Standards and Technology (NIST) ran an open competition, and the Rijndael cipher was selected and standardized as AES.
 
 <!-- spell-checker:words Rijndael -->
 
 ## Block cipher mode of operation
 
-ブロック暗号を利用して、ブロック長よりも長いメッセージを暗号化するメカニズムのこと。
+A mechanism for encrypting messages longer than the block size by using a block cipher.
 
 ### Authenticated encryption with additional data (AEAD) modes
 
-認証暗号化モード
+Authenticated encryption modes.
 
-暗号文を作り出すと同時に認証するための情報を（認証子）を作り出す。
+They produce ciphertext while simultaneously generating authentication information (an authentication tag).
 
-- GCM (Galois/counter)
-    > 暗号化のカウンタ モードと新しい認証のガロア モードを組み合わせたもの。  
-    > 認証に使用されるガロア体の乗算の並列計算が容易であることで、暗号化アルゴリズムよりも高いスループットが可能になる。
+- GCM (Galois/Counter Mode)
+    > A mode that combines counter-mode encryption with a new Galois-field-based authentication mode.  
+    > Because the Galois field multiplications used for authentication can be easily computed in parallel, GCM can achieve higher throughput than the underlying block cipher.
 - CCM (Counter with CBC-MAC)  
-    > AES-
-CCMはWPA2で使われているCCMPと同じもの。
+    > An AES-based mode that combines counter-mode encryption with CBC-MAC authentication.  
+CCM is essentially the same as CCMP, which is used in WPA2.
 - [RFC 5084 ...](https://datatracker.ietf.org/doc/html/rfc5084)
 
 <!-- spell-checker:words CCMP -->
 
 ### Confidentiality only modes
 
-機密性のみ
+Modes that provide confidentiality only (no built-in integrity or authenticity).
 
-- ECB (Electric CodeBlock mode)
-    > もっとも単純な暗号利用モード.メッセージはブロックに分割され、それぞれのブロックは独立して暗号化される
+- ECB (Electronic Codebook mode)
+    > The simplest block cipher mode. The message is divided into blocks, and each block is encrypted independently.
 - CBC (Cipher Block Chaining mode)
-    > 平文の各ブロックは前の暗号文とのXORを取ってから暗号化される。各々の暗号文ブロックはそれ以前のすべての平文ブロックに依存することとなる。最初のブロックの暗号化には初期化ベクトルが用いられる。
-- CFB (Chiper FeedBack mode)
-    > １つ前の暗号文ブロックを暗号アルゴリズムの入力に戻す。  
-    > ブロック暗号を自己同期型のストリーム暗号として扱う。
-- OFB (Output-Feedback) mode.
-    > ブロック暗号を同期型のストリーム暗号として扱う。  
-    > 鍵ストリームを生成し、これと平文ブロックのXORを取ることで暗号文を得る。
-- CTR (CounTeR) mode.
-    > ブロック暗号を同期型のストリーム暗号として扱うものである。  
-    > 「カウンター」と呼ばれる値を暗号化することで鍵ストリームブロックを生成する。
+    > Each plaintext block is XORed with the previous ciphertext block before being encrypted. As a result, each ciphertext block depends on all preceding plaintext blocks. An initialization vector (IV) is used when encrypting the first block.
+- CFB (Cipher Feedback mode)
+    > Feeds the previous ciphertext block back into the block cipher as input.  
+    > Treats the block cipher as a self-synchronizing stream cipher.
+- OFB (Output Feedback mode)
+    > Treats the block cipher as a synchronous stream cipher.  
+    > Generates a keystream that is XORed with plaintext blocks to produce ciphertext.
+- CTR (Counter (CTR) mode)
+    > Treats the block cipher as a synchronous stream cipher.  
+    > Generates keystream blocks by encrypting a value called the "counter".
 
 <!-- spell-checker:words Chiper -->
