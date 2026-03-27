@@ -34,7 +34,6 @@ public class TimeStampHttpClient(HttpClient httpClient)
     {
         var content = new ByteArrayContent(request.GetEncoded());
         content.Headers.ContentType = new MediaTypeHeaderValue(@"application/timestamp-query");
-        content.Headers.Add("Content-Transfer-Encoding", "base64");
 
         var httpResponse = await _httpClient.PostAsync(requestUri, content, cancellationToken)
             .WaitAsync(timeout ?? _httpClient.Timeout, cancellationToken);

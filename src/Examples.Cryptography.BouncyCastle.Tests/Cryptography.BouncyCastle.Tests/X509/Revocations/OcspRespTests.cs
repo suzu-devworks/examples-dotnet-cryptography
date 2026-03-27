@@ -21,7 +21,9 @@ public class OcspRespTests(OcspFixture fixture) : IClassFixture<OcspFixture>
         X509Certificate issuerCert,
         AsymmetricKeyParameter responderKey,
         X509Certificate responderCert,
-        CertificateStatus? revocationStatus = null)
+        CertificateStatus? revocationStatus = null,
+        bool includeRequestNonce = true,
+        X509Extension? responseNonceExtension = null)
     {
         // 1. Initialize the generator (specify the responder's public key or name)
         BasicOcspRespGenerator gen = new(new RespID(responderCert.SubjectDN));
@@ -52,7 +54,8 @@ public class OcspRespTests(OcspFixture fixture) : IClassFixture<OcspFixture>
         }
 
         // 3. If the request has a Nonce, include it in the response as well (important!).
-        X509Extension nonceExtension = request.GetExtension(OcspObjectIdentifiers.PkixOcspNonce);
+        X509Extension? nonceExtension = responseNonceExtension
+            ?? (includeRequestNonce ? request.GetExtension(OcspObjectIdentifiers.PkixOcspNonce) : null);
         if (nonceExtension is not null)
         {
             gen.SetResponseExtensions(
@@ -130,5 +133,66 @@ public class OcspRespTests(OcspFixture fixture) : IClassFixture<OcspFixture>
 
         Assert.False(response.VerifyStatus());
         Output?.WriteLine($"\n{response.ToStructureString()}");
+    }
+
+    [Fact]
+    public void When_CreatingOcspResponse_WithCaDirectSignature_Then_DefaultValidationSucceeds()
+    {
+        byte[] requestBytes = fixture.CreateOcspRequest();
+        var issuerCert = fixture.IssuerCert;
+        var issuerKeyPair = fixture.IssuerKeyPair;
+
+        var request = new OcspReq(requestBytes);
+
+        var response = CreateOcspResponse(request, issuerCert, issuerKeyPair.Private, issuerCert);
+
+        Assert.NotNull(response);
+        response.Validate(request, issuerCert);
+
+        var basicResponse = Assert.IsType<BasicOcspResp>(response.GetResponseObject());
+
+        // Assert:
+        Assert.Equal(CertificateStatus.Good, basicResponse.Responses[0].GetCertStatus());
+    }
+
+    [Fact]
+    public void When_CreatingOcspResponse_WithCaDirectSignatureAndStrictMode_Then_OcspSigningIsRequired()
+    {
+        byte[] requestBytes = fixture.CreateOcspRequest();
+        var issuerCert = fixture.IssuerCert;
+        var issuerKeyPair = fixture.IssuerKeyPair;
+
+        var request = new OcspReq(requestBytes);
+
+        var response = CreateOcspResponse(request, issuerCert, issuerKeyPair.Private, issuerCert);
+
+        var exception = Assert.Throws<OcspException>(() => response.Validate(request, issuerCert, strict: true));
+
+        // Assert:
+        Assert.Equal("Responder certificate lacks id-kp-OCSPSigning extension.", exception.Message);
+    }
+
+    [Fact]
+    public void When_ResponseContainsNonce_Then_DefaultValidationRequiresMatchingNonce()
+    {
+        byte[] requestBytes = fixture.CreateOcspRequest();
+        var issuerCert = fixture.IssuerCert;
+        var responderCert = fixture.SignerCert;
+        var responderKeyPair = fixture.SignerKeyPair;
+
+        var request = new OcspReq(requestBytes);
+        var differentRequest = new OcspReq(fixture.CreateOcspRequest());
+        var response = CreateOcspResponse(
+            request,
+            issuerCert,
+            responderKeyPair.Private,
+            responderCert,
+            includeRequestNonce: false,
+            responseNonceExtension: differentRequest.GetExtension(OcspObjectIdentifiers.PkixOcspNonce));
+
+        var exception = Assert.Throws<OcspException>(() => response.Validate(request, issuerCert));
+
+        // Assert:
+        Assert.Equal("Nonce mismatch. Potential replay attack detected.", exception.Message);
     }
 }
