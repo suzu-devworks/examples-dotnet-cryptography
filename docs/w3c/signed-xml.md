@@ -2,10 +2,9 @@
 
 ## Table of Contents <!-- omit in toc -->
 
-- [Signed Xml](#signed-xml)
-  - [SignedXml class](#signedxml-class)
-    - [Signature Type](#signature-type)
-    - [CanonicalizationMethod](#canonicalizationmethod)
+- [SignedXml class](#signedxml-class)
+  - [Signature Type](#signature-type)
+  - [CanonicalizationMethod](#canonicalizationmethod)
 
 ## SignedXml class
 
@@ -30,5 +29,3 @@ Use the CanonicalizationMethod property to specify the canonicalization algorith
 | Canonical XML with comments           | <https://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments>      | `SignedXml.XmlDsigCanonicalizationWithCommentsUrl` |
 | Exclusive Canonical XML               | <https://www.w3.org/TR/2002/REC-xml-exc-c14n-20020718/#WithComments> | `SignedXml.XmlDsigExcC14NTransformUrl`             |
 | Exclusive Canonical XML with comments | <https://www.w3.org/TR/2002/REC-xml-exc-c14n-20020718/#WithComments> | `SignedXml.XmlDsigExcC14NWithCommentsTransformUrl` |
-
-<!-- spell-checker:words Dsig -->

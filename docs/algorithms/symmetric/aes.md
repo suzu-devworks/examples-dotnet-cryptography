@@ -22,8 +22,6 @@ They produce ciphertext while simultaneously generating authentication informati
 CCM is essentially the same as CCMP, which is used in WPA2.
 - [RFC 5084 ...](https://datatracker.ietf.org/doc/html/rfc5084)
 
-<!-- spell-checker:words CCMP -->
-
 ### Confidentiality only modes
 
 Modes that provide confidentiality only (no built-in integrity or authenticity).
@@ -41,5 +39,3 @@ Modes that provide confidentiality only (no built-in integrity or authenticity).
 - CTR (Counter (CTR) mode)
     > Treats the block cipher as a synchronous stream cipher.  
     > Generates keystream blocks by encrypting a value called the "counter".
-
-<!-- spell-checker:words Chiper -->

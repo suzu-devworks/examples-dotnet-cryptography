@@ -19,5 +19,3 @@
 | PKCS #13 | Elliptic-curve cryptography Standard            | Apparently abandoned.                                                   |
 | PKCS #14 | Pseudo-random Number Generation                 | Apparently abandoned.                                                   |
 | PKCS #15 | Cryptographic Token Information Format Standard | Relinquished IC-card-related parts of this standard to ISO/IEC 7816-15. |
-
-<!--  spell-checker:words Diffie -->
