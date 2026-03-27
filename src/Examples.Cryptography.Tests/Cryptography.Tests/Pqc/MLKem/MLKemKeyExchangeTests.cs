@@ -112,7 +112,6 @@ public class MLKemKeyExchangeTests(MLKemKeyFixture fixture) : IClassFixture<MLKe
             "ML-KEM is not supported on this platform. Requires OpenSSL 3.3.0 or later.");
 
         var original = fixture.KeyPair!;
-        var algorithm = original.Algorithm;
 
         // Export private key as PKCS#8 DER.
         byte[] pkcs8 = original.ExportPkcs8PrivateKey();

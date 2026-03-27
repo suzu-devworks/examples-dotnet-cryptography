@@ -6,10 +6,17 @@
   "words": [
     "Acreateserial",
     "certfile",
+    "ciphertext",
+    "Decap",
+    "decapsulates",
+    "Decapsulating",
+    "Decapsulation",
     "decryptor",
     "ecparam",
+    "encap",
     "encryptor",
     "extfile",
+    "FIPS",
     "genkey",
     "hmac",
     "HMACSHA",
@@ -22,7 +29,9 @@
     "passout",
     "pubout",
     "reqexts",
-    "topk"
+    "Shor's",
+    "topk",
+    "XMSS"
   ],
   "ignoreWords": [],
   "import": [
