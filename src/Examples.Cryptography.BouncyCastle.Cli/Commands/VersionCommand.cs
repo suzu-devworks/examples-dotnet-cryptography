@@ -1,5 +1,6 @@
 #pragma warning disable CA1822
 
+using System.Reflection;
 using ConsoleAppFramework;
 
 namespace Examples.Cryptography.BouncyCastle.Cli.Commands;
@@ -16,6 +17,8 @@ public class VersionCommand
     [Command("")]
     public void Run()
     {
-        Console.WriteLine("Examples.Cryptography.BouncyCastle.Cli 1.0.0");
+        var assembly = Assembly.GetExecutingAssembly();
+        var version = assembly.GetName().Version?.ToString() ?? "unknown";
+        Console.WriteLine($"{assembly.GetName().Name} {version}");
     }
 }
