@@ -35,13 +35,10 @@ public class OcspHttpClient(HttpClient httpClient)
         var content = new ByteArrayContent(request.GetEncoded());
         content.Headers.ContentType = new MediaTypeHeaderValue(@"application/ocsp-request");
 
-        var httpResponse = await _httpClient.PostAsync(requestUri, content, cancellationToken)
+        using var httpResponse = await _httpClient.PostAsync(requestUri, content, cancellationToken)
             .WaitAsync(timeout ?? _httpClient.Timeout, cancellationToken);
 
-        if (!httpResponse.IsSuccessStatusCode)
-        {
-            throw new Exception($"{httpResponse.StatusCode}");
-        }
+        httpResponse.EnsureSuccessStatusCode();
 
         var bytes = await httpResponse.Content.ReadAsByteArrayAsync(cancellationToken);
         return new OcspResp(bytes);
