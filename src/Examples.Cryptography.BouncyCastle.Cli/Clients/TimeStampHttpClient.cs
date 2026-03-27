@@ -32,21 +32,16 @@ public class TimeStampHttpClient(HttpClient httpClient)
           TimeSpan? timeout = default,
           CancellationToken cancellationToken = default)
     {
-        var base64Encoded = Convert.ToBase64String(request.GetEncoded());
-        var content = new StringContent(base64Encoded);
+        var content = new ByteArrayContent(request.GetEncoded());
         content.Headers.ContentType = new MediaTypeHeaderValue(@"application/timestamp-query");
         content.Headers.Add("Content-Transfer-Encoding", "base64");
 
-        using var httpResponse = await _httpClient.PostAsync(requestUri, content, cancellationToken)
+        var httpResponse = await _httpClient.PostAsync(requestUri, content, cancellationToken)
             .WaitAsync(timeout ?? _httpClient.Timeout, cancellationToken);
 
         if (!httpResponse.IsSuccessStatusCode)
         {
-            var responseContent = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
-            throw new HttpRequestException(
-                $"Request to '{requestUri}' failed with status code {(int)httpResponse.StatusCode} ({httpResponse.StatusCode}). Response content: {responseContent}",
-                inner: null,
-                statusCode: httpResponse.StatusCode);
+            throw new Exception($"{httpResponse.StatusCode}");
         }
 
         var bytes = await httpResponse.Content.ReadAsByteArrayAsync(cancellationToken);
