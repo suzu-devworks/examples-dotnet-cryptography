@@ -73,7 +73,7 @@ public static class OcspRespExtensions
         TimeSpan skew = TimeSpan.FromMinutes(5);
 
         // 5. The time at which the status being indicated is known to be
-        //    correct (thisUpdate) is sufficiently recent; (RFC 6960 3
+        //    correct (thisUpdate) is sufficiently recent; (RFC 6960 3.2.5)
         if (single.ThisUpdate > validatingAt.Add(skew))
         {
             throw new OcspException("Response 'thisUpdate' is in the future.");
@@ -145,8 +145,8 @@ public static class OcspRespExtensions
     /// <summary>
     /// Convenience method to extract the certificate status from an OCSP response.
     /// </summary>
-    /// <param name="response"></param>
-    /// <returns></returns>
+    /// <param name="response">The OCSP response whose certificate status should be verified.</param>
+    /// <returns>True if the certificate status in the response is <see cref="CertificateStatus.Good"/>, otherwise false.</returns>
     /// <exception cref="OcspException"></exception>
     public static bool VerifyStatus(this OcspResp response)
     {

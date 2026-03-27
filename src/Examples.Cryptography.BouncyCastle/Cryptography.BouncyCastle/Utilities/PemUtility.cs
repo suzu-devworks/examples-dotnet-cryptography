@@ -6,7 +6,7 @@ namespace Examples.Cryptography.BouncyCastle.Utilities;
 /// <summary>
 /// Utility for converting BouncyCastle objects to PEM format strings.
 /// </summary>
-internal static class PemUtility
+public static class PemUtility
 {
     /// <summary>
     /// Converts a BouncyCastle encodable object (e.g., private key, public key) to a PEM format string.
@@ -27,9 +27,9 @@ internal static class PemUtility
     /// <summary>
     /// Loads a BouncyCastle object from a PEM format string, returning the expected type if successful.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="pem"></param>
-    /// <returns></returns>
+    /// <typeparam name="T">The expected type of the loaded object.</typeparam>
+    /// <param name="pem">The PEM format string to parse.</param>
+    /// <returns>The loaded object of type T.</returns>
     /// <exception cref="NotSupportedException">If the loaded object is not of the expected type.</exception>
     public static T LoadFrom<T>(string pem)
     {

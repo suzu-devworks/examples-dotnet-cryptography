@@ -19,7 +19,9 @@
     "Eddsa",
     "HMAC",
     "OCSP",
+    "Oids",
     "pkcs",
+    "Pkix",
     "xscgen",
     "xunit"
   ],

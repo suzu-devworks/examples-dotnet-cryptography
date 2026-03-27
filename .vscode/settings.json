@@ -29,7 +29,9 @@
     "appsettings*.json": "jsonc",
     "web.config": "xml"
   },
-  "markdownlint.config": {},
+  "markdownlint.config": {
+    "MD024": false
+  },
   "omnisharp.enableAsyncCompletion": true,
   "omnisharp.enableEditorConfigSupport": true,
   "omnisharp.enableMsBuildLoadProjectsOnDemand": true,
