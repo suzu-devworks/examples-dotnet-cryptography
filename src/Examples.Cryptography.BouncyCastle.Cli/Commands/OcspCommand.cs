@@ -20,6 +20,7 @@ public class OcspCommand(OcspHttpClient client)
     /// <param name="issuer">-i, Path to the issuer certificate file (PEM).</param>
     /// <param name="url">-u, OCSP endpoint URL. If not specified, extracted from the certificate AIA extension.</param>
     /// <param name="output">-o, Output file path to save the DER-encoded OCSP response.</param>
+    /// <param name="verbose">-v, Show ASN.1 structure of the response.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     [Command("check")]
     public async Task Check(
@@ -27,6 +28,7 @@ public class OcspCommand(OcspHttpClient client)
         string issuer,
         string? url = null,
         string? output = null,
+        bool verbose = false,
         CancellationToken cancellationToken = default)
     {
         // Load certificates
@@ -89,10 +91,12 @@ public class OcspCommand(OcspHttpClient client)
         {
             Console.WriteLine($"NextUpdate       : {single.NextUpdate.Value:o}");
         }
-        Console.WriteLine();
-
         // Display ASN.1 structure
-        Console.WriteLine(response.ToStructureString());
+        if (verbose)
+        {
+            Console.WriteLine();
+            Console.WriteLine(response.ToStructureString());
+        }
 
         // Save DER-encoded response to file
         if (output is not null)

@@ -23,6 +23,7 @@ public class TsaCommand(TimeStampHttpClient client)
     /// <param name="data">-d, Data to timestamp as a string. If not specified, uses a default message.</param>
     /// <param name="algorithm">-a, Hash algorithm name (SHA-256, SHA-384, SHA-512). Default: SHA-256.</param>
     /// <param name="output">-o, Output file path to save the DER-encoded timestamp token.</param>
+    /// <param name="verbose">-v, Show ASN.1 structure of the response.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     [Command("request")]
     public async Task Request(
@@ -30,6 +31,7 @@ public class TsaCommand(TimeStampHttpClient client)
         string? data = null,
         string algorithm = "SHA-256",
         string? output = null,
+        bool verbose = false,
         CancellationToken cancellationToken = default)
     {
         var tsaUri = new Uri(url);
@@ -65,10 +67,13 @@ public class TsaCommand(TimeStampHttpClient client)
         Console.WriteLine($"GenTime      : {tst.GenTime:o}");
         Console.WriteLine($"Policy       : {tst.Policy}");
         Console.WriteLine($"Algorithm    : {tst.MessageImprintAlgOid}");
-        Console.WriteLine();
 
         // Display ASN.1 structure
-        Console.WriteLine(token.ToStructureString());
+        if (verbose)
+        {
+            Console.WriteLine();
+            Console.WriteLine(token.ToStructureString());
+        }
 
         // Save DER-encoded timestamp token to file
         if (output is not null)
