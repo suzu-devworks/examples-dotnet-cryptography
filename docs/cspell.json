@@ -9,7 +9,13 @@
     "Codebook",
     "Diffie",
     "Dsig",
-    "keystream"
+    "ECDH",
+    "EPES",
+    "ETSI",
+    "IDAS",
+    "keystream",
+    "Shor's",
+    "Xades"
   ],
   "ignoreWords": [],
   "import": [

@@ -17,6 +17,7 @@
   "words": [
     "Deformatter",
     "Eddsa",
+    "FIPS",
     "HMAC",
     "OCSP",
     "Oids",
