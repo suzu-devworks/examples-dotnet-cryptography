@@ -8,7 +8,7 @@ namespace Examples.Cryptography.Tests.Xml.XAdES;
 
 /// <summary>
 /// Demonstrates creation and verification of XAdES-X-L signatures.
-/// XAdES-X-L (eXtended Long-term) extends XAdES-C by embedding the actual
+/// XAdES-X-L (eXtended Long-term) extends XAdES-X by embedding the actual
 /// certificate DER values and revocation data (CRLs / OCSP responses) directly
 /// into CertificateValues and RevocationValues in UnsignedSignatureProperties.
 /// This makes the signature self-contained for long-term verification.
@@ -25,11 +25,12 @@ public class XAdESXLTests(XAdESFixture fixture)
         X509Certificate2 signer = fixture.Signer;
         var original = XAdESFixture.CreateSampleDocument();
 
-        // Build XAdES-X-L: T + C (refs) + X-L (values)
+        // Build XAdES-X-L: T + C (refs) + X (SigAndRefs) + X-L (values)
         var signed = new XAdESBuilder(signer)
             .WithSignatureTimestamp(fixture.TsaClient)
             .WithCertificateChain(fixture.CertChain)
             .WithRevocationRefs(fixture.RevocationRefs)
+            .WithXTimestamp(fixture.TsaClient)
             .WithRevocationValues(fixture.RevocationValues)
             .Build(original, _signingTime, "id-target");
 
@@ -80,6 +81,7 @@ public class XAdESXLTests(XAdESFixture fixture)
             .WithSignatureTimestamp(fixture.TsaClient)
             .WithCertificateChain(fixture.CertChain)
             .WithRevocationRefs(fixture.RevocationRefs)
+            .WithXTimestamp(fixture.TsaClient)
             .WithRevocationValues(fixture.RevocationValues)
             .Build(original, _signingTime, "id-target");
 

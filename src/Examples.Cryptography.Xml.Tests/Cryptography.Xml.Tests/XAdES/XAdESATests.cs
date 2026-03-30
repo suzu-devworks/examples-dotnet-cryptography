@@ -25,11 +25,12 @@ public class XAdESATests(XAdESFixture fixture)
         X509Certificate2 signer = fixture.Signer;
         var original = XAdESFixture.CreateSampleDocument();
 
-        // Build XAdES-A: T + C (refs) + X-L (values) + ArchiveTimeStamp
+        // Build XAdES-A: T + C (refs) + X (SigAndRefs) + X-L (values) + ArchiveTimeStamp
         var signed = new XAdESBuilder(signer)
             .WithSignatureTimestamp(fixture.TsaClient)
             .WithCertificateChain(fixture.CertChain)
             .WithRevocationRefs(fixture.RevocationRefs)
+            .WithXTimestamp(fixture.TsaClient)
             .WithRevocationValues(fixture.RevocationValues)
             .WithArchiveTimestamp(fixture.TsaClient)
             .Build(original, _signingTime, "id-target");
@@ -83,6 +84,7 @@ public class XAdESATests(XAdESFixture fixture)
             .WithSignatureTimestamp(fixture.TsaClient)
             .WithCertificateChain(fixture.CertChain)
             .WithRevocationRefs(fixture.RevocationRefs)
+            .WithXTimestamp(fixture.TsaClient)
             .WithRevocationValues(fixture.RevocationValues)
             .WithArchiveTimestamp(fixture.TsaClient)
             .Build(original, _signingTime, "id-target");
@@ -100,10 +102,11 @@ public class XAdESATests(XAdESFixture fixture)
             .Select(n => n.LocalName)
             .ToList();
 
-        // XAdES-A expected order: T → C → X-L → A
+        // XAdES-A expected order: T → C → X → X-L → A
         Assert.Contains("SignatureTimeStamp", childNames);
         Assert.Contains("CompleteCertificateRefs", childNames);
         Assert.Contains("CompleteRevocationRefs", childNames);
+        Assert.Contains("SigAndRefsTimeStamp", childNames);
         Assert.Contains("CertificateValues", childNames);
         Assert.Contains("RevocationValues", childNames);
         Assert.Contains("ArchiveTimeStamp", childNames);

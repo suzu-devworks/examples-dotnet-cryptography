@@ -11,7 +11,7 @@ namespace Examples.Cryptography.Xml.XAdES.SchemaBased;
 
 /// <summary>
 /// Builds XAdES signatures using XSD schema-generated types.
-/// Supports XAdES-BES, XAdES-T, XAdES-C, XAdES-X-L, and XAdES-A levels.
+/// Supports XAdES-BES, XAdES-T, XAdES-C, XAdES-X, XAdES-X-L, and XAdES-A levels.
 /// </summary>
 public sealed class XAdESBuilder(X509Certificate2 signer)
 {
@@ -38,6 +38,11 @@ public sealed class XAdESBuilder(X509Certificate2 signer)
     // XAdES-C: certificate chain and revocation refs (digests only)
     private X509Certificate2Collection? _certChain;
     private IReadOnlyList<(byte[] CrlData, string Issuer, DateTime IssueTime)>? _revocationRefs;
+
+    // XAdES-X: extended timestamp (SigAndRefsTimeStamp or RefsOnlyTimeStamp)
+    private ITsaClient? _xTsaClient;
+    private HashAlgorithmName _xTsaHashAlgorithm = HashAlgorithmName.SHA256;
+    private bool _xUseRefsOnly;
 
     // XAdES-X-L: revocation values (embedded DER data)
     private IReadOnlyList<byte[]>? _revocationValues;
@@ -84,6 +89,30 @@ public sealed class XAdESBuilder(X509Certificate2 signer)
     }
 
     /// <summary>
+    /// Configures a TSA client for XAdES-X (adds an extended timestamp to UnsignedProperties).
+    /// <para>
+    /// XAdES-X Type 1 (default, <paramref name="refsOnly"/> = false) adds <c>SigAndRefsTimeStamp</c>,
+    /// which timestamps the SignatureValue together with the complete-refs elements.
+    /// XAdES-X Type 2 (<paramref name="refsOnly"/> = true) adds <c>RefsOnlyTimeStamp</c>,
+    /// which timestamps only the complete-refs elements.
+    /// </para>
+    /// </summary>
+    public XAdESBuilder WithXTimestamp(
+        ITsaClient tsaClient,
+        HashAlgorithmName hashAlgorithm = default,
+        bool refsOnly = false)
+    {
+        _xTsaClient = tsaClient;
+        if (hashAlgorithm != default)
+        {
+            _xTsaHashAlgorithm = hashAlgorithm;
+        }
+
+        _xUseRefsOnly = refsOnly;
+        return this;
+    }
+
+    /// <summary>
     /// Configures embedded CRL values for XAdES-X-L (adds RevocationValues).
     /// </summary>
     public XAdESBuilder WithRevocationValues(IReadOnlyList<byte[]> crlDataList)
@@ -109,7 +138,7 @@ public sealed class XAdESBuilder(X509Certificate2 signer)
     }
 
     /// <summary>
-    /// Builds the XAdES-signed document, optionally adding XAdES-T/C/X-L/A properties.
+    /// Builds the XAdES-signed document, optionally adding XAdES-T/C/X/X-L/A properties.
     /// </summary>
     public XmlDocument Build(XmlDocument original, DateTime signingTime, string uri)
     {
@@ -120,6 +149,7 @@ public sealed class XAdESBuilder(X509Certificate2 signer)
         bool hasUnsigned = _signatureTsaClient is not null
             || _certChain is not null
             || _revocationRefs is not null
+            || _xTsaClient is not null
             || _revocationValues is not null
             || _archiveTsaClient is not null;
 
@@ -153,6 +183,27 @@ public sealed class XAdESBuilder(X509Certificate2 signer)
             unsignedSigProps.AddCompleteRevocationRefs(
                 _revocationRefs,
                 HashAlgorithmName.SHA256);
+        }
+
+        // XAdES-X: add SigAndRefsTimeStamp (Type 1) or RefsOnlyTimeStamp (Type 2)
+        // NOTE: Per ETSI TS 101 903, a conforming implementation should hash only the
+        // canonicalized SignatureValue + CompleteCertificateRefs + CompleteRevocationRefs
+        // elements (Type 1), or just the refs (Type 2). Here, the entire document is used
+        // as input for simplicity, which is sufficient for structural / learning tests
+        // using a mock TSA that does not validate the hash imprint.
+        if (_xTsaClient is not null)
+        {
+            var docBytes = System.Text.Encoding.UTF8.GetBytes(doc.OuterXml);
+            var hash = ComputeHash(docBytes, _xTsaHashAlgorithm);
+            var token = _xTsaClient.GetTimestampToken(hash, _xTsaHashAlgorithm);
+            if (_xUseRefsOnly)
+            {
+                unsignedSigProps.AddRefsOnlyTimeStamp(token);
+            }
+            else
+            {
+                unsignedSigProps.AddSigAndRefsTimeStamp(token);
+            }
         }
 
         // XAdES-X-L: add CertificateValues

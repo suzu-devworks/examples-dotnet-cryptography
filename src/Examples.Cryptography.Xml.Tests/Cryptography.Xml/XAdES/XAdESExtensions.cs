@@ -152,6 +152,28 @@ internal static class XAdESExtensions
         return source;
     }
 
+    public static UnsignedSignaturePropertiesType AddSigAndRefsTimeStamp(
+        this UnsignedSignaturePropertiesType source, byte[] timestampToken)
+    {
+        source.SigAndRefsTimeStamp.Add(new XAdEsTimeStampType
+        {
+            EncapsulatedTimeStamp = { new EncapsulatedPkiDataType { Value = timestampToken } }
+        });
+
+        return source;
+    }
+
+    public static UnsignedSignaturePropertiesType AddRefsOnlyTimeStamp(
+        this UnsignedSignaturePropertiesType source, byte[] timestampToken)
+    {
+        source.RefsOnlyTimeStamp.Add(new XAdEsTimeStampType
+        {
+            EncapsulatedTimeStamp = { new EncapsulatedPkiDataType { Value = timestampToken } }
+        });
+
+        return source;
+    }
+
     private static string HashAlgorithmNameToXmlDsigUrl(HashAlgorithmName hashAlgorithm)
     {
         return hashAlgorithm.Name switch
