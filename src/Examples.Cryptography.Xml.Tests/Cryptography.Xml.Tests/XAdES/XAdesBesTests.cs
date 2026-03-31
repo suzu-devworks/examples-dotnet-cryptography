@@ -1,3 +1,5 @@
+using System.Globalization;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Cryptography.Xml;
 using System.Xml;
@@ -77,5 +79,71 @@ public class XAdesBesTests(XAdESFixture fixture)
         var signingTimeNode = sspNode.SelectSingleNode("xa:SigningTime", nsManager);
         Assert.NotNull(signingTimeNode);
         Assert.NotEmpty(signingTimeNode.InnerText);
+    }
+
+    /// <summary>
+    /// XAdES-BES verification: the digest stored in SigningCertificateV2 must match
+    /// the actual signer certificate's SHA-256 hash, binding the certificate identity
+    /// to the signed data.
+    /// </summary>
+    [Fact]
+    public void When_VerifyingXAdesBes_Then_SignerCertDigestMatchesSigningCertificateV2()
+    {
+        X509Certificate2 signer = fixture.Signer;
+        var original = XAdESFixture.CreateSampleDocument();
+
+        var signed = new XAdESBuilder(signer)
+            .Build(original, _signingTime, "id-target");
+
+        var nsManager = new XmlNamespaceManager(signed.NameTable);
+        nsManager.AddNamespace("ds", SignedXml.XmlDsigNamespaceUrl);
+        nsManager.AddNamespace("xa", "http://uri.etsi.org/01903/v1.3.2#");
+
+        // Extract the DigestValue embedded in SigningCertificateV2
+        var digestValueNode = signed.SelectSingleNode(
+            "//xa:SigningCertificateV2/xa:Cert/xa:CertDigest/ds:DigestValue", nsManager);
+        Assert.NotNull(digestValueNode);
+
+        var embeddedDigest = Convert.FromBase64String(digestValueNode.InnerText.Trim());
+
+        // The embedded digest must match the actual signer certificate's SHA-256 hash.
+        // This binding allows a verifier to confirm the correct certificate was used.
+        var expectedDigest = signer.GetCertHash(HashAlgorithmName.SHA256);
+        Assert.Equal(expectedDigest, embeddedDigest);
+    }
+
+    /// <summary>
+    /// XAdES-BES verification: the XML signature must remain valid after serializing
+    /// and re-parsing, simulating how an external verifier would process the document.
+    /// </summary>
+    [Fact]
+    public void When_VerifyingXAdesBes_Then_SignatureRemainsValidAfterRoundTrip()
+    {
+        X509Certificate2 signer = fixture.Signer;
+        var original = XAdESFixture.CreateSampleDocument();
+
+        var signed = new XAdESBuilder(signer)
+            .Build(original, _signingTime, "id-target");
+
+        // Serialize the signed document to a string, then re-parse it.
+        // This simulates transmitting the document to an external verifier.
+        var xml = signed.OuterXml;
+        var reloaded = new XmlDocument { PreserveWhitespace = false };
+        reloaded.LoadXml(xml);
+
+        // The signature must still be valid in the re-loaded document.
+        var valid = reloaded.VerifySignature(signer);
+        Assert.True(valid, "XAdES-BES signature must remain valid after round-trip serialization.");
+
+        // The SigningTime must be parseable as a UTC timestamp.
+        var nsManager = new XmlNamespaceManager(reloaded.NameTable);
+        nsManager.AddNamespace("xa", "http://uri.etsi.org/01903/v1.3.2#");
+
+        var signingTimeNode = reloaded.SelectSingleNode("//xa:SigningTime", nsManager);
+        Assert.NotNull(signingTimeNode);
+        var signingTime = DateTime.Parse(
+            signingTimeNode.InnerText, null, DateTimeStyles.RoundtripKind);
+        Assert.True(signingTime <= DateTime.UtcNow,
+            "SigningTime must not be in the future.");
     }
 }

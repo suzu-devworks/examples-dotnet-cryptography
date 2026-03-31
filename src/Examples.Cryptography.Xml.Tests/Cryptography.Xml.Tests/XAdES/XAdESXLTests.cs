@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Xml;
 using Examples.Cryptography.Xml.Extensions;
@@ -101,6 +102,115 @@ public class XAdESXLTests(XAdESFixture fixture)
             Assert.NotEmpty(base64);
             var decoded = Convert.FromBase64String(base64);
             Assert.NotEmpty(decoded);
+        }
+    }
+
+    /// <summary>
+    /// XAdES-X-L verification (self-contained): the DER bytes in CertificateValues must
+    /// be parseable as X.509 certificates, and their SHA-256 digests must match the
+    /// corresponding values in CompleteCertificateRefs.
+    /// <para>
+    /// This cross-check demonstrates the defining property of XAdES-X-L: the signature
+    /// carries everything needed for certificate path validation internally, so a verifier
+    /// does not need to contact external LDAP directories or HTTP certificate stores.
+    /// </para>
+    /// </summary>
+    [Fact]
+    public void When_VerifyingXAdesXL_Then_EmbeddedCertsAreValidAndMatchCertRefs()
+    {
+        X509Certificate2 signer = fixture.Signer;
+        var original = XAdESFixture.CreateSampleDocument();
+
+        var signed = new XAdESBuilder(signer)
+            .WithSignatureTimestamp(fixture.TsaClient)
+            .WithCertificateChain(fixture.CertChain)
+            .WithRevocationRefs(fixture.RevocationRefs)
+            .WithXTimestamp(fixture.TsaClient)
+            .WithRevocationValues(fixture.RevocationValues)
+            .Build(original, _signingTime, "id-target");
+
+        var nsManager = new XmlNamespaceManager(signed.NameTable);
+        nsManager.AddNamespace("xa", "http://uri.etsi.org/01903/v1.3.2#");
+        nsManager.AddNamespace("ds", System.Security.Cryptography.Xml.SignedXml.XmlDsigNamespaceUrl);
+
+        // Step 1: Extract cert ref digests from CompleteCertificateRefs (C-level).
+        var certRefNodes = signed.SelectNodes(
+            "//xa:CompleteCertificateRefs/xa:CertRefs/xa:Cert", nsManager);
+        Assert.NotNull(certRefNodes);
+
+        var expectedDigests = certRefNodes.Cast<XmlNode>()
+            .Select(n =>
+            {
+                var dv = n.SelectSingleNode("xa:CertDigest/ds:DigestValue", nsManager);
+                Assert.NotNull(dv);
+                return Convert.FromBase64String(dv.InnerText.Trim());
+            })
+            .ToList();
+
+        // Step 2: Extract embedded certificate DER bytes from CertificateValues (X-L level).
+        var certValueNodes = signed.SelectNodes(
+            "//xa:CertificateValues/xa:EncapsulatedX509Certificate", nsManager);
+        Assert.NotNull(certValueNodes);
+        Assert.Equal(expectedDigests.Count, certValueNodes.Count);
+
+        // Step 3: For each embedded certificate, compute its SHA-256 digest and
+        // verify it matches the corresponding reference from CompleteCertificateRefs.
+        // This cross-check confirms the X-L data is self-consistent and that a verifier
+        // can reconstruct the complete certificate chain purely from the embedded data.
+        for (int i = 0; i < certValueNodes.Count; i++)
+        {
+            var certValueNode = certValueNodes[i];
+            Assert.NotNull(certValueNode);
+            var base64 = certValueNode.InnerText.Trim();
+            var derBytes = Convert.FromBase64String(base64);
+
+            // The DER bytes must be parseable as a valid X.509 certificate.
+            using var embeddedCert = X509CertificateLoader.LoadCertificate(derBytes);
+            Assert.NotNull(embeddedCert.Subject);
+
+            // The embedded cert's digest must match the C-level certificate reference.
+            var embeddedDigest = embeddedCert.GetCertHash(HashAlgorithmName.SHA256);
+            Assert.Equal(expectedDigests[i], embeddedDigest);
+        }
+    }
+
+    /// <summary>
+    /// XAdES-X-L verification: the RevocationValues element must contain DER-encoded
+    /// CRL data. In a production scenario, each CRL would be parsed to verify the
+    /// signing certificate has not been revoked at the time of signing.
+    /// The presence of embedded CRL data ensures offline revocation checking is possible.
+    /// </summary>
+    [Fact]
+    public void When_VerifyingXAdesXL_Then_RevocationValuesAreEmbeddedForOfflineCheck()
+    {
+        X509Certificate2 signer = fixture.Signer;
+        var original = XAdESFixture.CreateSampleDocument();
+
+        var signed = new XAdESBuilder(signer)
+            .WithSignatureTimestamp(fixture.TsaClient)
+            .WithCertificateChain(fixture.CertChain)
+            .WithRevocationRefs(fixture.RevocationRefs)
+            .WithXTimestamp(fixture.TsaClient)
+            .WithRevocationValues(fixture.RevocationValues)
+            .Build(original, _signingTime, "id-target");
+
+        var nsManager = new XmlNamespaceManager(signed.NameTable);
+        nsManager.AddNamespace("xa", "http://uri.etsi.org/01903/v1.3.2#");
+
+        // RevocationValues must contain the same number of CRLs as RevocationRefs.
+        var crlValueNodes = signed.SelectNodes(
+            "//xa:RevocationValues/xa:CRLValues/xa:EncapsulatedCRLValue", nsManager);
+        Assert.NotNull(crlValueNodes);
+        Assert.Equal(fixture.RevocationValues.Count, crlValueNodes.Count);
+
+        // Each embedded CRL must be non-empty DER data that can be base64-decoded.
+        // (Real CRLs would be verified with X509Crl; here only structural presence is checked.)
+        foreach (XmlNode crlNode in crlValueNodes)
+        {
+            var base64 = crlNode.InnerText.Trim();
+            Assert.NotEmpty(base64);
+            var derBytes = Convert.FromBase64String(base64);
+            Assert.NotEmpty(derBytes);
         }
     }
 }

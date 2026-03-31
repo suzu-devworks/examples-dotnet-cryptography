@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Xml;
 using Examples.Cryptography.Xml.Extensions;
@@ -94,5 +95,52 @@ public class XAdesCTests(XAdESFixture fixture)
         // Each CertRef must contain IssuerSerial
         var issuerSerial = firstCertRef.SelectSingleNode("xa:IssuerSerial", nsManager);
         Assert.NotNull(issuerSerial);
+    }
+
+    /// <summary>
+    /// XAdES-C verification: each digest value in CompleteCertificateRefs must match
+    /// the SHA-256 hash of the corresponding certificate in the chain.
+    /// This integrity check confirms the certificate refs have not been tampered with,
+    /// and that a verifier can locate the exact certificates needed for path validation.
+    /// Unlike XAdES-X-L, the actual certificates must be fetched externally.
+    /// </summary>
+    [Fact]
+    public void When_VerifyingXAdesC_Then_CertRefDigestsMatchActualCertChain()
+    {
+        X509Certificate2 signer = fixture.Signer;
+        var original = XAdESFixture.CreateSampleDocument();
+
+        var signed = new XAdESBuilder(signer)
+            .WithSignatureTimestamp(fixture.TsaClient)
+            .WithCertificateChain(fixture.CertChain)
+            .WithRevocationRefs(fixture.RevocationRefs)
+            .Build(original, _signingTime, "id-target");
+
+        var nsManager = new XmlNamespaceManager(signed.NameTable);
+        nsManager.AddNamespace("xa", "http://uri.etsi.org/01903/v1.3.2#");
+        nsManager.AddNamespace("ds", System.Security.Cryptography.Xml.SignedXml.XmlDsigNamespaceUrl);
+
+        // Collect all embedded cert ref digest values from CompleteCertificateRefs.
+        var certRefNodes = signed.SelectNodes(
+            "//xa:CompleteCertificateRefs/xa:CertRefs/xa:Cert", nsManager);
+        Assert.NotNull(certRefNodes);
+        Assert.Equal(fixture.CertChain.Count, certRefNodes.Count);
+
+        // Each embedded digest must match the actual SHA-256 hash of the corresponding
+        // certificate in the chain. This is the C-level integrity verification step.
+        var certChainArray = fixture.CertChain.Cast<X509Certificate2>().ToList();
+        for (int i = 0; i < certRefNodes.Count; i++)
+        {
+            var certRefNode = certRefNodes[i];
+            Assert.NotNull(certRefNode);
+            var digestValueNode = certRefNode.SelectSingleNode(
+                "xa:CertDigest/ds:DigestValue", nsManager);
+            Assert.NotNull(digestValueNode);
+
+            var embeddedDigest = Convert.FromBase64String(digestValueNode.InnerText.Trim());
+            var actualDigest = certChainArray[i].GetCertHash(HashAlgorithmName.SHA256);
+
+            Assert.Equal(actualDigest, embeddedDigest);
+        }
     }
 }
