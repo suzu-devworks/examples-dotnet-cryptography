@@ -11,6 +11,7 @@
 - [Implementation in .NET](#implementation-in-net)
   - [Standard .NET Libraries](#standard-net-libraries)
   - [Basic Approach](#basic-approach)
+- [Generate Codes from XML Schema](#generate-codes-from-xml-schema)
 - [References](#references)
 
 ## Overview
@@ -112,6 +113,21 @@ signedXml.ComputeSignature();
 ```
 
 **Note**: A complete XAdES implementation requires many additional implementations, such as signature policy, integration with timestamp services, and certificate validation logic.
+
+## Generate Codes from XML Schema
+
+The .NET package includes XML wrapper classes for `SignedXml`, but does not include wrapper classes for XAdES.
+For implementation and verification, generated wrapper classes can be useful.
+
+XAdES schema files can be downloaded from:
+
+- <https://uri.etsi.org/01903/v1.4.1/>
+
+Then generate classes with `dotnet-xscgen`.
+
+For project integration details, see:
+
+- [XmlSampleGenerator.Build.targets](../../src/Examples.Cryptography.Xml.Tests/XmlSampleGenerator.Build.targets)
 
 ## References
 

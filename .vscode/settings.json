@@ -30,6 +30,7 @@
     "web.config": "xml"
   },
   "markdownlint.config": {
+    "default": true,
     "MD024": false
   },
   "omnisharp.enableAsyncCompletion": true,

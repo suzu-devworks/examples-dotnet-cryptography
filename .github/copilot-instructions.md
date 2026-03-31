@@ -16,7 +16,7 @@ Test code acts primarily as a **learning runner** to explore features rather tha
 
 ## Project Structure
 
-```
+```console
 src/
   Examples.Cryptography/                    # Extensions and utilities for .NET standard cryptography libs (multi-target: LTSFrameworks)
   Examples.Cryptography.Tests/              # Learning runner for the above (TargetFramework: LatestFramework)
@@ -36,7 +36,7 @@ src/
 ### Library side
 
 | Content | Namespace | Example |
-|---|---|---|
+| --- | --- | --- |
 | Algorithm extensions | `Examples.Cryptography.Extensions` | `ECDsaExtensions.cs` |
 | X509 utilities | `Examples.Cryptography.X509Certificates` | `CertificateRequestExtensions.cs` |
 | BouncyCastle algorithms | `Examples.Cryptography.BouncyCastle.Algorithms` | |
@@ -46,7 +46,7 @@ src/
 
 Test files are organized by functional category, mirroring the library project structure.
 
-```
+```console
 Cryptography.Tests/
   Algorithms/
     Symmetric/
@@ -74,7 +74,7 @@ Prefer concise, widely-recognized engineering terms over verbose or academic lan
 Use domain-standard verbs and nouns that engineers immediately understand.
 
 | Preferred | Avoid |
-|---|---|
+| --- | --- |
 | `Sign` / `Verify` | `CreateSignature` / `CheckSignature` |
 | `Encrypt` / `Decrypt` | `EncryptData` / `DecryptData` |
 | `Export` / `Import` | `Serialize` / `Deserialize` |
@@ -276,9 +276,11 @@ public static class ECDsaExtensions
 
 - Test framework: **xunit.v3** (`xunit.v3.mtp-v2` package)
 - Obtain `ITestOutputHelper` via `TestContext.Current.TestOutputHelper`:
+
   ```csharp
   private ITestOutputHelper? Output => TestContext.Current.TestOutputHelper;
   ```
+
 - Use `TestContext.Current.CancellationToken` for cancellation tokens
 - Place `xunit.runner.json` in the project root with `CopyToOutputDirectory: PreserveNewest`
 - The global `using Xunit;` is already configured via `<Using Include="Xunit" />` — do not repeat it in individual files
@@ -289,14 +291,14 @@ public static class ECDsaExtensions
 
 In learning code, include comments showing the equivalent OpenSSL command for the same operation.
 
-```csharp
+````csharp
 /* With OpenSSL use the following command:
 ```shell
 openssl ecparam -genkey -name prime256v1 -noout -out private-ecdsa.key
 ```
 */
 KeyPair = ECDsa.Create(ECCurve.NamedCurves.nistP256);
-```
+````
 
 When keeping deprecated or legacy API code for comparison, comment it out with the `//#` prefix so the old and new implementations can be compared side by side.
 
