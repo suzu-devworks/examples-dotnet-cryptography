@@ -18,3 +18,6 @@ However, please note that the code discussed here is based on my personal opinio
 - Post-quantum cryptography (PQC)
   - ML-KEM key encapsulation (shared secret establishment for encryption)
   - ML-DSA and SLH-DSA digital signatures
+- XML digital signatures and XAdES (XML Advanced Electronic Signatures)
+  - XAdES-BES, XAdES-T, XAdES-C, XAdES-X, XAdES-X-L, XAdES-A levels
+  - Schema-based approach using ETSI TS 101 903 XSD schemas with `dotnet-xscgen`

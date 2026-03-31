@@ -12,8 +12,12 @@
     "ECDH",
     "EPES",
     "ETSI",
+    "GMAC",
     "IDAS",
     "keystream",
+    "manpages",
+    "noout",
+    "RSASHA",
     "Shor's",
     "Xades"
   ],
