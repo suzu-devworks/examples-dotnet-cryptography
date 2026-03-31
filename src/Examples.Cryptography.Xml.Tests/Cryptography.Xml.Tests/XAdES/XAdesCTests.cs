@@ -37,8 +37,6 @@ public class XAdesCTests(XAdESFixture fixture)
 
         // Verify XML signature
         var signatureValid = signed.VerifySignature(signer);
-
-        // Assert:
         Assert.True(signatureValid, "XAdES-C signature must be valid.");
 
         var nsManager = new XmlNamespaceManager(signed.NameTable);

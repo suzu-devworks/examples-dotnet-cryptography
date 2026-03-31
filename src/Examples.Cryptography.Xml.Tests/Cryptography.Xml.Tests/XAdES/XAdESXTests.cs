@@ -49,8 +49,6 @@ public class XAdESXTests(XAdESFixture fixture)
 
         // Verify XML signature
         var signatureValid = signed.VerifySignature(signer);
-
-        // Assert:
         Assert.True(signatureValid, "XAdES-X Type 1 signature must be valid.");
 
         var nsManager = new XmlNamespaceManager(signed.NameTable);
@@ -102,8 +100,6 @@ public class XAdESXTests(XAdESFixture fixture)
 
         // Verify XML signature
         var signatureValid = signed.VerifySignature(signer);
-
-        // Assert:
         Assert.True(signatureValid, "XAdES-X Type 2 signature must be valid.");
 
         var nsManager = new XmlNamespaceManager(signed.NameTable);

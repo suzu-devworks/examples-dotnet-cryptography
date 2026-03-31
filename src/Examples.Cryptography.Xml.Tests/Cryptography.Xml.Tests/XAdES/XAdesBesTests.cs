@@ -34,8 +34,6 @@ public class XAdesBesTests(XAdESFixture fixture)
 
         // Verify XML signature
         var signatureValid = signed.VerifySignature(signer);
-
-        // Assert:
         Assert.True(signatureValid, "XAdES-BES signature must be valid.");
 
         // Verify SignedProperties structure
