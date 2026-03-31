@@ -35,6 +35,8 @@ public class XAdesTTests(XAdESFixture fixture)
 
         // Verify XML signature (must remain valid even with UnsignedProperties added)
         var signatureValid = signed.VerifySignature(signer);
+
+        // Assert:
         Assert.True(signatureValid, "XAdES-T signature must be valid.");
 
         var nsManager = new XmlNamespaceManager(signed.NameTable);

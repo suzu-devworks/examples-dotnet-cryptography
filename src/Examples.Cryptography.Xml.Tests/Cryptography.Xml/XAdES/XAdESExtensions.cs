@@ -1,4 +1,6 @@
 
+using System.Globalization;
+using System.Numerics;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using Examples.Cryptography.Xml.XAdES.XAdES132;
@@ -64,7 +66,7 @@ internal static class XAdESExtensions
                 IssuerSerial = new X509IssuerSerialType
                 {
                     X509IssuerName = cert.Issuer,
-                    X509SerialNumber = cert.SerialNumber,
+                    X509SerialNumber = BigInteger.Parse("0" + cert.SerialNumber, NumberStyles.HexNumber).ToString(),
                 }
             });
         }
@@ -181,7 +183,7 @@ internal static class XAdESExtensions
             "SHA256" => System.Security.Cryptography.Xml.SignedXml.XmlDsigSHA256Url,
             "SHA384" => System.Security.Cryptography.Xml.SignedXml.XmlDsigSHA384Url,
             "SHA512" => System.Security.Cryptography.Xml.SignedXml.XmlDsigSHA512Url,
-            _ => System.Security.Cryptography.Xml.SignedXml.XmlDsigSHA256Url,
+            _ => throw new NotSupportedException($"Hash algorithm '{hashAlgorithm.Name}' is not supported."),
         };
     }
 
@@ -189,9 +191,10 @@ internal static class XAdESExtensions
     {
         return hashAlgorithm.Name switch
         {
+            "SHA256" => SHA256.HashData(data),
             "SHA384" => SHA384.HashData(data),
             "SHA512" => SHA512.HashData(data),
-            _ => SHA256.HashData(data),
+            _ => throw new NotSupportedException($"Hash algorithm '{hashAlgorithm.Name}' is not supported."),
         };
     }
 

@@ -40,6 +40,8 @@ public class XAdESATests(XAdESFixture fixture)
 
         // Verify XML signature
         var signatureValid = signed.VerifySignature(signer);
+
+        // Assert:
         Assert.True(signatureValid, "XAdES-A signature must be valid.");
 
         var nsManager = new XmlNamespaceManager(signed.NameTable);
