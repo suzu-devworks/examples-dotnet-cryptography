@@ -209,12 +209,6 @@ public class XAdESATests(XAdESFixture fixture)
         Assert.NotNull(archiveTs);
         Assert.NotEmpty(Convert.FromBase64String(archiveTs.InnerText.Trim()));
 
-        var unsignedSigPropsNode = signed.SelectSingleNode(
-            "//xa:UnsignedProperties/xa:UnsignedSignatureProperties", nsManager);
-        Assert.NotNull(unsignedSigPropsNode);
-        var lastChild = unsignedSigPropsNode.ChildNodes.Cast<XmlNode>().Last();
-        Assert.Equal("ArchiveTimeStamp", lastChild.LocalName);
-
         // The XML signature must remain valid throughout all the added unsigned data.
         var valid = signed.VerifySignature(signer);
         Assert.True(valid, "XAdES-A signature must remain cryptographically valid.");

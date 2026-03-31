@@ -122,48 +122,6 @@ public class XAdESXTests(XAdESFixture fixture)
         Assert.Null(sigAndRefsTs);
     }
 
-    [Fact]
-    public void When_CreatingXAdesX_Type1_Then_UnsignedPropertiesOrderIsCorrect()
-    {
-        X509Certificate2 signer = fixture.Signer;
-        var original = XAdESFixture.CreateSampleDocument();
-
-        var signed = new XAdESBuilder(signer)
-            .WithSignatureTimestamp(fixture.TsaClient)
-            .WithCertificateChain(fixture.CertChain)
-            .WithRevocationRefs(fixture.RevocationRefs)
-            .WithXTimestamp(fixture.TsaClient, refsOnly: false)
-            .Build(original, _signingTime, "id-target");
-
-        var nsManager = new XmlNamespaceManager(signed.NameTable);
-        nsManager.AddNamespace("xa", "http://uri.etsi.org/01903/v1.3.2#");
-
-        var unsignedSigPropsNode = signed.SelectSingleNode(
-            "//xa:UnsignedProperties/xa:UnsignedSignatureProperties", nsManager);
-        Assert.NotNull(unsignedSigPropsNode);
-
-        var childNames = unsignedSigPropsNode.ChildNodes
-            .Cast<XmlNode>()
-            .Select(n => n.LocalName)
-            .ToList();
-
-        // XAdES-X expected order: T → C → X
-        Assert.Contains("SignatureTimeStamp", childNames);
-        Assert.Contains("CompleteCertificateRefs", childNames);
-        Assert.Contains("CompleteRevocationRefs", childNames);
-        Assert.Contains("SigAndRefsTimeStamp", childNames);
-
-        // SigAndRefsTimeStamp should come after the C-level refs
-        var certRefsIdx = childNames.IndexOf("CompleteCertificateRefs");
-        var revRefsIdx = childNames.IndexOf("CompleteRevocationRefs");
-        var sigAndRefsIdx = childNames.IndexOf("SigAndRefsTimeStamp");
-
-        Assert.True(sigAndRefsIdx > certRefsIdx,
-            "SigAndRefsTimeStamp must follow CompleteCertificateRefs.");
-        Assert.True(sigAndRefsIdx > revRefsIdx,
-            "SigAndRefsTimeStamp must follow CompleteRevocationRefs.");
-    }
-
     /// <summary>
     /// XAdES-X verification: the SigAndRefsTimeStamp element must appear after all
     /// C-level reference elements in the document, confirming it was issued after
