@@ -181,7 +181,7 @@ internal static class XAdESExtensions
             "SHA256" => System.Security.Cryptography.Xml.SignedXml.XmlDsigSHA256Url,
             "SHA384" => System.Security.Cryptography.Xml.SignedXml.XmlDsigSHA384Url,
             "SHA512" => System.Security.Cryptography.Xml.SignedXml.XmlDsigSHA512Url,
-            _ => System.Security.Cryptography.Xml.SignedXml.XmlDsigSHA256Url,
+            _ => throw new ArgumentException($"Unsupported hash algorithm: {hashAlgorithm.Name}", nameof(hashAlgorithm)),
         };
     }
 
@@ -191,7 +191,7 @@ internal static class XAdESExtensions
         {
             "SHA384" => SHA384.HashData(data),
             "SHA512" => SHA512.HashData(data),
-            _ => SHA256.HashData(data),
+            _ => throw new ArgumentException($"Unsupported hash algorithm: {hashAlgorithm.Name}", nameof(hashAlgorithm)),
         };
     }
 
