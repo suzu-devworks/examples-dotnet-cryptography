@@ -86,7 +86,7 @@ src/
 
 - Cryptography samples may depend on local files, PEM/PFX assets, passwords, or environment variables.
 - Prefer reproducible configuration paths such as environment variables (for example `TEST_ASSETS_PATH`) over hardcoded machine-specific values.
-- Test assets are generated from scripts (for example `scripts/openssl-generate.sh`) and CI sets `TEST_ASSETS_PATH` to `assets`; keep this flow intact.
+- Test assets are generated from scripts (for example `scripts/openssl-generate.sh`) and CI sets `TEST_ASSETS_PATH` to `${{ github.workspace }}/assets`; keep this flow intact.
 - Never add real private keys, credentials, passwords, or machine-specific settings to tracked files.
 - If sample secrets are required for learning, use clearly fake placeholders and document intended injection points.
 
@@ -101,7 +101,7 @@ src/
 ## Dev Container Assumptions
 
 - This repository is developed primarily in a dev container with .NET SDK and common CLI tools preinstalled.
-- Dev container sets `TEST_ASSETS_PATH` to the workspace `assets` directory and installs xunit.v3 templates in post-create; avoid changes that break this setup.
+- Dev container sets `TEST_ASSETS_PATH` to `/workspaces/${localWorkspaceFolderBasename}/assets` and installs xunit.v3 templates in post-create; avoid changes that break this setup.
 - OpenSSL-based fixtures or external test assets may vary by host/container setup.
 - When adding or changing environment-dependent code or tests, preserve behavior that still works in a default container setup.
 
