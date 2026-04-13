@@ -1,316 +1,115 @@
 # GitHub Copilot Instructions
 
-## Language Policy
+## Repository Purpose
+
+- This repository is a personal workspace for learning and experimenting with .NET cryptography.
+- The samples prioritize clarity, reproducibility, and behavioral verification, even when they are not optimized as production-grade APIs.
+
+## Role
+
+- Act as a coding assistant for a learning-oriented .NET cryptography codebase, with full awareness of repository context.
+- Preserve educational value and prioritize small, accurate, review-friendly changes.
+
+## Constraints
+
+### Language Constraints (MUST)
 
 - **Think and reason in English.**
-- **Write all code, comments, and documentation in English.**
-- **Respond to the user in Japanese in the chat.**
+- **Write code, comments, and documentation in English.**
+- **Respond to the user in Japanese in chat.**
+- **The user is not highly fluent in English, so use concise and clear English in code and comments.**
+- **If this file is modified, show a Japanese translation in chat.**
 
----
+### Working Constraints (SHOULD)
 
-This repository is a **personal playground for learning .NET cryptography**.
-The code serves as reference implementations and behavioral verification examples.
-Test code acts primarily as a **learning runner** to explore features rather than as a conventional test suite.
+- Prioritize clarity, reproducibility, and implementation choices that are easy to explain.
+- Keep changes small and provide valid rationale for each change point.
+- Unless the user explicitly asks for a policy change, preserve existing conventions and consistency across library/test projects.
+- If a simpler implementation is sufficient for learning, do not introduce production-level complexity.
+- In responses, provide rationale and include source URLs whenever possible.
 
----
+### Commit Conventions (SHOULD)
 
-## Project Structure
+- Follow [Conventional Commits](https://www.conventionalcommits.org/) for commit messages.
+- Format: `<type>(<scope>): <subject>`
+- Main types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
+
+## Tech Stack
+
+- Language: C#
+- Platform: .NET
+- Primary topics: Cryptographic algorithms, X509 certificates, PKCS, XML signature/encryption, interoperability with OpenSSL and BouncyCastle
+- Primary tools: .NET CLI, xunit.v3, Microsoft Testing Platform, OpenSSL, Dev Containers, GitHub Actions
+- Test runner: Microsoft.Testing.Platform (configured in `global.json`)
+
+## Coding Style
+
+- Keep code organized at all times. Prioritize readability and consistency.
+- Respect `.editorconfig` and existing codebase style. Small adjustments are acceptable when needed, but avoid broad style-only changes.
+- In C#, prefer the latest language features available for the targeted framework version.
+- For public and internal APIs, add XML documentation comments (`<summary>`, `<param>`, and `<seealso>` when useful).
+- Prefer concise, domain-standard terminology: `Sign/Verify`, `Encrypt/Decrypt`, `Export/Import`, `Hash/Digest`.
+
+### Test Style and Naming
+
+- Test code is written in unit test form, but the primary goal is to demonstrate learning patterns and behavioral verification.
+- Prefer BDD-style naming such as `When_..._Then_...` over strict AAA-form names.
+- Method names should be descriptive and clearly communicate the scenario.
+- Prefer fixture-based setup for reusable key material and use `TestContext.Current.CancellationToken` when asynchronous IO is involved.
+
+Examples:
+
+- `When_SigningAndVerifying_Then_Success`
+- `When_ExportedAndImported_Then_PrivateKeyIsRestored`
+
+## Project Structure and Execution Context
+
+This repository uses a monorepo structure where multiple learning projects are grouped into one solution.
 
 ```console
 src/
-  Examples.Cryptography/                    # Extensions and utilities for .NET standard cryptography libs (multi-target: LTSFrameworks)
-  Examples.Cryptography.Tests/              # Learning runner for the above (TargetFramework: LatestFramework)
-  Examples.Cryptography.BouncyCastle/       # BouncyCastle cryptography utilities (multi-target: LTSFrameworks)
-  Examples.Cryptography.BouncyCastle.Tests/ # Learning runner for the above (TargetFramework: LatestFramework)
-  Examples.Cryptography.Xml.Tests/          # Learning runner for XML signature and encryption
+    Examples.Cryptography/                    # .NET standard cryptography extensions/utilities (shared library)
+    Examples.Cryptography.Tests/              # Learning runner for the above
+    Examples.Cryptography.BouncyCastle/       # BouncyCastle utilities (shared library)
+    Examples.Cryptography.BouncyCastle.Cli/   # CLI samples for BouncyCastle workflows
+    Examples.Cryptography.BouncyCastle.Tests/ # Learning runner for BouncyCastle utilities
+    Examples.Cryptography.Xml.Tests/          # Learning runner for XML signature and encryption
 ```
 
-- **Library projects** (`Examples.Cryptography`, `Examples.Cryptography.BouncyCastle`) target multiple frameworks (`LTSFrameworks`: `net8.0;net10.0`)
-- **Test projects** target only the latest framework (`LatestFramework`: `net10.0`) and set `OutputType` to `Exe`
-- All projects use `Examples` as the `RootNamespace`
-
----
-
-## Namespaces and File Layout
-
-### Library side
-
-| Content | Namespace | Example |
-| --- | --- | --- |
-| Algorithm extensions | `Examples.Cryptography.Extensions` | `ECDsaExtensions.cs` |
-| X509 utilities | `Examples.Cryptography.X509Certificates` | `CertificateRequestExtensions.cs` |
-| BouncyCastle algorithms | `Examples.Cryptography.BouncyCastle.Algorithms` | |
-| BouncyCastle X509 | `Examples.Cryptography.BouncyCastle.X509` | |
-
-### Test side
-
-Test files are organized by functional category, mirroring the library project structure.
-
-```console
-Cryptography.Tests/
-  Algorithms/
-    Symmetric/
-      Aes/          # AesEncryptionTests.cs, AesAeadGcmEncryptionTests.cs, etc.
-    Asymmetric/
-      Rsa/          # RsaKeySigningTests.cs, RsaKeyEncryptionTests.cs, etc.
-      Ecdsa/        # EcdsaKeySigningTests.cs, EcdsaKeyExportableTests.cs, etc.
-    Hashing/
-      Sha2/
-      Sha3/
-  X509/             # X509Certificate2Tests.cs, etc.
-  Pkcs/
-  Fixtures/
-    OpenSsl/        # Fixtures that load keys/certificates generated by OpenSSL
-  Helpers/          # Shared test helpers
-```
-
----
-
-## Naming Conventions
-
-### General principles
-
-Prefer concise, widely-recognized engineering terms over verbose or academic language.
-Use domain-standard verbs and nouns that engineers immediately understand.
-
-| Preferred | Avoid |
-| --- | --- |
-| `Sign` / `Verify` | `CreateSignature` / `CheckSignature` |
-| `Encrypt` / `Decrypt` | `EncryptData` / `DecryptData` |
-| `Export` / `Import` | `Serialize` / `Deserialize` |
-| `Hash` / `Digest` | `ComputeHashValue` |
-| `Encode` / `Decode` | `ConvertToString` |
-| `Load` / `Save` | `ReadFromFile` / `WriteToFile` |
-
-Apply the same principle to BDD test method names — keep the `When_` and `Then_` segments short and action-oriented.
-
-### Test classes
-
-- Use the format `{TargetClassName}{TestPerspective}Tests`
-- Examples: `RsaKeySigningTests`, `EcdsaKeyExportableTests`, `AesAeadGcmEncryptionTests`
-
-### Test methods (BDD style)
-
-Name test methods using **When_\<operation or state\>_Then_\<expected result\>**.
-**Do not** use AAA (Arrange / Act / Assert) style names.
-
-```csharp
-// Good
-[Fact]
-public void When_SigningAndVerifying_Then_Success() { ... }
-
-[Fact]
-public void When_ExportedAndImported_Then_PrivateKeyIsRestored() { ... }
-
-[Theory]
-[MemberData(nameof(DigestsData))]
-public void When_LargeDataIsHashed_WithHashData_Then_DigestMatchesExpectedValue(...) { ... }
-
-// Bad (AAA style)
-[Fact]
-public void SignData_WithValidKey_ReturnsVerifiableSignature() { ... }
-```
-
-- When multiple conditions need to be expressed, insert `With` between state and condition: `When_<state>_With<condition>_Then_<result>`
-- Append `Async` suffix for asynchronous tests: `When_ExportedToPemAndImported_Then_PrivateKeyIsRestoredAsync`
-
-### Fixture classes
-
-- Name fixtures used with `IClassFixture<T>` as `{Subject}Fixture` or `{Subject}OpenSslFixture`
-- Fixtures that load external files (keys/certificates generated by OpenSSL) implement `IAsyncLifetime`
-- In-memory fixtures implement `IDisposable` and call `GC.SuppressFinalize(this)` inside `Dispose`
-- Nest a `Fixture` inner class inside the test class only when compositing multiple fixtures is necessary
-
-```csharp
-// In-memory fixture example
-public class EcdsaKeyFixture : IDisposable
-{
-    public EcdsaKeyFixture()
-    {
-        KeyPair = ECDsa.Create(ECCurve.NamedCurves.nistP256);
-    }
-
-    public void Dispose()
-    {
-        KeyPair?.Dispose();
-        GC.SuppressFinalize(this);
-    }
-
-    public ECDsa KeyPair { get; }
-}
-
-// Async fixture example (loads external file)
-public class EcdsaKeyOpenSslFixture : IAsyncLifetime
-{
-    public async ValueTask InitializeAsync()
-    {
-        var dir = Environment.GetEnvironmentVariable("TEST_ASSETS_PATH") ?? Environment.CurrentDirectory;
-        PrivateKeyPem = await File.ReadAllTextAsync(Path.Combine(dir, "example.ecdsa.key"),
-            TestContext.Current.CancellationToken);
-        KeyPair.ImportFromPem(PrivateKeyPem.AsSpan());
-    }
-
-    public ValueTask DisposeAsync()
-    {
-        KeyPair.Dispose();
-        GC.SuppressFinalize(this);
-        return ValueTask.CompletedTask;
-    }
-
-    public string PrivateKeyPem { get; private set; } = string.Empty;
-    public ECDsa KeyPair { get; } = ECDsa.Create();
-}
-```
-
----
-
-## Test Code Structure and Writing Style
-
-### Basic structure
-
-```csharp
-/// <summary>
-/// Tests for {feature description}.
-/// </summary>
-/// <param name="fixture"></param>
-/// <seealso href="https://learn.microsoft.com/..."/>
-public class RsaKeyEncryptionTests(RsaKeyFixture fixture) : IClassFixture<RsaKeyFixture>
-{
-    private ITestOutputHelper? Output => TestContext.Current.TestOutputHelper;
-    private TestFileOutputHelper FileOutput => TestFileOutputHelper.Instance;
-
-    [Fact]
-    public void When_DataIsEncryptedAndDecrypted_Then_OriginalDataIsRestored()
-    {
-        // Arrange (can be omitted when handled implicitly or by the Fixture)
-        var key = fixture.KeyPair;
-
-        // Act
-        var encrypted = Encrypt(key, data);
-        var decrypted = Decrypt(key, encrypted);
-
-        // Assert:
-        Assert.Equal(data, decrypted);
-    }
-}
-```
-
-- Always place a **`// Assert:` comment** before the assertion block to aid readability
-- Define helper logic (e.g., Encrypt/Decrypt helpers) as **local static functions** inside the test method
-- Use `Output?.WriteLine(...)` for debug output to support learning-oriented verification
-- When writing file output with `FileOutput.WriteFileAsync(...)`, the `#if TEST_FILE_OUTPUT_ENABLED` conditional compilation flag is handled internally by `TestFileOutputHelper`
-
-### Grouping multiple assertions
-
-```csharp
-Assert.Multiple(
-    () => Assert.StartsWith("-----BEGIN EC PRIVATE KEY-----", pem),
-    () => Assert.EndsWith("-----END EC PRIVATE KEY-----", pem)
-);
-```
-
-### Theory / MemberData pattern
-
-```csharp
-public static readonly TheoryData<string, int, string> DigestsData = new()
-{
-    { "SHA-256", SHA256.HashSizeInBytes, "RBDc0q3nQ5ys+xmRvtn1h8gj7BhrVBHa5cizWcPSEU4=" },
-    { "SHA-384", SHA384.HashSizeInBytes, "..." },
-};
-
-[Theory]
-[MemberData(nameof(DigestsData))]
-public void When_LargeDataIsHashed_WithHashData_Then_DigestMatchesExpectedValue(
-    string name, int length, string expected) { ... }
-```
-
----
-
-## Library Code Guidelines
-
-### Extension methods
-
-- Collect extension methods in `{TargetClassName}Extensions.cs`
-- Place them under `namespace Examples.Cryptography.Extensions`
-
-```csharp
-namespace Examples.Cryptography.Extensions;
-
-/// <summary>
-/// Extension methods for the <see cref="ECDsa" /> class.
-/// </summary>
-public static class ECDsaExtensions
-{
-    /// <summary>
-    /// Compares two ECDsa instances for equality of their parameters.
-    /// </summary>
-    public static bool EqualsParameters(this ECDsa me, ECDsa? other, bool includePrivateParameters = false)
-    {
-        ...
-    }
-}
-```
-
-### XML documentation comments
-
-- Add `<summary>` to all `public` and `internal` classes and members
-- Document parameters with `<param name="..."/>`
-- Use `<seealso href="..."/>` when a reference URL is available
-- Use `<c>` and `<see cref="..."/>` for explicit type references
-
----
-
-## C# Code Style
-
-- Use the latest C# features supported by `LatestFramework` (net10.0)
-- `ImplicitUsings: enable` and `Nullable: enable` are the common settings across all projects
-- Declare `using` directives at the top of each file in addition to implicit usings managed via project settings
-- Primary constructors are preferred (e.g., for fixture injection in test classes)
-- Use `var` where the type is clear from context
-- Manage `IDisposable` objects such as `CryptoStream` with `using` statements
-- Use target-typed `new()` for collection initializers
-
----
-
-## xUnit-Specific Conventions
-
-- Test framework: **xunit.v3** (`xunit.v3.mtp-v2` package)
-- Obtain `ITestOutputHelper` via `TestContext.Current.TestOutputHelper`:
-
-  ```csharp
-  private ITestOutputHelper? Output => TestContext.Current.TestOutputHelper;
-  ```
-
-- Use `TestContext.Current.CancellationToken` for cancellation tokens
-- Place `xunit.runner.json` in the project root with `CopyToOutputDirectory: PreserveNewest`
-- The global `using Xunit;` is already configured via `<Using Include="Xunit" />` — do not repeat it in individual files
-
----
-
-## OpenSSL Correspondence
-
-In learning code, include comments showing the equivalent OpenSSL command for the same operation.
-
-````csharp
-/* With OpenSSL use the following command:
-```shell
-openssl ecparam -genkey -name prime256v1 -noout -out private-ecdsa.key
-```
-*/
-KeyPair = ECDsa.Create(ECCurve.NamedCurves.nistP256);
-````
-
-When keeping deprecated or legacy API code for comparison, comment it out with the `//#` prefix so the old and new implementations can be compared side by side.
-
-```csharp
-//# var rsa = new RSACryptoServiceProvider(); // Legacy API
-var rsa = RSA.Create();                       // New API
-```
-
----
-
-## References
-
-- [Microsoft Learn: .NET Cryptography Model](https://learn.microsoft.com/en-us/dotnet/standard/security/cryptography-model)
-- [BouncyCastle.Cryptography NuGet](https://www.nuget.org/packages/BouncyCastle.Cryptography)
-- [xunit.v3 Documentation](https://xunit.net/)
+- Shared library projects multi-target LTS frameworks defined in `src/Directory.Build.props`.
+- Test projects target the latest framework and are used as learning runners, not only regression guards.
+- XML test project includes build-time generated code from XSD (`src/Examples.Cryptography.Xml.Tests/generated/`) via `XmlSampleGenerator.Build.targets`; keep generated output reproducible from source schemas.
+- The primary validation flow is running `dotnet tool restore`, `dotnet restore`, `dotnet build`, and `dotnet test` at the repository root.
+- Build warnings are treated as errors, so do not introduce new warnings.
+
+## Configuration and Secrets
+
+- Cryptography samples may depend on local files, PEM/PFX assets, passwords, or environment variables.
+- Prefer reproducible configuration paths such as environment variables (for example `TEST_ASSETS_PATH`) over hardcoded machine-specific values.
+- Test assets are generated from scripts (for example `scripts/openssl-generate.sh`) and CI sets `TEST_ASSETS_PATH` to `assets`; keep this flow intact.
+- Never add real private keys, credentials, passwords, or machine-specific settings to tracked files.
+- If sample secrets are required for learning, use clearly fake placeholders and document intended injection points.
+
+## Cryptography-Dependent Tests and Environment Assumptions
+
+- Some tests are intended to run only when required assets, algorithms, providers, or OpenSSL-generated fixtures are available.
+- Unless explicitly requested, do not remove or rewrite existing environment-dependent skip logic.
+- Follow repository patterns for fixture and environment checks used in cryptography tests.
+- When a test verifies interoperability (for example OpenSSL/BouncyCastle/.NET), preserve the equivalence checks and expected encodings.
+- For PQC tests (ML-KEM, ML-DSA, SLH-DSA), preserve runtime capability checks and skip behavior when platform/provider requirements are not met (for example OpenSSL 3.3+ on Linux).
+
+## Dev Container Assumptions
+
+- This repository is developed primarily in a dev container with .NET SDK and common CLI tools preinstalled.
+- Dev container sets `TEST_ASSETS_PATH` to the workspace `assets` directory and installs xunit.v3 templates in post-create; avoid changes that break this setup.
+- OpenSSL-based fixtures or external test assets may vary by host/container setup.
+- When adding or changing environment-dependent code or tests, preserve behavior that still works in a default container setup.
+
+## Operational Notes
+
+- If requirements or environment details are missing, state assumptions explicitly and proceed with minimal changes.
+- If a destructive change is required, ask for confirmation before execution.
+- In responses, briefly include what changed, why, how it was verified, and any unverified risks.
+- If verification could not be run, clearly state why it was not executed.
+- Prefer official documentation as evidence and provide primary source URLs whenever possible.
+- If there are specification differences (for example framework version or algorithm support), explicitly state the target version/runtime.
