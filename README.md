@@ -34,6 +34,10 @@ The script generates development-only assets such as the following:
 - PKCS#7, PKCS#8, and PKCS#12 sample files
 - `.password` used for encrypted PKCS files
 
+> [!CAUTION]
+> The `assets/` directory contains generated development artifacts, including private keys, certificates, and `.password` files.
+> It is gitignored and must not be tracked or committed to the repository.
+
 Inspect generated files with OpenSSL:
 
 ```shell
