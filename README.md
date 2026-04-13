@@ -12,12 +12,32 @@ It might be useful for developers who have the same problem.
 
 However, please note that the code discussed here is based on my personal opinion and may contain many inaccuracies.
 
-## Current learning topics
+## Generate test assets with OpenSSL
 
-- Classical cryptography with .NET `System.Security.Cryptography`
-- Post-quantum cryptography (PQC)
-  - ML-KEM key encapsulation (shared secret establishment for encryption)
-  - ML-DSA and SLH-DSA digital signatures
-- XML digital signatures and XAdES (XML Advanced Electronic Signatures)
-  - XAdES-BES, XAdES-T, XAdES-C, XAdES-X, XAdES-X-L, XAdES-A levels
-  - Schema-based approach using ETSI TS 101 903 XSD schemas with `dotnet-xscgen`
+This repository includes OpenSSL scripts for generating test certificates, keys, and container files under the `assets` directory.
+
+Requirements:
+
+- OpenSSL must be installed and available on `PATH`
+- Run the script from the repository root
+
+Generate or refresh the test assets:
+
+```shell
+./scripts/openssl-generate.sh ./assets
+```
+
+The script generates development-only assets such as the following:
+
+- Root CA and intermediate CA certificates
+- RSA, ECDSA, and Ed25519 keys and certificates
+- PKCS#7, PKCS#8, and PKCS#12 sample files
+- `.password` used for encrypted PKCS files
+
+Inspect generated files with OpenSSL:
+
+```shell
+./scripts/openssl-show.sh all ./assets
+```
+
+The OpenSSL configuration used by the generator is defined in `scripts/openssl-test.cnf`.
