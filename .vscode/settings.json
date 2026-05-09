@@ -20,8 +20,7 @@
   "[razor]": {
     "editor.defaultFormatter": "ms-dotnettools.csharp"
   },
-  "csharpOrganizeUsings.sortOrder": "System",
-  "csharpOrganizeUsings.splitGroups": false,
+  "dotnet.formatting.organizeImportsOnFormat": true,
   "editor.formatOnPaste": true,
   "editor.formatOnSave": true,
   "files.associations": {
@@ -30,8 +29,8 @@
     "web.config": "xml"
   },
   "markdownlint.config": {
-    "default": true,
-    "MD024": false
+    "MD024": false,
+    "MD060": false
   },
   "omnisharp.enableAsyncCompletion": true,
   "omnisharp.enableEditorConfigSupport": true,
