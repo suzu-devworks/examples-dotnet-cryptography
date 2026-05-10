@@ -11,8 +11,9 @@
 
 ## Overview
 
-PKCS (Public-Key Cryptography Standards) is a family of specifications originally defined by RSA Laboratories.
-Although many items have since moved to IETF RFCs or other standards bodies, the PKCS naming remains the de-facto vocabulary in engineering practice.
+PKCS (Public-Key Cryptography Standards) is a family of specifications originally defined by
+RSA Laboratories. Although many items have since moved to IETF RFCs or other standards bodies,
+the PKCS naming remains the de-facto vocabulary in engineering practice.
 
 In practical .NET development, PKCS usually appears in the following areas:
 
@@ -36,10 +37,10 @@ In practical .NET development, PKCS usually appears in the following areas:
 | PKCS #9  | Selected Attribute Types                        | [RFC 2985](https://datatracker.ietf.org/doc/html/rfc2985)               |
 | PKCS #10 | Certification Request Standard                  | [RFC 2986](https://datatracker.ietf.org/doc/html/rfc2986)               |
 | PKCS #11 | Cryptographic Token Interface                   | Turned over to the OASIS PKCS 11 Technical Committee.                   |
-| PKCS #12 | Personal Information Exchange Syntax Standard   | [RFC 7292](https://datatracker.ietf.org/doc/html/rfc7292)               |
-| PKCS #13 | Elliptic-curve cryptography Standard            | Apparently abandoned.                                                   |
-| PKCS #14 | Pseudo-random Number Generation                 | Apparently abandoned.                                                   |
-| PKCS #15 | Cryptographic Token Information Format Standard | Relinquished IC-card-related parts of this standard to ISO/IEC 7816-15. |
+| PKCS #12 | Personal Information Exchange Syntax Standard | [RFC 7292](https://datatracker.ietf.org/doc/html/rfc7292) |
+| PKCS #13 | Elliptic-curve cryptography Standard | Apparently abandoned. |
+| PKCS #14 | Pseudo-random Number Generation | Apparently abandoned. |
+| PKCS #15 | Cryptographic Token Information Format Standard | Relinquished IC-card-parts to ISO/IEC 7816-15. |
 
 ## PKCS Covered in This Repository
 
@@ -62,7 +63,7 @@ Related learning runners and implementations are placed under these folders:
 | --- | --- | --- |
 | #5 | `Rfc2898DeriveBytes` | PBKDF2 key derivation |
 | #7 (CMS) | `System.Security.Cryptography.Pkcs` namespace | Signed/enveloped message processing |
-| #8 | `ImportPkcs8PrivateKey`, `ImportEncryptedPkcs8PrivateKey`, `ExportPkcs8PrivateKey` | Key algorithm types (RSA/ECDsa/etc.) expose import/export helpers |
+| #8 | `ImportPkcs8PrivateKey`, `ImportEncryptedPkcs8PrivateKey`, `ExportPkcs8PrivateKey` (1) | (1) Key algorithm types expose helpers |
 | #10 | `CertificateRequest` + custom encoding/decoding helpers | CSR generation and signing flows |
 | #12 | `X509Certificate2`, `X509CertificateLoader` | PFX/P12 import/export and key binding |
 
@@ -71,9 +72,11 @@ Related learning runners and implementations are placed under these folders:
 PKCS content is often represented in either DER (binary) or PEM (Base64 with header/footer) form.
 
 - DER examples: `.p8`, `.p10`, `.p12`, `.p7b`
-- PEM examples: `-----BEGIN PRIVATE KEY-----`, `-----BEGIN CERTIFICATE REQUEST-----`, `-----BEGIN PKCS7-----`
+- PEM examples: `-----BEGIN PRIVATE KEY-----`, `-----BEGIN CERTIFICATE REQUEST-----`,
+  `-----BEGIN PKCS7-----`
 
-When validating interoperability with OpenSSL, the same semantic object can be converted between DER and PEM without changing cryptographic meaning.
+When validating interoperability with OpenSSL, the same semantic object can be converted
+between DER and PEM without changing cryptographic meaning.
 
 ## References
 

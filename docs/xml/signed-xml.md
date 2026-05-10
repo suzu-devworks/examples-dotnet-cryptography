@@ -43,12 +43,12 @@ In .NET, XML-DSig is implemented through the `System.Security.Cryptography.Xml` 
 
 The SignedXml class allows you to create the following three kinds of XML digital signatures:
 
-| Signature Type              | Description                                                                                                       |
-| --------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| Enveloped signature         | The signature is contained within the XML element being signed.                                                   |
-| Enveloping signature        | The signed XML is contained within the \<Signature\> element.                                                     |
-| Internal detached signature | The signature and signed XML are in the same document, but neither element contains the other.                    |
-| External detached signature | **Not supported by the SignedXml class.** [see KB article 3148821. ...](https://support.microsoft.com/kb/3148821) |
+| Signature Type              | Description |
+| --- | --- |
+| Enveloped signature         | The signature is contained within the XML element being signed. |
+| Enveloping signature        | The signed XML is contained within the \<Signature\> element. |
+| Internal detached signature | The signature and signed XML are in the same document, but neither element contains the other. |
+| External detached signature | **Not supported by SignedXml class.** [see KB article 3148821.](https://support.microsoft.com/kb/3148821) |
 
 ### Digest and Signature Algorithms
 
@@ -64,8 +64,9 @@ Avoid SHA-1 based options (`rsa-sha1`, `sha1`) for new implementations.
 
 ### Reference and Transform
 
-For an **enveloped signature**, the `Signature` node is inserted into the same XML element being signed.
-In that case, add `XmlDsigEnvelopedSignatureTransform`; otherwise, signature verification may fail because the digest input unexpectedly includes the signature itself.
+For an **enveloped signature**, the `Signature` node is inserted into the same XML element
+being signed. In that case, add `XmlDsigEnvelopedSignatureTransform`; otherwise, signature
+verification may fail because the digest input unexpectedly includes the signature itself.
 
 Typical transform sequence for signed XML content:
 
@@ -74,14 +75,20 @@ Typical transform sequence for signed XML content:
 
 ### CanonicalizationMethod
 
-Use the CanonicalizationMethod property to specify the canonicalization algorithm applied to the XML output of the SignedInfo class before performing signature calculations.
+Use the CanonicalizationMethod property to specify the canonicalization algorithm applied to
+the XML output of the SignedInfo class before performing signature calculations.
 
-| Canonicalization Method               | Value                                                                | defined                                            |
-| ------------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------- |
-| Canonical XML                         | <https://www.w3.org/TR/2001/REC-xml-c14n-20010315>                   | `SignedXml.XmlDsigCanonicalizationUrl`             |
-| Canonical XML with comments           | <https://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments>      | `SignedXml.XmlDsigCanonicalizationWithCommentsUrl` |
-| Exclusive Canonical XML               | <https://www.w3.org/TR/2002/REC-xml-exc-c14n-20020718/>              | `SignedXml.XmlDsigExcC14NTransformUrl`             |
-| Exclusive Canonical XML with comments | <https://www.w3.org/TR/2002/REC-xml-exc-c14n-20020718/#WithComments> | `SignedXml.XmlDsigExcC14NWithCommentsTransformUrl` |
+| Method | Value | Constant |
+| --- | --- | --- |
+| Canonical XML | [W3C c14n][c14n] | `XmlDsigCanonicalizationUrl` |
+| Canonical XML+Comments | [W3C c14n+comments][c14n-comments] | `XmlDsigCanonicalizationWithCommentsUrl` |
+| Exclusive C14N | [W3C exc-c14n][exc-c14n] | `XmlDsigExcC14NTransformUrl` |
+| Exclusive C14N+Comments | [W3C exc-c14n+comments][exc-c14n-comments] | `XmlDsigExcC14NWithCommentsTransformUrl` |
+
+[c14n]: https://www.w3.org/TR/2001/REC-xml-c14n-20010315
+[c14n-comments]: https://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments
+[exc-c14n]: https://www.w3.org/TR/2002/REC-xml-exc-c14n-20020718/
+[exc-c14n-comments]: https://www.w3.org/TR/2002/REC-xml-exc-c14n-20020718/#WithComments
 
 ## Implementation in .NET
 
@@ -149,10 +156,12 @@ var isValid = verifier.CheckSignature();
 ## Practical Notes
 
 - Set `PreserveWhitespace = true` consistently for signing and verification to avoid unintended canonicalization mismatches.
-- Treat `CheckSignature()` as cryptographic validation only; perform trust validation (certificate chain, revocation, policy) separately.
+- Treat `CheckSignature()` as cryptographic validation only; perform trust validation
+  (certificate chain, revocation, policy) separately.
 - Be explicit about ID attributes (`Id`) and reference URIs (`#...`) to avoid ambiguity and wrapping-related risks.
 - Prefer RSA/ECDSA with SHA-256+; keep algorithm choices aligned with your interoperability target.
-- Use detached signatures when payload and signature transport are separated, but remember that external detached signatures are not directly supported by `SignedXml`.
+- Use detached signatures when payload and signature transport are separated, but remember
+  that external detached signatures are not directly supported by `SignedXml`.
 
 ## References
 

@@ -16,9 +16,13 @@
 
 ## Overview
 
-**XAdES** (XML Advanced Electronic Signatures) is an extension specification for XML signatures standardized by ETSI (European Telecommunications Standards Institute). Based on W3C XML Signature (XML-DSig), it defines additional elements to achieve legally valid electronic signatures and long-term verifiability.
+**XAdES** (XML Advanced Electronic Signatures) is an extension specification for XML signatures
+standardized by ETSI (European Telecommunications Standards Institute). Based on W3C XML
+Signature (XML-DSig), it defines additional elements to achieve legally valid electronic
+signatures and long-term verifiability.
 
-XAdES is widely adopted as an electronic signature format that complies with the European Union's eIDAS regulation (electronic IDentification, Authentication and trust Services).
+XAdES is widely adopted as an electronic signature format that complies with the European
+Union's eIDAS regulation (electronic IDentification, Authentication and trust Services).
 
 ## XAdES Signature Levels
 
@@ -84,7 +88,8 @@ XAdES is an extension of XML-DSig, and all XAdES signatures are also valid XML-D
 
 ### Standard .NET Libraries
 
-The `System.Security.Cryptography.Xml` namespace in .NET supports W3C XML-DSig, but **does not natively support XAdES**.
+The `System.Security.Cryptography.Xml` namespace in .NET supports W3C XML-DSig, but **does
+not natively support XAdES**.
 
 To implement XAdES, one of the following approaches is required:
 
@@ -112,7 +117,8 @@ signedXml.AddObject(xadesObject);
 signedXml.ComputeSignature();
 ```
 
-**Note**: A complete XAdES implementation requires many additional implementations, such as signature policy, integration with timestamp services, and certificate validation logic.
+**Note**: A complete XAdES implementation requires many additional implementations, such
+as signature policy, integration with timestamp services, and certificate validation logic.
 
 ## Generate Codes from XML Schema
 

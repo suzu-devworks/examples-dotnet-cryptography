@@ -14,7 +14,8 @@
 
 On Ubuntu, the `ca-certificates` package manages the system trust store used by many tools and runtimes.
 
-By adding a local CA certificate to `/usr/local/share/ca-certificates` and running `update-ca-certificates`, the certificate is added to the OS trust store.
+By adding a local CA certificate to `/usr/local/share/ca-certificates` and running
+`update-ca-certificates`, the certificate is added to the OS trust store.
 
 In .NET on Linux, these trusted CA certificates can be read from `StoreName.Root` and `StoreLocation.LocalMachine`.
 
@@ -24,7 +25,7 @@ Install package and trust a local CA certificate.
 
 ```shell
 sudo apt install -y ca-certificates
-sudo cp local-ca.crt /usr/local/share/ca-certificates
+sudo cp local-ca.crt /usr/local/share/ca-certificates/
 sudo update-ca-certificates
 ```
 

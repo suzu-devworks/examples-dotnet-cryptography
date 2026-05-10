@@ -2,9 +2,12 @@
 
 ## Overview
 
-Post-Quantum Cryptography (PQC) is a family of cryptographic algorithms designed to remain secure even if large-scale quantum computers become practical.
+Post-Quantum Cryptography (PQC) is a family of cryptographic algorithms designed to remain
+secure even if large-scale quantum computers become practical.
 
-Classical public-key algorithms such as RSA, ECDH, and ECDSA are expected to be breakable by Shor's algorithm on a sufficiently powerful quantum computer. PQC provides drop-in successors for key exchange and digital signatures.
+Classical public-key algorithms such as RSA, ECDH, and ECDSA are expected to be breakable by
+Shor's algorithm on a sufficiently powerful quantum computer. PQC provides drop-in successors
+for key exchange and digital signatures.
 
 ## Why PQC is Needed
 
