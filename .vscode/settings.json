@@ -20,8 +20,7 @@
   "[razor]": {
     "editor.defaultFormatter": "ms-dotnettools.csharp"
   },
-  "csharpOrganizeUsings.sortOrder": "System",
-  "csharpOrganizeUsings.splitGroups": false,
+  "dotnet.formatting.organizeImportsOnFormat": true,
   "editor.formatOnPaste": true,
   "editor.formatOnSave": true,
   "files.associations": {
@@ -29,10 +28,9 @@
     "appsettings*.json": "jsonc",
     "web.config": "xml"
   },
-  "markdownlint.config": {
-    "default": true,
-    "MD024": false
-  },
+  "markdown.validate.enabled": false,
+  "markdownlint.configFile": ".markdownlint.json",
+  "markdownlint.run": "onType",
   "omnisharp.enableAsyncCompletion": true,
   "omnisharp.enableEditorConfigSupport": true,
   "omnisharp.enableMsBuildLoadProjectsOnDemand": true,

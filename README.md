@@ -6,15 +6,18 @@
 
 ## What is the purpose of this repository?
 
-This repository is the author's personal playground for learning cryptography programming with .NET.
+This repository is the author's personal playground for learning cryptography programming
+with .NET.
 
 It might be useful for developers who have the same problem.
 
-However, please note that the code discussed here is based on my personal opinion and may contain many inaccuracies.
+However, please note that the code discussed here is based on my personal opinion and may
+contain many inaccuracies.
 
 ## Generate test assets with OpenSSL
 
-This repository includes OpenSSL scripts for generating test certificates, keys, and container files under the `assets` directory.
+This repository includes OpenSSL scripts for generating test certificates, keys, and
+container files under the `assets` directory.
 
 Requirements:
 
@@ -35,7 +38,8 @@ The script generates development-only assets such as the following:
 - `.password` used for encrypted PKCS files
 
 > [!CAUTION]
-> The `assets/` directory contains generated development artifacts, including private keys, certificates, and `.password` files.
+> The `assets/` directory contains generated development artifacts, including private
+> keys, certificates, and `.password` files.
 > It is gitignored and must not be tracked or committed to the repository.
 
 Inspect generated files with OpenSSL:
