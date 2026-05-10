@@ -18,12 +18,14 @@ All formatting and style rules are governed by `.editorconfig` and the repositor
 
 - Introduce a parameter class when a method has many parameters.
 - Suffix async methods returning `Task`/`ValueTask` with `Async`.
-- Add `CancellationToken cancellationToken = default` as the last parameter of public async methods returning `Task` or `ValueTask` where appropriate.
+- Add `CancellationToken cancellationToken = default` as the last parameter of public async
+  methods returning `Task` or `ValueTask` where appropriate.
 
 ## Cryptography-specific Guidelines
 
 - Keep cryptographic primitives isolated and small.
-- Avoid rolling your own crypto; prefer primitives from the framework or vetted libraries (BouncyCastle, OpenSSL interoperability).
+- Avoid rolling your own crypto; prefer primitives from the framework or vetted libraries (BouncyCastle,
+  OpenSSL interoperability).
 - Clearly document threat model and intended use for samples that demonstrate algorithms.
 
 ## Test Naming

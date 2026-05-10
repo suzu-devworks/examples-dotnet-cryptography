@@ -21,12 +21,15 @@ interoperability with OpenSSL and BouncyCastle, and practical examples for key m
 - `global.json` configures the .NET SDK and test runner where applicable.
 - `nuget.config` defines package sources.
 - `.editorconfig` defines formatting and naming rules; CI enforces style.
-- Test assets (certificates, keys, fixtures) should be produced by scripts in the `scripts/` directory and not committed to source control. Tests and samples must read those files from the path provided by the `TEST_ASSETS_PATH` environment variable.
+- Test assets (certificates, keys, fixtures) should be produced by scripts in the `scripts/` directory and
+  not committed to source control. Tests and samples must read those files from the path provided by the
+  `TEST_ASSETS_PATH` environment variable.
 
 ## Project Conventions
 
 - Keep cryptographic code small, auditable, and well-documented.
 - Place projects under `src/` with clear naming: shared libraries, test runners, and CLI samples.
+- Place design documents, explanations, and other supporting materials under `docs/` in an appropriate subfolder.
 - Preserve interoperability tests that compare outputs with OpenSSL or BouncyCastle.
 - Environment-dependent tests should use runtime checks and skip when prerequisites are missing.
 
