@@ -23,6 +23,12 @@ Required sections, in order:
   - A brief project explanation
   - A note that this may help engineers with similar problems
   - A disclaimer that content reflects personal views and may contain inaccuracies
+- In the technology stack section, use the following format:
+  - Language: [primary language]
+  - Platform: [.NET versions for apps and libraries]
+  - Frameworks: [key libraries and frameworks used]
+  - Test runner: [test framework and platform]
+  - Supporting tools: [relevant tools, libraries, and services]
 - Keep setup steps runnable and minimal.
 - Prefer baseline setup commands in this order when applicable:
   - `dotnet tool restore`

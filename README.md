@@ -16,11 +16,11 @@ contain many inaccuracies.
 
 ## Technology Stack
 
-- C#
-- .NET (`net8.0`, `net10.0`)
-- OpenSSL (test asset generation and interoperability checks)
-- BouncyCastle (`src/Examples.Cryptography.BouncyCastle`)
-- xUnit v3 on Microsoft.Testing.Platform
+- Language: C#
+- Platform: .NET 10.0 for apps; shared libraries target net8.0 and net10.0
+- Frameworks: BouncyCastle (cryptography), System.Security.Cryptography (built-in)
+- Test runner: Microsoft.Testing.Platform with xUnit v3
+- Supporting tools: OpenSSL, Dev Containers, GitHub Actions
 
 ## Setup
 
