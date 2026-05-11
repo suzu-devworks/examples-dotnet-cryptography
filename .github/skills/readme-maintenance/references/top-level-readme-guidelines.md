@@ -5,7 +5,7 @@ Use this file only when updating the repository root `README.md`.
 ## Section Structure
 
 Use the structure from
-[top-level template](../templates/top-level-readme-template.md).
+[top-level template](../assets/top-level-readme-template.md).
 
 Required sections, in order:
 

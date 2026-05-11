@@ -6,9 +6,9 @@ Use this file only when updating project-level `README.md` files under `src/`.
 
 Select one template based on project type:
 
-- Library: [project library template](../templates/project-readme-library-template.md)
-- Executable: [project executable template](../templates/project-readme-executable-template.md)
-- Test project: [project test template](../templates/project-readme-test-template.md)
+- Library: [project library template](../assets/project-readme-library-template.md)
+- Executable: [project executable template](../assets/project-readme-executable-template.md)
+- Test project: [project test template](../assets/project-readme-test-template.md)
 
 ## Scope
 
