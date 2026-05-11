@@ -6,14 +6,10 @@ This repository is a personal learning and experimentation workspace for .NET cr
 It covers cryptographic algorithms, X.509 and PKCS formats, XML signature/encryption,
 interoperability with OpenSSL and BouncyCastle, and practical examples for key management and testing.
 
-## Tech Stack
+## Tech Stack and Setup
 
-- Language: C#
-- Platform: .NET (multi-targets defined in `src/Directory.Build.props`)
-- Primary topics: Cryptographic algorithms, X509 certificates, PKCS, XML signatures,
-  interoperability with OpenSSL and BouncyCastle
-- Test runner: Microsoft.Testing.Platform with xUnit v3
-- Supporting tools: OpenSSL, BouncyCastle, Dev Containers, GitHub Actions
+See [Technology Stack](../../README.md#technology-stack) for prerequisites and platform details.  
+See [Setup](../../README.md#setup) for build and test commands.
 
 ## Key Configuration
 
@@ -33,18 +29,10 @@ interoperability with OpenSSL and BouncyCastle, and practical examples for key m
 - Preserve interoperability tests that compare outputs with OpenSSL or BouncyCastle.
 - Environment-dependent tests should use runtime checks and skip when prerequisites are missing.
 
-## Commands
+## Build and Test Commands
 
-Run from repository root:
-
-```bash
-dotnet tool restore
-dotnet restore
-dotnet build
-dotnet test
-```
-
-Clean generated outputs:
+See [Build and test](../../README.md#build-and-test) for standard restore and build commands.  
+Clean generated outputs with:
 
 ```bash
 dotnet msbuild -t:RemoveDirectories
