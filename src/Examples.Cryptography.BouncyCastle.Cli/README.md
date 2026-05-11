@@ -5,10 +5,12 @@
 - [Overview](#overview)
 - [Usage](#usage)
 - [Commands](#commands)
-- [`ocsp check`](#ocsp-check)
-  - [Examples](#examples)
-  - [Sample output](#sample-output)
-- [`tsa request`](#tsa-request)
+  - [`ocsp check`](#ocsp-check)
+    - [Examples](#examples)
+    - [Sample output](#sample-output)
+  - [`tsa request`](#tsa-request)
+    - [Examples](#examples-1)
+    - [Sample output](#sample-output-1)
 - [References](#references)
 
 ## Overview
@@ -17,8 +19,6 @@ This project is a command-line tool for selected cryptographic operations built 
 BouncyCastle.
 
 ## Usage
-
-## Commands
 
 ```shell
 Usage: [command] [-h|--help] [--version]
@@ -29,9 +29,9 @@ Commands:
   version        Prints version information.
 ```
 
----
+## Commands
 
-## `ocsp check`
+### `ocsp check`
 
 Checks the revocation status of a certificate by sending an OCSP request to the OCSP responder.
 
@@ -48,7 +48,7 @@ Options:
   -o, --output   <string?>   Output file path to save the DER-encoded OCSP response.
 ```
 
-### Examples
+#### Examples
 
 ```shell
 # Check using the URL from the certificate AIA extension
@@ -69,7 +69,7 @@ dotnet run --project src/Examples.Cryptography.BouncyCastle.Cli -- ocsp check \
   --output ocsp-response.der
 ```
 
-### Sample output
+#### Sample output
 
 ```console
 Certificate status: GOOD
@@ -94,7 +94,7 @@ openssl ocsp \
 
 ---
 
-## `tsa request`
+### `tsa request`
 
 Requests a timestamp token from a TSA (Time Stamping Authority) server.
 
@@ -111,7 +111,7 @@ Options:
   -o, --output     <string?>   Output file path to save the DER-encoded timestamp token.
 ```
 
-### Examples
+#### Examples
 
 ```shell
 # Request a timestamp token with default settings
@@ -131,7 +131,7 @@ dotnet run --project src/Examples.Cryptography.BouncyCastle.Cli -- tsa request \
   --output timestamp.tsr
 ```
 
-### Sample output
+#### Sample output
 
 ```console
 SerialNumber : 1
