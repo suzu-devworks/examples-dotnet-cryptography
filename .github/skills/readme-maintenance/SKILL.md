@@ -54,9 +54,6 @@ and follow the corresponding rule file for each scope.
 3. Read only the matching split rule file.
 4. Add only missing or inconsistent parts without rewriting existing accurate content.
 5. Run markdownlint for each changed README and fix all reported issues.
-6. For project READMEs: Ensure the `## Table of Contents <!-- omit in toc -->` section includes
-   all H2+ headings (excluding those with `<!-- omit in toc -->`), with proper nesting using
-   2-space indentation per heading level.
 
 Recommended validation command:
 

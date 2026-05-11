@@ -20,7 +20,7 @@ Select one template based on project type:
 ## Base Sections
 
 1. Project name as the H1 heading
-2. `## Table of Contents <!-- omit in toc -->`
+2. Table of Contents
 3. Overview
 4. References
 
@@ -35,9 +35,9 @@ Select one template based on project type:
 
 ## Authoring Rules
 
-- Place `## Table of Contents <!-- omit in toc -->` immediately before Overview.
+- Insert the Table of Contents immediately before Overview, using the exact heading
+  `## Table of Contents <!-- omit in toc -->`.
 - Keep template choice aligned with actual project type from project file and entry points.
-- Do not add a `## Development` section.
 - References should contain external docs, specs, and related repository docs.
 
 ### Table of Contents Format
