@@ -1,6 +1,22 @@
 # Examples.Cryptography.BouncyCastle.Cli
 
-A CLI tool for cryptographic operations using BouncyCastle.
+## Table of Contents <!-- omit in toc -->
+
+- [Overview](#overview)
+- [Usage](#usage)
+- [Commands](#commands)
+- [`ocsp check`](#ocsp-check)
+  - [Examples](#examples)
+  - [Sample output](#sample-output)
+- [`tsa request`](#tsa-request)
+- [References](#references)
+
+## Overview
+
+This project is a command-line tool for selected cryptographic operations built with
+BouncyCastle.
+
+## Usage
 
 ## Commands
 
@@ -143,8 +159,6 @@ curl -H "Content-Type: application/timestamp-query" \
 # Display the timestamp token
 openssl ts -reply -in response.tsr -text
 ```
-
----
 
 ## References
 

@@ -2,35 +2,27 @@
 
 ## Table of Contents <!-- omit in toc -->
 
-- [Examples.Cryptography.Xml](#examplescryptographyxml)
-- [Development](#development)
-  - [How the project was initialized](#how-the-project-was-initialized)
+- [Overview](#overview)
+- [Test Target](#test-target)
+- [Test Index](#test-index)
+  - [XML](#xml)
+- [References](#references)
 
-## Examples.Cryptography.Xml
+## Overview
 
-- [`XmlNamespacesExtensionsTests`](./Cryptography.Xml.Tests/XmlNamespacesExtensionsTests.cs)
+This project contains XML-related cryptography tests and examples for .NET.
 
-## Development
+## Test Target
 
-### How the project was initialized
+- XML cryptography helpers and namespace handling utilities.
 
-This project was initialized with the following command:
+## Test Index
 
-```shell
-## Solution
-dotnet new sln -o .
+### XML
 
-## Examples.Cryptography.Xml.Tests
-dotnet new xunit3 -o src/Examples.Cryptography.Xml.Tests
-dotnet sln add src/Examples.Cryptography.Xml.Tests/
-cd src/Examples.Cryptography.Xml.Tests
-dotnet add package xunit.v3.mtp-v2
-dotnet add package Microsoft.Testing.Extensions.CodeCoverage
-dotnet add package System.Security.Cryptography.Xml
+- [XML cryptography tests](./Cryptography.Xml.Tests/)
 
-dotnet add reference ../Examples.Cryptography/
-cd ../../
+## References
 
-# Update outdated package
-dotnet list package --outdated
-```
+- [System.Security.Cryptography.Xml namespace](https://learn.microsoft.com/ja-jp/dotnet/api/system.security.cryptography.xml)
+- [xUnit.net](https://xunit.net/)

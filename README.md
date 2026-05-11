@@ -14,23 +14,63 @@ It might be useful for developers who have the same problem.
 However, please note that the code discussed here is based on my personal opinion and may
 contain many inaccuracies.
 
-## Generate test assets with OpenSSL
+## Technology Stack
 
-This repository includes OpenSSL scripts for generating test certificates, keys, and
-container files under the `assets` directory.
+- C#
+- .NET (`net8.0`, `net10.0`)
+- OpenSSL (test asset generation and interoperability checks)
+- BouncyCastle (`src/Examples.Cryptography.BouncyCastle`)
+- xUnit v3 on Microsoft.Testing.Platform
 
-Requirements:
+## Setup
 
-- OpenSSL must be installed and available on `PATH`
-- Run the script from the repository root
+### Prerequisites
 
-Generate or refresh the test assets:
+- .NET SDK (see `src/Directory.Build.props` for `LatestFramework` and `LTSFrameworks`)
+- OpenSSL installed on `PATH` for local test asset generation and interoperability checks
+
+### Dev Container (optional)
+
+If you use the repository Dev Container, upgrade OpenSSL before generating assets or
+running tests to use the latest PQC features:
 
 ```shell
-./scripts/openssl-generate.sh ./assets
+# Upgrade OpenSSL in the dev container (may require rebuild or sudo)
+./scripts/openssl-3.3-upgrade.sh
 ```
 
-The script generates development-only assets such as the following:
+### Prepare test assets (optional)
+
+If you want to regenerate test assets locally:
+
+```shell
+export TEST_ASSETS_PATH="$(pwd)/assets"
+./scripts/openssl-generate.sh "$TEST_ASSETS_PATH"
+```
+
+### Build and test
+
+Run from the repository root:
+
+```shell
+dotnet tool restore
+dotnet restore
+dotnet build
+dotnet test
+```
+
+## Generate test assets with OpenSSL
+
+Use this section when you need full details for generating and inspecting local test assets.
+
+Note: To try the latest Post-Quantum Cryptography (PQC) features, use OpenSSL 3.3 or newer.
+
+### Requirements
+
+- OpenSSL must be installed and available on `PATH` for local generation and inspection
+- Run the generator script from the repository root (or pass an explicit target directory)
+
+### Generated assets
 
 - Root CA and intermediate CA certificates
 - RSA, ECDSA, and Ed25519 keys and certificates
