@@ -2,17 +2,33 @@
 
 ## Table of Contents <!-- omit in toc -->
 
-- [System.Security.Cryptography](#systemsecuritycryptography)
+- [Overview](#overview)
+- [Technology Stack](#technology-stack)
+- [Test Target](#test-target)
+- [Test Index](#test-index)
   - [Algorithms](#algorithms)
   - [PQC](#pqc)
   - [PKCS](#pkcs)
   - [X.509](#x509)
-- [Development](#development)
-  - [How the project was initialized](#how-the-project-was-initialized)
 
-## System.Security.Cryptography
+## Overview
 
-- [System.Security.Cryptography Namespace ...](https://learn.microsoft.com/ja-jp/dotnet/api/system.security.cryptography)
+This project contains tests and executable examples around
+`System.Security.Cryptography` APIs.
+
+## Technology Stack
+
+- Target Framework: net10.0
+- Language: C#
+- Test Framework: xUnit v3 (`xunit.v3.mtp-v2`)
+- Test Platform: Microsoft.Testing.Platform
+- Code Coverage: Microsoft.Testing.Extensions.CodeCoverage
+
+## Test Target
+
+- [System.Security.Cryptography namespace](https://learn.microsoft.com/ja-jp/dotnet/api/system.security.cryptography)
+
+## Test Index
 
 ### Algorithms
 
@@ -54,27 +70,6 @@
 
 - [X.509](./Cryptography.Tests/X509/)
 
-## Development
+## References
 
-### How the project was initialized
-
-This project was initialized with the following command:
-
-```shell
-## Solution
-dotnet new sln -o .
-
-## Examples.Cryptography.Tests
-dotnet new xunit3 -o src/Examples.Cryptography.Tests
-dotnet sln add src/Examples.Cryptography.Tests/
-cd src/Examples.Cryptography.Tests
-dotnet add package xunit.v3.mtp-v2
-dotnet add package Microsoft.Testing.Extensions.CodeCoverage
-dotnet add package System.Security.Cryptography.Pkcs
-
-dotnet add reference ../Examples.Cryptography/
-cd ../../
-
-# Update outdated package
-dotnet list package --outdated
-```
+- [xUnit.net](https://xunit.net/)
