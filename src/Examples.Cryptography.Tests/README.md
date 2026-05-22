@@ -3,6 +3,7 @@
 ## Table of Contents <!-- omit in toc -->
 
 - [Overview](#overview)
+- [Technology Stack](#technology-stack)
 - [Test Target](#test-target)
 - [Test Index](#test-index)
   - [Algorithms](#algorithms)
@@ -14,6 +15,14 @@
 
 This project contains tests and executable examples around
 `System.Security.Cryptography` APIs.
+
+## Technology Stack
+
+- Target Framework: net10.0
+- Language: C#
+- Test Framework: xUnit v3 (`xunit.v3.mtp-v2`)
+- Test Platform: Microsoft.Testing.Platform
+- Code Coverage: Microsoft.Testing.Extensions.CodeCoverage
 
 ## Test Target
 

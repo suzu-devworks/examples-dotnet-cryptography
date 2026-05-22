@@ -14,13 +14,14 @@ It might be useful for developers who have the same problem.
 However, please note that the code discussed here is based on my personal opinion and may
 contain many inaccuracies.
 
+No responsibility is accepted for any issues caused by using this repository content.
+
 ## Technology Stack
 
-- C#
-- .NET (`net8.0`, `net10.0`)
-- OpenSSL (test asset generation and interoperability checks)
-- BouncyCastle (`src/Examples.Cryptography.BouncyCastle`)
-- xUnit v3 on Microsoft.Testing.Platform
+- Language: C#
+- Frameworks: .NET (`net8.0`, `net10.0`)
+- Cryptography Tool: OpenSSL (test asset generation and interoperability checks)
+- Test Framework: xUnit v3 on Microsoft.Testing.Platform
 
 ## Setup
 

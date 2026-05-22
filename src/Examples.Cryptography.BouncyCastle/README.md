@@ -3,6 +3,7 @@
 ## Table of Contents <!-- omit in toc -->
 
 - [Overview](#overview)
+- [Technology Stack](#technology-stack)
 - [Features](#features)
 - [References](#references)
 
@@ -11,6 +12,12 @@
 This project provides extensions and utilities for
 [Org.BouncyCastle](https://www.bouncycastle.org/csharp/) in .NET. It includes helper APIs
 for asymmetric cryptography, PKCS processing, and X.509-related operations.
+
+## Technology Stack
+
+- Target Frameworks: net8.0, net10.0
+- Language: C#
+- NuGet Package: BouncyCastle.Cryptography
 
 ## Features
 
