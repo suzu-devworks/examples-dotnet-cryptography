@@ -3,6 +3,7 @@
 ## Table of Contents <!-- omit in toc -->
 
 - [Overview](#overview)
+- [Technology Stack](#technology-stack)
 - [Features](#features)
 - [References](#references)
 
@@ -11,6 +12,12 @@
 This project provides extensions and utilities for .NET cryptography APIs
 (`System.Security.Cryptography`). It focuses on practical helpers for key management,
 certificate handling, and signing and verification workflows.
+
+## Technology Stack
+
+- Target Frameworks: net8.0, net10.0
+- Language: C#
+- APIs: System.Security.Cryptography
 
 ## Features
 
