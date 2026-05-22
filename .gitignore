@@ -439,10 +439,12 @@ $RECYCLE.BIN/
 ##!.vscode/launch.json
 ##!.vscode/extensions.json
 !.vscode/cspell.json
+!.vscode/mcp.json
 
 ## User Define
-/[Tt]emp
+.agents/
+[Tt]emp/
 *.db
 *.db-shm
 *.db-wal
-/assets
+assets/
