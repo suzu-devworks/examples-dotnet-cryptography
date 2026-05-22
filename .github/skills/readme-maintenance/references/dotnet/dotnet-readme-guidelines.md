@@ -1,4 +1,4 @@
-# .NET Project README Rules
+# .NET Project README Guidelines
 
 Use this file when updating project-level `README.md` files for .NET projects.
 

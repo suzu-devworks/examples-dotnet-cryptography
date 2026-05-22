@@ -2,6 +2,7 @@
 name: readme-maintenance
 description: 'Create or update repository root and project-level README.md files. Use when documenting repositories, refreshing setup steps, standardizing README structure, or drafting concise English README content across ecosystems.'
 argument-hint: 'What README files should be created or updated?'
+license: MIT
 user-invocable: true
 ---
 
@@ -35,15 +36,15 @@ Create or update README.md files in concise English.
 2. Route to the correct rules (policy, scope-specific, language-specific).
 3. Review existing README content, or create from the matching template.
 4. Confirm before changing badges, license wording, CI snippets, or sample
-  commands/code when not explicitly requested.
+   commands/code when not explicitly requested.
 5. Update missing or inconsistent content while preserving accurate sections.
 6. For root README updates, preserve existing badges unless badge changes are
-  explicitly requested.
+   explicitly requested.
 7. Run markdownlint for each changed README and fix reported issues.
 8. Use auto-fix only for formatting-safe issues; apply manual edits if wording
-  or meaning might change.
+   or meaning might change.
 9. For edge cases (submodules, generated folders, vendored content, secrets),
-  avoid adding or rewriting related sections without explicit direction.
+   avoid adding or rewriting related sections without explicit direction.
 10. Run final checks in the matching scope guideline.
 
 Recommended validation command:
@@ -58,10 +59,3 @@ npx -y markdownlint-cli <path-to-readme>
 - Repository root rules:
   [repository root rules](./references/repository-root-readme-guidelines.md)
 - Project rules: [project rules](./references/project-readme-guidelines.md)
-  - .NET project rules:
-    [dotnet project rules](./references/dotnet/dotnet-readme-guidelines.md)
-- Templates:
-  - Common templates: [templates](./templates/)
-  - .NET templates: [dotnet templates](./references/dotnet/templates/)
-
-If a request touches both repository root and project README files, handle each scope independently.

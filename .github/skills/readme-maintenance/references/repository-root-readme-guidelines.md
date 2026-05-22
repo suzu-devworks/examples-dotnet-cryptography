@@ -1,4 +1,4 @@
-# Repository Root README Rules
+# Repository Root README Guidelines
 
 Use this file only when creating or updating the repository root `README.md`.
 
@@ -64,7 +64,7 @@ When needed, include concrete command examples or relevant configuration file en
 
 ## Workflow
 
-1. Use [repository-root template](../templates/repository-root-readme-template.md)
+1. Use [repository root template](../templates/repository-root-readme-template.md)
 2. Apply required section structure in order
 3. Replace `{{PLACEHOLDER}}` text; remove placeholder-only lines
 4. If additional content is needed, add optional sections after Setup

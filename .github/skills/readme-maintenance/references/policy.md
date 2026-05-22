@@ -19,7 +19,7 @@ Use this file before making README changes.
 ## Requires Explicit User Confirmation
 
 - Any change not defined by this skill.
-- Changing required heading names, adding new repository-root sections, or deleting sections.
+- Changing required heading names, adding new sections, or deleting sections.
 - Rewriting existing accurate technical content.
 - Changing existing badge definitions or badge providers.
 - Modifying or removing manually added badges.
