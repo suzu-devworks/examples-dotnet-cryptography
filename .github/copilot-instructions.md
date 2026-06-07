@@ -1,32 +1,54 @@
 # GitHub Copilot Instructions
 
+These are the rules you must follow when working in this repository.
+
 ## Language and Communication
 
 - Think and reason in English.
+- Respond in Japanese for all user-facing chat output, including reviews, summaries, and progress updates.
 - Write code, comments, and documentation in concise English.
-- Respond to the user in Japanese in chat.
-- Use Japanese for all user-facing explanations, including reviews, summaries, and progress reports.
 - Do not change locale segments in reference URLs (for example `ja-jp`) unless explicitly requested.
-
----
-
-## Security and Secrets
-
-- Never commit real credentials, secrets, or machine-specific values in tracked files.
-- Use placeholders, `dotnet user-secrets`, or environment variables for sensitive configuration.
-- Flag any existing secrets found in files and recommend remediation before proceeding.
+- Greetings, thanks, and introductory remarks (such as "Understood," or "The following is the code") are strictly prohibited.
+- Output the code with the minimum necessary logic.
+- Avoid lengthy explanations; when explanation is unnecessary, output only the corrected code block.
 
 ---
 
 ## Change Strategy
 
-- Keep diffs focused, minimal, and easy to review.
+- Keep diffs focused, minimal, and reviewable.
 - Avoid broad style-only refactors unless explicitly requested.
-- Prefer simple, reversible implementations.
-- Preserve existing conventions unless the user asks to change policy.
-- Ask for confirmation before destructive or high-impact changes.
-- Ask for confirmation before adding/upgrading dependencies.
-- Ask for confirmation before changing public API behavior.
+- Prefer simple, readable implementations.
+- Preserve existing conventions unless the user requests policy changes.
+- Create a plan before breaking or impactful changes.
+- Use Confirmation Criteria below to decide whether confirmation is required.
+- Do not revert uncommitted changes or run destructive Git operations without permission.
+- After edits, check and fix code style as needed.
+
+### Execution Order
+
+Follow this default sequence unless the user requests otherwise:
+
+1. Gather context and scope the task.
+2. Decide whether confirmation is required using Confirmation Criteria.
+3. If confirmation is required, ask before editing.
+4. Apply minimal, focused edits.
+5. Validate results (tests, lint, or style checks as needed).
+6. Report what changed and any remaining risks.
+
+### Confirmation Criteria
+
+Ask for confirmation before editing if any of the following apply:
+
+- Adding or upgrading dependencies.
+- Changing public API behavior (for example, function signatures, CLI arguments, or config keys with compatibility impact).
+- Making breaking or impactful changes (for example, behavior changes that alter expected user workflows).
+
+Proceed without extra confirmation for low-risk, behavior-preserving updates:
+
+- Typo, grammar, and broken-link fixes.
+- Lint/format-only adjustments.
+- Refactors that preserve existing behavior.
 
 ## Priority Order
 
@@ -45,8 +67,9 @@ When instructions conflict, follow this order:
   prefer workspace-native symbol-aware tools over broad manual rewrites.
 - **Exploration and context gathering**: use VS Code workspace capabilities for file discovery,
   text search, and semantic lookup.
-- **Terminal**: use only when built-in tools are insufficient, such as running `dotnet build`,
-  `dotnet test`, or scripts.
+- **Terminal**: use when workspace-native tools are insufficient or command execution is required
+  (for example, build/test/lint/format/script runs, line-numbered inspection, or Git operations
+  without equivalent workspace actions).
 - **Model/agent-specific names**: prefer capability-based wording; when explicit names are
   necessary, use VS Code-native names available in this environment.
 - **File edits**: prefer targeted edits using VS Code editing capabilities, and avoid rewriting
@@ -63,14 +86,39 @@ When instructions conflict, follow this order:
 
 ---
 
-## Split References
+## Security and Secrets
 
-Read only when needed:
+- Never commit real credentials, secrets, or machine-specific values in tracked files.
+- For highly sensitive settings, use methods such as placeholders, environment variables, or generate them with scripts.
+- Flag any existing secrets found in files and recommend remediation before proceeding.
 
-- Before implementation in an unfamiliar area: [`.github/copilot/repository-context.md`](./copilot/repository-context.md)
-- Before adding or modifying tests/assets: [`.github/copilot/tests-and-assets.md`](./copilot/tests-and-assets.md)
-- Before modifying C# code or tests: [`.github/copilot/csharp-coding-standards.md`](./copilot/csharp-coding-standards.md)
-- Before final verification or commit preparation: [`.github/copilot/validation-and-commit.md`](./copilot/validation-and-commit.md)
+---
+
+## Commit Convention
+
+Follow Conventional Commits:
+
+```text
+type(scope): subject
+```
+
+Common types:
+
+- `feat`: new feature
+- `fix`: bug fix
+- `docs`: documentation only
+- `style`: formatting, no logic change
+- `refactor`: neither bug fix nor new feature
+- `test`: adding or updating tests
+- `chore`: maintenance tasks
+
+Rules:
+
+- Include a brief description in the subject line.
+- Add a body for significant changes explaining rationale and verification steps.
+- For breaking changes, include `BREAKING CHANGE:` in the body with impact and migration steps.
+
+---
 
 ### Update Rule
 
