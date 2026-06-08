@@ -1,5 +1,4 @@
 ---
-description: Repository-specific constraints for this codebase.
 applyTo: "**"
 ---
 
