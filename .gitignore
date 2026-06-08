@@ -441,8 +441,7 @@ $RECYCLE.BIN/
 !.vscode/cspell.json
 !.vscode/mcp.json
 
-## User Define
-.agents/
+## Appends
 [Tt]emp/
 *.db
 *.db-shm
