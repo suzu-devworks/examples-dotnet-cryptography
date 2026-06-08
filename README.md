@@ -17,8 +17,9 @@ The examples reflect my current understanding of each topic and may evolve over 
 ## What topics are covered?
 
 - **Symmetric Cryptography**: [AES](docs/algorithms/symmetric/aes.md)
-- **Asymmetric Cryptography**: [Post-Quantum Cryptography (PQC)](docs/algorithms/asymmetric/pqc.md)
+- **Asymmetric Cryptography**: RSA, ECDSA, Ed25519, [Post-Quantum Cryptography (PQC)](docs/algorithms/asymmetric/pqc.md)
 - **PKCS**: [PKCS standards and usage](docs/pkcs/README.md)
+- **X509 Certificates**: Certificate request, signing, validation, and revocation
 - **XML Security**: [Signed XML](docs/xml/signed-xml.md), [XAdES](docs/xml/xades.md)
 
 ## Why use Dev Containers?
