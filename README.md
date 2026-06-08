@@ -4,89 +4,54 @@
 [![build](https://github.com/suzu-devworks/examples-dotnet-cryptography/actions/workflows/dotnet-build.yml/badge.svg)](https://github.com/suzu-devworks/examples-dotnet-cryptography/actions/workflows/dotnet-build.yml)
 [![CodeQL](https://github.com/suzu-devworks/examples-dotnet-cryptography/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/suzu-devworks/examples-dotnet-cryptography/actions/workflows/github-code-scanning/codeql)
 
-## What is the purpose of this repository?
+## What is this repository?
 
-This repository is the author's personal playground for learning cryptography programming
-with .NET.
+This repository contains samples and experiments on cryptographic programming using .NET.
+Most of the content focuses on the Generic Host and the infrastructure commonly used in .NET applications,
+such as dependency injection, configuration, logging, application lifetime management, and command-line argument handling.
 
-It might be useful for developers who have the same problem.
+The repository primarily serves as a personal knowledge base and a place to explore ideas through small, focused examples.
 
-However, please note that the code discussed here is based on my personal opinion and may
-contain many inaccuracies.
+The examples reflect my current understanding of each topic and may evolve over time.
 
-No responsibility is accepted for any issues caused by using this repository content.
+## What topics are covered?
 
-## Technology Stack
+- **Symmetric Cryptography**: [AES](docs/algorithms/symmetric/aes.md)
+- **Asymmetric Cryptography**: [Post-Quantum Cryptography (PQC)](docs/algorithms/asymmetric/pqc.md)
+- **PKCS**: [PKCS standards and usage](docs/pkcs/README.md)
+- **XML Security**: [Signed XML](docs/xml/signed-xml.md), [XAdES](docs/xml/xades.md)
 
-- Language: C#
-- Frameworks: .NET (`net8.0`, `net10.0`)
-- Cryptography Tool: OpenSSL (test asset generation and interoperability checks)
-- Test Framework: xUnit v3 on Microsoft.Testing.Platform
+## Why use Dev Containers?
 
-## Setup
+I recommend using Dev Containers when working with this repository.
 
-### Prerequisites
+The development container provides the tools and dependencies needed to build and run the
+examples, making it easy to get started without modifying your local environment.
 
-- .NET SDK (see `src/Directory.Build.props` for `LatestFramework` and `LTSFrameworks`)
-- OpenSSL installed on `PATH` for local test asset generation and interoperability checks
+For container details, see [`.devcontainer/devcontainer.json`](.devcontainer/devcontainer.json).
 
-### Dev Container (optional)
+After the container is created, run
+[`.devcontainer/postCreateCommand.sh`](.devcontainer/postCreateCommand.sh)
+and follow the instructions shown in the terminal.
 
-If you use the repository Dev Container, upgrade OpenSSL before generating assets or
-running tests to use the latest PQC features:
+To use the latest Post-Quantum Cryptography (PQC) features, upgrade OpenSSL inside
+the container after creation:
 
 ```shell
-# Upgrade OpenSSL in the dev container (may require rebuild or sudo)
 ./scripts/openssl-3.3-upgrade.sh
 ```
 
-### Prepare test assets (optional)
+## How are test assets generated?
 
-If you want to regenerate test assets locally:
+Test assets (CA certificates, keys, PKCS files) are generated locally using OpenSSL
+and the scripts in `scripts/`. To regenerate:
 
 ```shell
 export TEST_ASSETS_PATH="$(pwd)/assets"
 ./scripts/openssl-generate.sh "$TEST_ASSETS_PATH"
 ```
 
-### Build and test
-
-Run from the repository root:
-
-```shell
-dotnet tool restore
-dotnet restore
-dotnet build
-dotnet test
-```
-
-## Generate test assets with OpenSSL
-
-Use this section when you need full details for generating and inspecting local test assets.
-
-Note: To try the latest Post-Quantum Cryptography (PQC) features, use OpenSSL 3.3 or newer.
-
-### Requirements
-
-- OpenSSL must be installed and available on `PATH` for local generation and inspection
-- Run the generator script from the repository root (or pass an explicit target directory)
-
-### Generated assets
-
-- Root CA and intermediate CA certificates
-- RSA, ECDSA, and Ed25519 keys and certificates
-- PKCS#7, PKCS#8, and PKCS#12 sample files
-- `.password` used for encrypted PKCS files
-
 > [!CAUTION]
 > The `assets/` directory contains generated development artifacts, including private
 > keys, certificates, and `.password` files.
 > It is gitignored and must not be tracked or committed to the repository.
-
-Inspect generated files with OpenSSL:
-
-```shell
-./scripts/openssl-show.sh all ./assets
-```
-
-The OpenSSL configuration used by the generator is defined in `scripts/openssl-test.cnf`.
