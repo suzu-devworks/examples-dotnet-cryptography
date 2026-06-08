@@ -1,29 +1,9 @@
 # Examples.Cryptography.BouncyCastle.Cli
 
-## Table of Contents <!-- omit in toc -->
-
-- [Overview](#overview)
-- [Technology Stack](#technology-stack)
-- [Usage](#usage)
-- [Commands](#commands)
-- [`ocsp check`](#ocsp-check)
-  - [Examples](#examples)
-  - [Sample output](#sample-output)
-- [`tsa request`](#tsa-request)
-- [References](#references)
-
-## Overview
+## Overview and Purpose
 
 This project is a command-line tool for selected cryptographic operations built with
 BouncyCastle.
-
-## Technology Stack
-
-- Target Framework: net10.0
-- Language: C#
-- CLI Framework: ConsoleAppFramework
-- HTTP Client: Microsoft.Extensions.Http
-- Dependency: Examples.Cryptography.BouncyCastle
 
 ## Usage
 
