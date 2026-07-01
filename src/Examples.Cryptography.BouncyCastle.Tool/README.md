@@ -1,4 +1,4 @@
-# Examples.Cryptography.BouncyCastle.Cli
+# Examples.Cryptography.BouncyCastle.Tool
 
 ## Overview and Purpose
 
@@ -41,18 +41,18 @@ Options:
 
 ```shell
 # Check using the URL from the certificate AIA extension
-dotnet run --project src/Examples.Cryptography.BouncyCastle.Cli -- ocsp check \
+dotnet run -- ocsp check \
   --cert path/to/cert.pem \
   --issuer path/to/issuer.pem
 
 # Specify the OCSP endpoint URL explicitly
-dotnet run --project src/Examples.Cryptography.BouncyCastle.Cli -- ocsp check \
+dotnet run -- ocsp check \
   --cert path/to/cert.pem \
   --issuer path/to/issuer.pem \
   --url http://ocsp.example.com
 
 # Save the DER-encoded OCSP response to a file
-dotnet run --project src/Examples.Cryptography.BouncyCastle.Cli -- ocsp check \
+dotnet run -- ocsp check \
   --cert path/to/cert.pem \
   --issuer path/to/issuer.pem \
   --output ocsp-response.der
@@ -104,17 +104,17 @@ Options:
 
 ```shell
 # Request a timestamp token with default settings
-dotnet run --project src/Examples.Cryptography.BouncyCastle.Cli -- tsa request \
+dotnet run -- tsa request \
   --url http://timestamp.example.com
 
 # Timestamp specific data with SHA-512
-dotnet run --project src/Examples.Cryptography.BouncyCastle.Cli -- tsa request \
+dotnet run -- tsa request \
   --url http://timestamp.example.com \
   --data "my important document content" \
   --algorithm SHA-512
 
 # Save the timestamp token to a file
-dotnet run --project src/Examples.Cryptography.BouncyCastle.Cli -- tsa request \
+dotnet run -- tsa request \
   --url http://timestamp.example.com \
   --data "my important document content" \
   --output timestamp.tsr
