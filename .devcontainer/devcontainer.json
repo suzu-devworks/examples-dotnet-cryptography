@@ -12,6 +12,11 @@
   "remoteEnv": {
     "TEST_ASSETS_PATH": "/workspaces/${localWorkspaceFolderBasename}/assets"
   },
+  "features": {
+    "ghcr.io/devcontainers/features/node": {},
+    "ghcr.io/devcontainers/features/copilot-cli": {},
+    "ghcr.io/devcontainers/features/github-cli": {}
+  },
   "customizations": {
     "vscode": {
       "extensions": [
@@ -22,10 +27,5 @@
         "aliasadidev.nugetpackagemanagergui"
       ]
     }
-  },
-  "features": {
-    "ghcr.io/devcontainers/features/node:": {},
-    "ghcr.io/devcontainers/features/copilot-cli:": {},
-    "ghcr.io/devcontainers/features/github-cli:1": {}
   }
 }
