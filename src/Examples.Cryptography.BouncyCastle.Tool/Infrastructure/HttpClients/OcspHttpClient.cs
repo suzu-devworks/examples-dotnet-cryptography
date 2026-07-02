@@ -1,7 +1,7 @@
 using System.Net.Http.Headers;
 using Org.BouncyCastle.Ocsp;
 
-namespace Examples.Cryptography.BouncyCastle.Cli.Clients;
+namespace Examples.Cryptography.BouncyCastle.Tool.Infrastructure.HttpClients;
 
 /// <summary>
 /// The <see cref="HttpClient" /> for OCSP request.

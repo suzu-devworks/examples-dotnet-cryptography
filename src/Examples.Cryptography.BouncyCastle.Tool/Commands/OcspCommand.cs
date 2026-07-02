@@ -1,12 +1,12 @@
 using System.Security.Cryptography;
 using ConsoleAppFramework;
 using Examples.Cryptography.BouncyCastle.Asn1;
-using Examples.Cryptography.BouncyCastle.Cli.Clients;
+using Examples.Cryptography.BouncyCastle.Tool.Infrastructure.HttpClients;
 using Examples.Cryptography.BouncyCastle.X509;
 using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Ocsp;
 
-namespace Examples.Cryptography.BouncyCastle.Cli.Commands;
+namespace Examples.Cryptography.BouncyCastle.Tool.Commands;
 
 /// <summary>
 /// Commands for OCSP (Online Certificate Status Protocol) certificate status checking.

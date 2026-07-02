@@ -3,7 +3,7 @@
 using System.Reflection;
 using ConsoleAppFramework;
 
-namespace Examples.Cryptography.BouncyCastle.Cli.Commands;
+namespace Examples.Cryptography.BouncyCastle.Tool.Commands;
 
 /// <summary>
 /// Prints version information.

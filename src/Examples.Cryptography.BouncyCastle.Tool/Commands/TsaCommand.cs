@@ -1,14 +1,14 @@
 using System.Text;
 using ConsoleAppFramework;
 using Examples.Cryptography.BouncyCastle.Asn1;
-using Examples.Cryptography.BouncyCastle.Cli.Clients;
+using Examples.Cryptography.BouncyCastle.Tool.Infrastructure.HttpClients;
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.Nist;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Tsp;
 
-namespace Examples.Cryptography.BouncyCastle.Cli.Commands;
+namespace Examples.Cryptography.BouncyCastle.Tool.Commands;
 
 /// <summary>
 /// Commands for TSA (Time Stamping Authority) operations.
